@@ -1,11 +1,9 @@
 package br.com.ackta.clinical.business;
 
 public class Form {
-	private String cnpj;
-	private String nfe;
-	private String emitente;
-	private Boolean boleto;
-	private Boolean processado;
+	private String cpf;
+	private String name;
+	private String birthDate;
 
 	/**
 	 *
@@ -16,89 +14,39 @@ public class Form {
 
 	/**
 	 * @param cnpj
-	 * @param nfe
+	 * @param name
 	 * @param emitente
 	 */
-	public Form(String cnpj, String nfe, String emitente) {
+	public Form(String cpf, String name, String birthDate) {
 		super();
-		this.cnpj = cnpj;
-		this.nfe = nfe;
-		this.emitente = emitente;
+		this.cpf = cpf;
+		this.name = name;
+		this.birthDate = birthDate;
 	}
 
-	/**
-	 * @return the boleto
-	 */
-	public Boolean getBoleto() {
-		return boleto;
+	public String getBirthDate() {
+		return birthDate;
 	}
 
-	/**
-	 * @return the cnpj
-	 */
-	public String getCnpj() {
-		return cnpj;
+	public String getCpf() {
+		return cpf;
 	}
 
-	/**
-	 * @return the emitente
-	 */
-	public String getEmitente() {
-		return emitente;
+	public String getName() {
+		return name;
 	}
 
-	/**
-	 * @return the nfe
-	 */
-	public String getNfe() {
-		return nfe;
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
 	}
 
-	/**
-	 * @return the processado
-	 */
-	public Boolean getProcessado() {
-		return processado;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
-	/**
-	 * @param boleto
-	 *            the boleto to set
-	 */
-	public void setBoleto(Boolean boleto) {
-		this.boleto = boleto;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	/**
-	 * @param cnpj
-	 *            the cnpj to set
-	 */
-	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
-	}
-
-	/**
-	 * @param emitente
-	 *            the emitente to set
-	 */
-	public void setEmitente(String emitente) {
-		this.emitente = emitente;
-	}
-
-	/**
-	 * @param nfe
-	 *            the nfe to set
-	 */
-	public void setNfe(String nfe) {
-		this.nfe = nfe;
-	}
-
-	/**
-	 * @param processado
-	 *            the processado to set
-	 */
-	public void setProcessado(Boolean processado) {
-		this.processado = processado;
-	}
 
 }

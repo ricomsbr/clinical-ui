@@ -4,7 +4,7 @@
 			<div class="form-group col-sm-6">
 				<label class="control-label">CPF</label>
 				<input type="text" class="form-control" tabindex="1" 
-					data-th-field="*{{cnpj}}"
+					data-th-field="*{{cpf}}"
 					placeholder="Digite o CPF do emitente da nota fiscal"  />
 				<div class="help-block">
 					<span id="message"></span>
@@ -13,7 +13,7 @@
 			<div class="form-group col-sm-6">
 				<label class="control-label">Nome do paciente</label>
 				<input type="text" class="form-control" tabindex="1" 
-					data-th-field="*{{emitente}}"
+					data-th-field="*{{name}}"
 					placeholder="Digite parte do nome do paciente" />
 				<div class="help-block">
 					<span id="message"></span>
@@ -24,7 +24,7 @@
 			<div class="form-group col-sm-6">
 				<label class="control-label">Data de Nascimento</label>
 				<input type="text" class="form-control" tabindex="1" 
-					data-th-field="*{{nfe}}"
+					data-th-field="*{{birthDate}}"
 					placeholder="Digite a chave da nota fiscal"  />
 				<div class="help-block">
 					<span id="message"></span>
@@ -33,24 +33,9 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-3">
-				<div class="checkbox">
-					<label>
-						<input type="checkbox"
-							data-th-field="*{{boleto}}"
-							placeholder="Somente com Boleto"  />
-						<strong>Possui Boleto</strong>
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox"
-							data-th-field="*{{processado}}"
-							placeholder="Somente com Boleto"  />
-						<strong>Processado</strong>
-					</label>
-				</div>
+				<button type="submit" class="btn btn-info">Pesquisar</button>
+				<a href="/patient/add" type="button" class="btn btn-info">Adicionar</a>
 			</div>
 		</div>
-		<button type="submit" class="btn btn-info">Pesquisar</button>
 	</form>
 </div>

@@ -31,15 +31,15 @@ import br.com.ackta.clinical.model.repository.PersonalDataRepository;
  */
 @Controller
 @RequestMapping(value = "/")
-public class NotaFiscalController {
-	private static Logger LOGGER = LoggerFactory.getLogger(NotaFiscalController.class);
+public class MainController {
+	private static Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
 	// private static final int FIRST_INDEX = 0;
 	private PatientRepository patientRepository;
 	private PersonalDataRepository personalDataRepository;
 
 	@Autowired
-	public NotaFiscalController(PatientRepository patientRepository1, PersonalDataRepository personalDataRepository1) {
+	public MainController(PatientRepository patientRepository1, PersonalDataRepository personalDataRepository1) {
 		super();
 		this.patientRepository = patientRepository1;
 		this.personalDataRepository = personalDataRepository1;
@@ -48,7 +48,7 @@ public class NotaFiscalController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String getIndex(final Model model) {
 		model.addAttribute("record", new Form());
-		model.addAttribute("page", "nf/searchNf");
+		model.addAttribute("page", "patient/search");
 		return "index";
 	}
 
