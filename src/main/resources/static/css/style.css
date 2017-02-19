@@ -1,0 +1,171 @@
+body {
+	padding-top: 50px;
+}
+
+.truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+
+.nav, .pagination, .carousel, .panel-title a {
+	cursor: pointer;
+}
+
+.navbar-color {
+	background-color: #004282;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 5px 0px;
+}
+
+.navbar-inverse .navbar-brand {
+	color: rgba(255, 255, 255, 0.87);
+}
+
+.navbar-inverse .navbar-nav>li>a {
+	color: rgba(255, 255, 255, 0.87);
+}
+
+.navbar-menu {
+	position: relative;
+    float: left;
+    padding: 5px 10px;
+    margin-top: 8px;
+    margin-right: 15px;
+    margin-bottom: 8px;
+    color: white;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+@media ( min-width : 768px) {
+	.sidebar {
+		position: fixed;
+		top: 51px;
+		bottom: 0;
+		left: 0;
+		z-index: 1000;
+		display: block;
+		padding: 20px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		background-color: #ffffff;
+		border-right: 1px solid #eee;
+	}
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+	margin-right: -21px; /* 20px padding + 1px border */
+	margin-bottom: 20px;
+	margin-left: -20px;
+}
+
+.nav-sidebar li a {
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+.nav-sidebar li a i {
+	padding-right: 1em;
+}
+
+.nav-sidebar .active>a, .nav-sidebar .active>a:hover, .nav-sidebar .active>a:focus
+	{
+	color: #fff;
+	background-color: #428bca;
+}
+
+/*
+ * Main content
+ */
+.main {
+	padding: 20px;
+}
+
+@media ( min-width : 768px) {
+	.main {
+		padding-right: 40px;
+		padding-left: 40px;
+	}
+}
+
+.main .page-header {
+	margin-top: 0;
+}
+
+#main-content {
+	transition: opacity 1s ease-in-out;
+}
+
+#main-content.loading {
+	opacity: 0;
+}
+
+/*
+ * Panel
+ */
+.panel-view {
+	min-height: 80vh;
+} 
+ 
+.panel-default>.panel-heading {
+	color: #FFFFFF;
+	background-color: #004282;
+	border-color: #000000;
+}
+
+.process-cell {
+	min-width: 10em;
+}
+
+.tab-content {
+	border: 1px solid transparent;
+	border-top: none;
+	border-color: #ddd;
+	min-height: 80vh;
+}
+
+.barcode-panel {
+	padding: 20px 30px 20px 30px;
+	input
+	{
+	max-width
+	:
+	36em;
+}
+
+}
+
+.background-color-yellow {
+	background-color: yellow;
+}
+
+/* Tables */
+table.table-text-center > thead > tr > th, table.table-text-center > tbody > tr > td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.table-filtered > tbody > tr {
+	display: none;
+}
+
+table.table-filtered > tbody > tr.row-filtered {
+	display: table-row;
+}
+
+.filter-types #folder-type > option:enabled {
+	display: none;
+}
+
+.filter-types #folder-type > option.visible {
+	display: block;
+}
+
+.background-yellow {
+	background-color: yellow;
+}
+

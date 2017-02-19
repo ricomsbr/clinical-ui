@@ -1,0 +1,4 @@
+<option value="0" disabled="disabled" selected="selected"
+	data-th-text="${#lists.isEmpty(folderTypes)} ? #{combo.folder-types.empty} : #{combo.folder-types.message}">Selecione o tipo da pasta</option>
+<option data-th-each="type: ${folderTypes}" data-th-value="${type.id}"
+	data-th-text="|${type.type} ${type.color == null ? '' : ' - ' + type.color} - ${type.description}|"></option>

@@ -1,0 +1,56 @@
+<div id="searchNf"  data-th-object="${record}">
+	<form action="search" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="post">
+		<div class="row">
+			<div class="form-group col-sm-6">
+				<label class="control-label">CPF</label>
+				<input type="text" class="form-control" tabindex="1" 
+					data-th-field="*{{cnpj}}"
+					placeholder="Digite o CPF do emitente da nota fiscal"  />
+				<div class="help-block">
+					<span id="message"></span>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="control-label">Nome do paciente</label>
+				<input type="text" class="form-control" tabindex="1" 
+					data-th-field="*{{emitente}}"
+					placeholder="Digite parte do nome do paciente" />
+				<div class="help-block">
+					<span id="message"></span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-sm-6">
+				<label class="control-label">Data de Nascimento</label>
+				<input type="text" class="form-control" tabindex="1" 
+					data-th-field="*{{nfe}}"
+					placeholder="Digite a chave da nota fiscal"  />
+				<div class="help-block">
+					<span id="message"></span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox"
+							data-th-field="*{{boleto}}"
+							placeholder="Somente com Boleto"  />
+						<strong>Possui Boleto</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox"
+							data-th-field="*{{processado}}"
+							placeholder="Somente com Boleto"  />
+						<strong>Processado</strong>
+					</label>
+				</div>
+			</div>
+		</div>
+		<button type="submit" class="btn btn-info">Pesquisar</button>
+	</form>
+</div>

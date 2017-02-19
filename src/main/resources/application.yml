@@ -1,0 +1,77 @@
+logging:
+  file: clinical.log
+  level:
+    org.springframework.web: ERROR
+    org.springframework.web.client: ERROR
+    org.springframework.jdbc: DEBUG
+    org.springframework.boot: INFO
+    org.springframework.security: INFO
+    br.com.ackta.clinical: INFO
+  
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      indent-output: true
+    default-property-inclusion: non-empty
+  mvc:
+    locale: pt_BR
+  profiles:
+    active: homolog
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      use-new-id-generator-mappings: false 
+    
+---
+
+spring:
+  profiles: desenv
+  datasource:
+    url: jdbc:h2:mem:mydb;DB_CLOSE_ON_EXIT=FALSE;Mode=MySQL;DATABASE_TO_UPPER=false
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa: 
+    database-platform: org.hibernate.dialect.Oracle10gDialect    
+    show-sql: true
+    generate-ddl: true
+    hibernate.ddl-auto: create
+  
+---
+
+spring:
+  profiles: homolog
+  jpa: 
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+    hibernate.ddl-auto: create
+  datasource:
+    url: jdbc:h2:~/clinical-db;
+    username: rmendonca
+    password: a1s2d3f4
+    driver-class-name: org.h2.Driver
+    tomcat:
+      validation-query: select 1 
+      max-active: 5
+      min-idle: 1   
+    
+---
+
+spring:
+  profiles: producao
+  datasource:
+    url: jdbc:mysql://server1.ackta.com.br:3306/sisconfe?useSSL=false
+    username: sisconfe
+    password: "#20131109"
+    driver-class-name: com.mysql.jdbc.Driver
+    tomcat:
+      validation-query: select 1 
+      max-active: 5
+      min-idle: 1      
+  
+server:
+  port: 9999
+  

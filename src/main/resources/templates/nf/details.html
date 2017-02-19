@@ -1,0 +1,483 @@
+<div id="nf" class="panel panel-default panel-view">
+	<div class="panel-heading">Notas Fiscais</div>
+	<div class="panel-body">
+		<div>
+			<p id="help-text">Detalhes da Nota Fiscal</p>
+		</div>
+		<hr />
+		<div id="panel-content">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>Chave da Nota Fiscal</label>
+						<div data-th-text="${{nfDetail.nfe}}"></div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>Data da Emissão</label>
+						<div data-th-text="${{nfDetail.dataEmissao}}"></div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>CNPJ do Emitente</label>
+						<div data-th-text="${{nfDetail.cnpj}}"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>Nome do Emitente</label>
+						<div data-th-text="${nfDetail.emitente}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>Informações Adicionais</label>
+						<div data-th-text="${nfDetail.observacao}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>Estado</label>
+						<div data-th-text="${nfDetail.estadoAtual.estado}"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div data-th-if="${!#lists.isEmpty(nfDetail.processos)}">
+				<hr />
+				<p>Dados para Mala-Direta</p>
+				<hr />
+				<div id="panel-content">
+					<div class="row">
+						<form id="procuraProcForm" action="/procuraProcesso" method="get">
+							<div class="col-sm-2">
+								<div class="form-group">
+									<label>Número do Processo</label> 
+									<input type="text" class="form-control" tabindex="1" data-th-field="${nfDetail.dadosMalaDireta.numProcesso}"></input>
+								</div>
+							</div>
+							<div class="col-sm-10" >
+								<button type="button" class="btn btn-default" tabindex="1"> Procurar</button>
+							</div>
+						</form>
+					</div>
+					<form id="salvaDadosMalaDiretaForm" action="/dadosMalaDireta">
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Nome Responsável</label> 
+									<input type="text" class="form-control" tabindex="1" data-th-field="${nfDetail.dadosMalaDireta.pesquisador}"></input>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label>E-mail</label> 
+									<input type="text" class="form-control" tabindex="1" data-th-field="${nfDetail.dadosMalaDireta.emailDestino}"></input>
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="form-group">
+									<label>Data de Vencimento</label>
+									<input type="text" class="form-control" tabindex="1" data-th-field="${{nfDetail.dadosMalaDireta.vencimento}}"></input>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Nome do Emitente</label>
+									<div data-th-text="${nfDetail.emitente}"></div>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Valor Total da Nota</label>
+									<div data-th-text="${{nfDetail.total}}"></div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-2  col-md-offset-4">
+								<div class="form-group"> 
+									<div data-th-class="'disabled'" >
+										<button type="submit" id="botaoSalvar" 
+											class="btn btn-default" 
+											data-th-disabled="${{nfDetail.dadosMalaDireta.vencimento != null}} ? 'disabled'" tabindex="1" >Salvar</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-offset-2" >
+								<div class="form-group">
+									<button type="button" class="btn btn-default" tabindex="1" 
+									onclick="window.history.back()">Voltar</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div class="row" data-th-if="${#lists.isEmpty(nfDetail.processos)}">
+				<div class="col-sm-12">
+					<div class="alert alert-warning">
+						<label>Nenhum processo associado a essa Nota Fiscal foi encontrado</label>
+					</div>
+				</div>
+			</div>
+			<div data-th-if="${!#lists.isEmpty(nfDetail.processos)}">
+				<hr />
+				<p>Informações obtidas no Agilis</p>
+				<hr />
+				<div data-th-each="processo : ${nfDetail.processos}">
+					<div class="form-group">
+						<label>Número do Processo</label> 
+						<div data-th-text="${processo.numProwb}"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-10 col-sm-offset-1">			
+							<div data-th-if="${processo.peswbCodSolPeswb} != null">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>Solicitante</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.nomePeswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>CPF</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.cpfPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>RG</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.rgPeswb}"></div>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>E-mail</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.emaPeswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Endereço</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.lgrPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Complemento</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.cplPeswb}"></div>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>CEP</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.cepPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label>Cidade</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.cidPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-sm-2">
+										<div class="form-group">
+											<label>UF</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ufPeswb}"></div>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone residencial</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telRsdPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal residencial</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramRsdPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone comercial 1</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telCmd1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal comercial 1</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramCmd1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone comercial 2</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telCmd2Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal comercial 2</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramCmd2Peswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone emergencial</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telEmePeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal emergencial</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramEmePeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone exterior 1</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telInt1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal exterior 1</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramInt1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone exterior 2</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telInt2Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal exterior 2</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramInt2Peswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone exterior 3</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.telInt3Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal exterior 3</label>
+											<div data-th-text="${processo.peswbCodSolPeswb.ramInt3Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div data-th-if="${processo.peswbCodOriPeswb} != null">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>Orientador</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.nomePeswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>CPF</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.cpfPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>RG</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.rgPeswb}"></div>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>E-mail</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.emaPeswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Endereço</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.lgrPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Complemento</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.cplPeswb}"></div>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>CEP</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.cepPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label>Cidade</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.cidPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-sm-2">
+										<div class="form-group">
+											<label>UF</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ufPeswb}"></div>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone residencial</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telRsdPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal residencial</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramRsdPeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone comercial 1</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telCmd1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal comercial 1</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramCmd1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone comercial 2</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telCmd2Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal comercial 2</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramCmd2Peswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone emergencial</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telEmePeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal emergencial</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramEmePeswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone exterior 1</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telInt1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal exterior 1</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramInt1Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone exterior 2</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telInt2Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal exterior 2</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramInt2Peswb}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Telefone exterior 3</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.telInt3Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Ramal exterior 3</label>
+											<div data-th-text="${processo.peswbCodOriPeswb.ramInt3Peswb}"></div>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>					
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+</div>

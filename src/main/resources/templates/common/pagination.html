@@ -1,0 +1,49 @@
+<nav data-th-fragment="pagination (url)">
+	<ul class="pagination">
+		<li data-th-class="${!page.hasPrevious()} ? disabled">
+			<a class="render-partial" aria-label="First"
+				data-th-if="${page.hasPrevious()}"
+				data-th-href="@{__${url}__(page=0,size=${page.size})}">
+				<span aria-hidden="true">&laquo; Primeira</span>
+			</a>
+			<span data-th-unless="${page.hasPrevious()}">
+				<span aria-hidden="true">&laquo; Primeira</span>
+			</span>
+		</li>
+		<li data-th-class="${!page.hasPrevious()} ? disabled">
+			<a class="render-partial" aria-label="Previous"
+				data-th-if="${page.hasPrevious()}"
+				data-th-object="${page.previousPageable}"  
+				data-th-href="@{__${url}__(page=*{pageNumber},size=${page.size})}"> 
+				<span aria-hidden="true">&lsaquo; Anterior</span>
+			</a>
+			<span data-th-unless="${page.hasPrevious()}">
+				<span aria-hidden="true">&lsaquo; Anterior</span>
+			</span>
+		</li>
+		<li>
+			<a data-th-text="|${page.pageNumber + 1} / ${page.totalPages}|">1</a>
+		</li>
+		<li data-th-class="${!page.hasNext()} ? disabled">
+			<a class="render-partial" aria-label="Next"
+				data-th-if="${page.hasNext()}"
+				data-th-object="${page.nextPageable}"
+				data-th-href="@{__${url}__(page=*{pageNumber},size=${page.size})}">
+				<span aria-hidden="true">Próxima &rsaquo;</span>
+			</a>
+			<span data-th-unless="${page.hasNext()}">
+				<span aria-hidden="true">Próxima &rsaquo;</span>
+			</span>
+		</li>
+		<li data-th-class="${!page.hasNext()} ? disabled">
+			<a class="render-partial" aria-label="Last"
+				data-th-if="${page.hasNext()}"
+				data-th-href="@{__${url}__(page=*{page.totalPages - 1},size=*{page.size})}">
+				<span aria-hidden="true">Última &raquo;</span>
+			</a>
+			<span data-th-unless="${page.hasNext()}">
+				<span aria-hidden="true">Última &raquo;</span>
+			</span>
+		</li>
+	</ul>
+</nav>

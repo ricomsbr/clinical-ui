@@ -1,0 +1,64 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.4.RELEASE'
+	}
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven { url "http://repo.spring.io/release" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/release" }
+	maven { url "http://repo.spring.io/milestone" }
+}
+
+ext {
+	kryoVersion = '3.0.3'
+	moneyVersion = '1.0'
+	generatedSourcesDir = file("src/main/generated-sources")
+	querydslVersion = '4.1.4'
+}
+
+configurations {
+	compile.exclude group: 'commons-logging'
+}
+
+dependencies {
+	compile 'org.springframework.boot:spring-boot-starter-actuator'
+	compile 'org.springframework.boot:spring-boot-starter-cache'
+	compile 'org.springframework.boot:spring-boot-starter-test'
+	compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile 'org.springframework.boot:spring-boot-starter-validation'
+	compile "org.springframework.boot:spring-boot-configuration-processor"
+	compile 'org.springframework.boot:spring-boot-devtools'
+	compile 'org.apache.commons:commons-lang3:3.4'
+	compile 'commons-beanutils:commons-beanutils'
+	compile "org.hibernate:hibernate-java8"
+	compile 'com.h2database:h2'
+    compile "org.jmockit:jmockit:1.29"
+	compile 'com.h2database:h2'
+	compile files('lib/ojdbc6.jar')
+	runtime('org.webjars.bower:bootstrap:3.3.6')
+	runtime('org.webjars.bower:font-awesome:4.6.2')
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-parameters'
+}
+
