@@ -1,12 +1,14 @@
 package br.com.ackta.clinical.model.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.Version;
 
 @Entity
@@ -27,10 +29,8 @@ public class Patient implements IPatient {
 	@Column(name = "active", nullable = false)
 	private boolean active;
 
-	// @OneToOne(targetEntity = PersonalData.class)
-	// @JoinColumn(name = "personal_data_id", columnDefinition = "id", nullable
-	// = false)
-	@Transient
+	@OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
+	@JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false)
 	public PersonalData personalData;
 
 	public Patient() {

@@ -1,8 +1,8 @@
 <div id="nf" class="panel panel-default panel-view">
-	<div class="panel-heading">Notas Fiscais</div>
+	<div class="panel-heading">Pacientes</div>
 	<div class="panel-body">
 		<div>
-			<p id="help-text">Seguem suas notas fiscais encontradas</p>
+			<p id="help-text">Pacientes encontrados</p>
 		</div>
 		<hr />
 		<div id="panel-content">
@@ -13,15 +13,15 @@
 					</form>
 				</div>
 			</div>
-			<div data-th-unless="${#lists.isEmpty(nfList.content)}" class="nfList">
+			<div data-th-unless="${#lists.isEmpty(list.content)}" class="list">
 				<form action="marcarNfe" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="post" >
 					<table class="table table-striped table-text-center">
 						<thead>
 							<tr>
 								<th>NF</th>
-								<th>CNPJ</th>
-								<th>Nome do Emitente</th>
-								<th>Data Emissão</th>
+								<th>CPF</th>
+								<th>Nome</th>
+								<th>Data de Nascimento</th>
 								<th>Valor Total</th>
 								<th>Boleto</th>
 								<th>Proc</th>
@@ -29,21 +29,18 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr data-th-each="nf,status : ${nfList.content}" data-th-id="${nf.nfe}">
-								<td data-th-text="${{nf.nfe}}"></td>
-								<td data-th-text="${{nf.cnpj}}"></td>
-								<td data-th-text="${{nf.emitente}}"></td>
-								<td data-th-text="${{nf.dataEmissao}}"></td>
-								<td data-th-text="${{nf.total}}"></td>
+							<tr data-th-each="nf,status : ${list.content}" data-th-id="${nf.personalData.cpf}">
+								<td data-th-text="${{nf.personalData.name}}"></td>
+								<td data-th-text="${{nf.personalData.cpf}}"></td>
+								<td data-th-text="${{nf.personalData.name}}"></td>
+								<td data-th-text="${{nf.personalData.birthDate}}"></td>
+								<td data-th-text="${{nf.personalData.cpf}}"></td>
 								<td> 
-									<input type="hidden" data-th-field="*{nfList.content[__${status.index}__].nfe}" data-th-value="${{nf.nfe}}" /> 
-									<input type="checkbox" data-th-field="*{nfList.content[__${status.index}__].boleto}" data-th-value="${{nf.boleto}}" /> 
 								</td>
 								<td>
-									<input type="checkbox" data-th-field="*{nfList.content[__${status.index}__].processado}" data-th-value="${{nf.dataProc}} != null" /> 
 								</td>
 								<td>
-										<button type="button" class="btn btn-info" data-th-onclick="'onclickDetalhes(\'' + @{/detalhes/{id}(id = ${nf.nfe})} + '\')'">Detalhes</button>
+										<button type="button" class="btn btn-info" data-th-onclick="'onclickDetalhes(\'' + @{/detalhes/{id}(id = ${nf.personalData.cpf})} + '\')'">Detalhes</button>
 								</td>
 							</tr>
 						</tbody>
@@ -52,22 +49,22 @@
 						<div class="col-sm-12 text-center">
 							<nav aria-label="Paginação...">
 							  <ul class="pagination">
-							    <li data-th-class="${!nfList.hasPrevious()} ? 'disabled'">
-							    	<a data-th-if="${nfList.hasPrevious()}" data-th-href="@{__${path}__(page=${nfList.getNumber() - 1})}" aria-label="Anterior">
+							    <li data-th-class="${!list.hasPrevious()} ? 'disabled'">
+							    	<a data-th-if="${list.hasPrevious()}" data-th-href="@{__${path}__(page=${list.getNumber() - 1})}" aria-label="Anterior">
 							    		<span aria-hidden="true">&laquo;</span>
 							    	</a>
-							    	<a data-th-if="${!nfList.hasPrevious()}" aria-label="Anterior">
+							    	<a data-th-if="${!list.hasPrevious()}" aria-label="Anterior">
 							    		<span aria-hidden="true">&laquo;</span>
 							    	</a>
 							    </li>
 							    <li data-th-class="disabled">
-							    	<a href="#" data-th-text="${nfList.number + 1}"></a>
+							    	<a href="#" data-th-text="${list.number + 1}"></a>
 							    </li>
-							    <li data-th-class="${!nfList.hasNext()} ? 'disabled'">
-							    	<a data-th-if="${nfList.hasNext()}"  data-th-href="@{__${path}__(page=${nfList.getNumber() + 1})}" aria-label="Próximo">
+							    <li data-th-class="${!list.hasNext()} ? 'disabled'">
+							    	<a data-th-if="${list.hasNext()}"  data-th-href="@{__${path}__(page=${list.getNumber() + 1})}" aria-label="Próximo">
 							    		<span aria-hidden="true">&raquo;</span>
 							    	</a>
-							    	<a data-th-if="${!nfList.hasNext()}" aria-label="Próximo">
+							    	<a data-th-if="${!list.hasNext()}" aria-label="Próximo">
 							    		<span aria-hidden="true">&raquo;</span>
 							    	</a>
 							    </li>
@@ -75,12 +72,12 @@
 							</nav>				
 						</div>
 					</div>
-					<button type="submit" class="btn btn-info" data-th-if="${!#lists.isEmpty(nfList.content)}">
+					<button type="submit" class="btn btn-info" data-th-if="${!#lists.isEmpty(list.content)}">
 						Salvar
 					</button>
 				</form>
 			</div>
-			<div class="row" data-th-if="${#lists.isEmpty(nfList.content)}">
+			<div class="row" data-th-if="${#lists.isEmpty(list.content)}">
 				<div class="col-sm-4">
 					<span class="text-warning">Nenhuma nota fiscal foi encontrada.</span>
 				</div>

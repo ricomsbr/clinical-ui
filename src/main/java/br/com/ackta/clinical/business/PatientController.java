@@ -6,12 +6,13 @@
 package br.com.ackta.clinical.business;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,12 +72,14 @@ public class PatientController {
 	}
 
 	@RequestMapping(value= "/search", method = RequestMethod.POST)
-	public String search(Form form, Model model) {
-		LOGGER.info("Method add initialized.");
-
-		Example<Patient> example = null;
-		List<Patient> patients = patientRepository.findAll(example);
-		model.addAttribute("patients", patients);
+	public String search(Form form, Model model, Pageable pageable) {
+		LOGGER.info("Method search initialized.");
+		Patient probe = new Patient();
+//		probe.setCpf(form.getCpf());
+//		probe.setName(form.getName());
+		Example<Patient> example = Example.of(probe);
+		Page<Patient> patients = patientRepository.findAll(example, pageable);
+		model.addAttribute("list", patients);
 		model.addAttribute("page", "patient/list");
 		return "index";
 	}
