@@ -49,7 +49,7 @@ public class PatientController {
 		LOGGER.info("Method add initialized.");
 
 		PersonalData data = new PersonalData();
-//		data.setBirthDate(LocalDate.parse(text, formatter)(form.getBirthDate()));
+		data.setBirthDate(form.getBirthDate());
 		data.setCpf(form.getCpf());
 		data.setGender(Gender.MALE);
 		data.setName(form.getName());

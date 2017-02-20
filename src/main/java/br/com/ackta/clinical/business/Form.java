@@ -1,13 +1,15 @@
 package br.com.ackta.clinical.business;
 
+import java.time.LocalDate;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Form {
 	private String cpf;
 	private String name;
 
-	@DateTimeFormat(pattern="dd/MM/yyyy")
-	private String birthDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	private LocalDate birthDate;
 
 	/**
 	 *
@@ -21,14 +23,14 @@ public class Form {
 	 * @param name
 	 * @param emitente
 	 */
-	public Form(String cpf, String name, String birthDate) {
+	public Form(String cpf, String name, LocalDate birthDate) {
 		super();
 		this.cpf = cpf;
 		this.name = name;
 		this.birthDate = birthDate;
 	}
 
-	public String getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
@@ -40,7 +42,7 @@ public class Form {
 		return name;
 	}
 
-	public void setBirthDate(String birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
