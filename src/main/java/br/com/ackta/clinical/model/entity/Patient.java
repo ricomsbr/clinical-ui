@@ -31,13 +31,13 @@ public class Patient implements IPatient {
 
 	@OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
 	@JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false)
-	public PersonalData personalData;
+	public IPersonalData personalData;
 
 	public Patient() {
 		super();
 	}
 
-	public Patient(PersonalData personalData) {
+	public Patient(IPersonalData personalData) {
 		this();
 		this.personalData = personalData;
 	}

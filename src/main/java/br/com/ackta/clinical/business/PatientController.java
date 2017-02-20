@@ -5,6 +5,8 @@
  */
 package br.com.ackta.clinical.business;
 
+import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,9 +74,20 @@ public class PatientController {
 	@RequestMapping(value= "/search", method = RequestMethod.POST)
 	public String search(Form form, Model model, Pageable pageable) {
 		LOGGER.info("Method search initialized.");
-		Patient probe = new Patient();
-//		probe.setCpf(form.getCpf());
-//		probe.setName(form.getName());
+		PersonalData data = new PersonalData();
+		String cpf = form.getCpf();
+		if(!cpf.isEmpty()) {
+			data.setCpf(cpf);
+		}
+		String name = form.getName();
+		if (!name.isEmpty()) {
+			data.setName(name);
+		}
+		LocalDate birthDate = form.getBirthDate();
+		if (birthDate != null) {
+			data.setBirthDate(birthDate);
+		}
+		Patient probe = new Patient(data);
 		Example<Patient> example = Example.of(probe);
 		Page<Patient> patients = patientRepository.findAll(example, pageable);
 		model.addAttribute("list", patients);
