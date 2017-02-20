@@ -5,8 +5,6 @@
  */
 package br.com.ackta.clinical.business;
 
-import java.time.LocalDate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ public class PatientController {
 		LOGGER.info("Method add initialized.");
 
 		PersonalData data = new PersonalData();
-		data.setBirthDate(LocalDate.now());
+//		data.setBirthDate(LocalDate.parse(text, formatter)(form.getBirthDate()));
 		data.setCpf(form.getCpf());
 		data.setGender(Gender.MALE);
 		data.setName(form.getName());

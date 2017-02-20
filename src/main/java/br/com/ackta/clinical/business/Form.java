@@ -1,8 +1,12 @@
 package br.com.ackta.clinical.business;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Form {
 	private String cpf;
 	private String name;
+
+	@DateTimeFormat(pattern="dd/MM/yyyy")
 	private String birthDate;
 
 	/**
