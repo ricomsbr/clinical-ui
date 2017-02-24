@@ -52,11 +52,11 @@ public class PatientController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public String goToAdd(@PathVariable Long id, final Model model) {
+	public String showDetails(@PathVariable Long id, final Model model) {
 		IPatient patient = helper.findOne(id);
-		model.addAttribute("record", new Form(patient));
+		model.addAttribute("patient", new Form(patient));
 		model.addAttribute("allGenders", Gender.values());
-		model.addAttribute("page", "patient/insert");
+		model.addAttribute("page", "patient/details");
 		return "index";
 	}
 

@@ -9,6 +9,7 @@ import br.com.ackta.clinical.model.entity.Gender;
 import br.com.ackta.clinical.model.entity.IPatient;
 
 public class Form {
+	private Long id;
 	private String cpf;
 	private String name;
 	private String rg;
@@ -73,6 +74,20 @@ public class Form {
 	 */
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 

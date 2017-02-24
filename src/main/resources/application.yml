@@ -19,8 +19,8 @@ spring:
   profiles:
     active: homolog
   jpa:
-    show-sql: true
-    generate-ddl: true
+    show-sql: false
+    generate-ddl: false
     hibernate:
       use-new-id-generator-mappings: false 
     
@@ -48,7 +48,7 @@ spring:
   profiles: homolog
   jpa: 
     database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
+    show-sql: false
     generate-ddl: false
     hibernate.ddl-auto: none
   datasource:
