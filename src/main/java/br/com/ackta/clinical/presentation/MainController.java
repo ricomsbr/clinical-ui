@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2015 Ackta. All Rights Reserved.
  */
-package br.com.ackta.clinical.business;
+package br.com.ackta.clinical.presentation;
 
 import java.time.LocalDate;
 
@@ -48,6 +48,7 @@ public class MainController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String getIndex(final Model model) {
 		model.addAttribute("record", new Form());
+		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("page", "patient/search");
 		return "index";
 	}

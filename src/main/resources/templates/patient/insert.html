@@ -1,5 +1,5 @@
 <div id="insert"  data-th-object="${record}">
-	<form action="@{patients/{id}(id = ${nf.personalData.cpf})}" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="put">
+	<form action="patients" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="post">
 		<div class="row">
 			<div class="form-group col-sm-6">
 				<label class="control-label">Nome</label>

@@ -1,5 +1,5 @@
 <div id="searchNf"  data-th-object="${record}">
-	<form action="patient/search" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="post">
+	<form action="patients/search?sort=personalData.name" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="post">
 		<div class="row">
 			<div class="form-group col-sm-6">
 				<label class="control-label">CPF</label>
@@ -22,6 +22,30 @@
 		</div>
 		<div class="row">
 			<div class="form-group col-sm-6">
+				<label class="control-label">Gênero</label>
+				<select class="form-control" data-th-field="*{{gender}}">
+					<option value="" ></option>
+					<option data-th-each="gender : ${allGenders}" 
+          				data-th-value="${gender}" 
+          				data-th-text="${gender}"></option>
+					</option>
+				</select>
+				<div class="help-block">
+					<span id="message"></span>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="control-label">RG</label>
+				<input type="text" class="form-control" tabindex="1" 
+					data-th-field="*{{rg}}"
+					placeholder="Digite o rg do paciente" />
+				<div class="help-block">
+					<span id="message"></span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-sm-6">
 				<label class="control-label">Data de Nascimento</label>
 				<input type="date" class="form-control" tabindex="1" 
 					data-th-field="*{{birthDate}}"
@@ -34,7 +58,7 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<button type="submit" class="btn btn-info">Pesquisar</button>
-				<a href="/patient/add" type="button" class="btn btn-info">Adicionar</a>
+				<a href="/patients/insert" type="button" class="btn btn-info">Adicionar</a>
 			</div>
 		</div>
 	</form>
