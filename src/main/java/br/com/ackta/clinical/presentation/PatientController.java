@@ -42,14 +42,15 @@ public class PatientController {
 	}
 
 
-	@RequestMapping(value = "/insert", method = RequestMethod.GET)
-	public String goToAdd(final Model model) {
+	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+	public String delete(@PathVariable Long id, Model model) {
+		LOGGER.info("Method delete initialized.");
+		helper.delete(id);
 		model.addAttribute("record", new Form());
-		model.addAttribute("allGenders", Gender.values());
-		model.addAttribute("page", "patient/insert");
+		model.addAttribute("page", "patient/search");
 		return "index";
 	}
-	
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String goToAdd(@PathVariable Long id, final Model model) {
 		IPatient patient = helper.findOne(id);
@@ -58,20 +59,19 @@ public class PatientController {
 		model.addAttribute("page", "patient/insert");
 		return "index";
 	}
-	
+
+	@RequestMapping(value = "/insert", method = RequestMethod.GET)
+	public String goToAdd(final Model model) {
+		model.addAttribute("record", new Form());
+		model.addAttribute("allGenders", Gender.values());
+		model.addAttribute("page", "patient/insert");
+		return "index";
+	}
+
 	@RequestMapping(method = RequestMethod.POST)
 	public String insert(Form form, Model model) {
 		LOGGER.info("Method insert initialized.");
 		helper.insert(form);
-		model.addAttribute("record", new Form());
-		model.addAttribute("page", "patient/search");
-		return "index";
-	}
-	
-	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	public String update(@PathVariable Long id, Form form, Model model) {
-		LOGGER.info("Method update initialized.");
-		helper.update(id, form);
 		model.addAttribute("record", new Form());
 		model.addAttribute("page", "patient/search");
 		return "index";
@@ -83,6 +83,15 @@ public class PatientController {
 		Page<IPatient> patients = helper.search(form, pageable);
 		model.addAttribute("list", patients);
 		model.addAttribute("page", "patient/list");
+		return "index";
+	}
+
+	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
+	public String update(@PathVariable Long id, Form form, Model model) {
+		LOGGER.info("Method update initialized.");
+		helper.update(id, form);
+		model.addAttribute("record", new Form());
+		model.addAttribute("page", "patient/search");
 		return "index";
 	}
 }

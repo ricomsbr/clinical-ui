@@ -24,7 +24,7 @@ import br.com.ackta.clinical.presentation.Form;
 public class PatientHelper implements IPatientHelper {
 	private IPatientDao patientDao;
 	PatientRepository patientRepository;
-	
+
 	/**
 	 * @param dao
 	 */
@@ -33,7 +33,25 @@ public class PatientHelper implements IPatientHelper {
 		this.patientDao = dao;
 		this.patientRepository = repository;
 	}
-	
+
+	@Override
+	public void delete(Long id) {
+		patientDao.delete(id);
+	}
+
+	private Page<IPatient> findAll(Example<Patient> example, Pageable pageable) {
+
+		@SuppressWarnings("unchecked")
+		Page<IPatient> result = (Page<IPatient>)(Page<?>) patientRepository.findAll(example, pageable);
+		return result;
+	}
+
+	@Override
+	public IPatient findOne(Long id) {
+		Optional<IPatient> result = patientDao.findOne(id);
+		return result.get();
+	}
+
 	@Override
 	public IPatient insert(Form form) {
 		PersonalData data = new PersonalData();
@@ -43,22 +61,11 @@ public class PatientHelper implements IPatientHelper {
 		IPatient result = patientRepository.save(patient);
 		return result;
 	}
-	
-	@Override
-	public IPatient update(Long id, Form form) {
-		PersonalData data = new PersonalData();
-		BeanUtils.copyProperties(form, data);
-		
-		Patient probe = new Patient(data);
-		probe.setId(id);
-		IPatient result = patientDao.update(probe);
-		return result;
-	}
 
 	@Override
 	public Page<IPatient> search(Form form, Pageable pageable) {
 		PersonalData data = new PersonalData();
-		
+
 		String cpf = form.getCpf();
 		if(!cpf.isEmpty()) {
 			data.setCpf(cpf);
@@ -76,22 +83,20 @@ public class PatientHelper implements IPatientHelper {
 				.withIgnoreCase()
 				.withMatcher("personalData.name", match -> match.stringMatcher(StringMatcher.CONTAINING));
 		Example<Patient> example = Example.of(probe, matcher);
-		
+
 		Page<IPatient> result = findAll(example, pageable);
 
 		return result;
 	}
-	
-	private Page<IPatient> findAll(Example<Patient> example, Pageable pageable) {
-		
-		@SuppressWarnings("unchecked")
-		Page<IPatient> result = (Page<IPatient>)(Page<?>) patientRepository.findAll(example, pageable);
-		return result;
-	}
 
 	@Override
-	public IPatient findOne(Long id) {
-		Optional<IPatient> result = patientDao.findOne(id);
-		return result.get();
+	public IPatient update(Long id, Form form) {
+		PersonalData data = new PersonalData();
+		BeanUtils.copyProperties(form, data);
+
+		Patient probe = new Patient(data);
+		probe.setId(id);
+		IPatient result = patientDao.update(probe);
+		return result;
 	}
 }

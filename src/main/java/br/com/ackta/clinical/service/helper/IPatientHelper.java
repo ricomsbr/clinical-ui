@@ -8,12 +8,14 @@ import br.com.ackta.clinical.presentation.Form;
 
 public interface IPatientHelper {
 
-	IPatient insert(Form form);
+	void delete(Long id);
 
-	IPatient update(Long id, Form form);
+	IPatient findOne(Long id);
+
+	IPatient insert(Form form);
 
 	Page<IPatient> search(Form form, Pageable pageable);
 
-	IPatient findOne(Long id);
+	IPatient update(Long id, Form form);
 
 }

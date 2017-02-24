@@ -11,12 +11,14 @@ import br.com.ackta.clinical.model.entity.Patient;
 
 public interface IPatientDao {
 
-	IPatient insert(IPatient patient);
-
-	IPatient update(IPatient patient);
+	void delete(Long id);
 
 	Page<IPatient> findAll(Example<Patient> example, Pageable pageable);
 
 	Optional<IPatient> findOne(Long id);
+
+	IPatient insert(IPatient patient);
+
+	IPatient update(IPatient patient);
 
 }

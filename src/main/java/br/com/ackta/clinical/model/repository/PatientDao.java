@@ -17,7 +17,7 @@ import br.com.ackta.clinical.model.entity.PersonalData;
 @Service
 public class PatientDao implements IPatientDao {
 	PatientRepository patientRepository;
-	
+
 	/**
 	 * @param patientRepository
 	 */
@@ -27,27 +27,8 @@ public class PatientDao implements IPatientDao {
 	}
 
 	@Override
-	public IPatient insert(IPatient patient) {
-		if (Objects.nonNull(patient.getId())) {
-			throw new DaoException("Id should be null."); 
-		}
-		IPatient result = patientRepository.save((Patient) patient);
-		return result;
-	}
-	
-	@Override
-	public IPatient update(IPatient patient) {
-		IPersonalData data = patient.getPersonalData();
-		Patient dbObj = patientRepository.findOne(patient.getId());
-		PersonalData dbData = (PersonalData) dbObj.getPersonalData();
-		
-		dbData.setBirthDate(data.getBirthDate());
-		dbData.setCpf(data.getCpf());
-		dbData.setGender(Gender.MALE);
-		dbData.setName(data.getName());
-		dbData.setRg(data.getRg());
-		IPatient result = patientRepository.save(dbObj);
-		return result;
+	public void delete(Long id) {
+		patientRepository.delete(id);
 	}
 
 	@Override
@@ -61,6 +42,30 @@ public class PatientDao implements IPatientDao {
 	public Optional<IPatient> findOne(Long id) {
 		return Optional.of(patientRepository.findOne(id));
 	}
-	
-	
+
+	@Override
+	public IPatient insert(IPatient patient) {
+		if (Objects.nonNull(patient.getId())) {
+			throw new DaoException("Id should be null.");
+		}
+		IPatient result = patientRepository.save((Patient) patient);
+		return result;
+	}
+
+	@Override
+	public IPatient update(IPatient patient) {
+		IPersonalData data = patient.getPersonalData();
+		Patient dbObj = patientRepository.findOne(patient.getId());
+		PersonalData dbData = (PersonalData) dbObj.getPersonalData();
+
+		dbData.setBirthDate(data.getBirthDate());
+		dbData.setCpf(data.getCpf());
+		dbData.setGender(Gender.MALE);
+		dbData.setName(data.getName());
+		dbData.setRg(data.getRg());
+		IPatient result = patientRepository.save(dbObj);
+		return result;
+	}
+
+
 }
