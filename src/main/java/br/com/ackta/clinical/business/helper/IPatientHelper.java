@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.service.helper;
+package br.com.ackta.clinical.business.helper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

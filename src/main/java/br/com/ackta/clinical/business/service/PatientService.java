@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.repository;
+package br.com.ackta.clinical.business.service;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -13,15 +13,16 @@ import br.com.ackta.clinical.model.entity.IPatient;
 import br.com.ackta.clinical.model.entity.IPersonalData;
 import br.com.ackta.clinical.model.entity.Patient;
 import br.com.ackta.clinical.model.entity.PersonalData;
+import br.com.ackta.clinical.model.repository.PatientRepository;
 
 @Service
-public class PatientDao implements IPatientDao {
+public class PatientService implements IPatientService {
 	PatientRepository patientRepository;
 
 	/**
 	 * @param patientRepository
 	 */
-	public PatientDao(PatientRepository patientRepository) {
+	public PatientService(PatientRepository patientRepository) {
 		super();
 		this.patientRepository = patientRepository;
 	}
@@ -46,7 +47,7 @@ public class PatientDao implements IPatientDao {
 	@Override
 	public IPatient insert(IPatient patient) {
 		if (Objects.nonNull(patient.getId())) {
-			throw new DaoException("Id should be null.");
+			throw new ServiceException("Id should be null.");
 		}
 		IPatient result = patientRepository.save((Patient) patient);
 		return result;

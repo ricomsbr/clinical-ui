@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.repository;
+package br.com.ackta.clinical.business.service;
 
 import java.util.Optional;
 
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import br.com.ackta.clinical.model.entity.IPatient;
 import br.com.ackta.clinical.model.entity.Patient;
 
-public interface IPatientDao {
+public interface IPatientService {
 
 	void delete(Long id);
 

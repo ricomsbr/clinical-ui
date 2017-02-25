@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import br.com.ackta.clinical.business.helper.IPatientHelper;
 import br.com.ackta.clinical.model.entity.Gender;
 import br.com.ackta.clinical.model.entity.IPatient;
-import br.com.ackta.clinical.service.helper.IPatientHelper;
 
 /**
  *

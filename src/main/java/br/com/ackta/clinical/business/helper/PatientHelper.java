@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.service.helper;
+package br.com.ackta.clinical.business.helper;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -12,23 +12,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ackta.clinical.business.service.IPatientService;
 import br.com.ackta.clinical.model.entity.IPatient;
 import br.com.ackta.clinical.model.entity.Patient;
 import br.com.ackta.clinical.model.entity.PersonalData;
-import br.com.ackta.clinical.model.repository.IPatientDao;
 import br.com.ackta.clinical.model.repository.PatientRepository;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
 @Transactional
 public class PatientHelper implements IPatientHelper {
-	private IPatientDao patientDao;
+	private IPatientService patientDao;
 	PatientRepository patientRepository;
 
 	/**
 	 * @param dao
 	 */
-	public PatientHelper(IPatientDao dao, PatientRepository repository) {
+	public PatientHelper(IPatientService dao, PatientRepository repository) {
 		super();
 		this.patientDao = dao;
 		this.patientRepository = repository;
