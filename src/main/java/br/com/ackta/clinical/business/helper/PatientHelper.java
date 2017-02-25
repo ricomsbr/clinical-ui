@@ -17,23 +17,20 @@ import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
-import br.com.ackta.clinical.data.repository.AddressRepository;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
 @Transactional
 public class PatientHelper implements IPatientHelper {
 	private IPatientService patientService;
-	private AddressRepository addressRepository; //TODO
 
 	/**
 	 * @param service
 	 * @param addressRepository1
 	 */
-	public PatientHelper(IPatientService service, AddressRepository addressRepository1) {
+	public PatientHelper(IPatientService service) {
 		super();
 		this.patientService = service;
-		this.addressRepository = addressRepository1;
 	}
 
 	@Override

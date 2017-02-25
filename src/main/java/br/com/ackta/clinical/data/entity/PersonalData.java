@@ -4,20 +4,20 @@ import java.time.LocalDate;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.beans.BeanUtils;
 
 @Entity
 @Table(name = "personal_data")
@@ -63,10 +63,15 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "rg", nullable = true)
 	private String rg;
 
-	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Address.class, mappedBy="personalData", orphanRemoval=true)
-//	@JoinTable(name="address",
-//		joinColumns={@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)}
-//TODO	)
+//	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Address.class, mappedBy="personalData", orphanRemoval=true)
+////	@JoinTable(name="address",
+////		joinColumns={@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)}
+////TODO	)
+	@ElementCollection(targetClass=Address.class)
+	@CollectionTable(
+	        name="Address",
+	        joinColumns=@JoinColumn(name="personal_data_id")
+	  )
 	@OrderBy("index DESC")
 	private SortedSet<Address> addresses = new TreeSet<Address>();
 
@@ -127,35 +132,27 @@ public class PersonalData implements IPersonalData {
 		return deleted;
 	}
 
-	/**
-	 * Updates a binded object.
-	 *
-	 * @param personalData
-	 * @return
-	 */
 	@Override
-	public IPersonalData merge(IPersonalData personalData) {
-		BeanUtils.copyProperties(this, personalData, UNMERGED_PROPERTIES);
-
-		return personalData;
-	}
-
 	public void setAddresses(SortedSet<Address> addresses) {
 		this.addresses = addresses;
 	}
 
+	@Override
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
+	@Override
 	public void setChildrenQty(Integer childrenQty) {
 		this.childrenQty = childrenQty;
 	}
 
+	@Override
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
+	@Override
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
@@ -165,10 +162,12 @@ public class PersonalData implements IPersonalData {
 		this.id = id;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Override
 	public void setRg(String rg) {
 		this.rg = rg;
 	}

@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
-import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 import org.springframework.data.domain.Example;
@@ -18,23 +17,19 @@ import br.com.ackta.clinical.data.entity.IAddress;
 import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
-import br.com.ackta.clinical.data.repository.AddressRepository;
 import br.com.ackta.clinical.data.repository.PatientRepository;
 
 @Service
 @Transactional
 public class PatientService implements IPatientService {
 	private PatientRepository patientRepository;
-	private AddressRepository addressRepository;
 
 	/**
-	 * @param addressRepository1
 	 * @param patientRepository
 	 */
-	public PatientService(PatientRepository patientRepository1, AddressRepository addressRepository1) {
+	public PatientService(PatientRepository patientRepository1) {
 		super();
 		this.patientRepository = patientRepository1;
-		this.addressRepository = addressRepository1;
 	}
 
 	@Override
@@ -57,11 +52,11 @@ public class PatientService implements IPatientService {
 	public Patient insert(Patient patient) {
 		validateInsert(patient);
 		IPersonalData personalData = patient.getPersonalData();
-		SortedSet<Address> addresses = personalData.getAddresses();
-		addresses.stream()
-			.forEach(a -> a.setPersonalData(personalData));
+		personalData.getAddresses();
+//		addresses.stream()
+//			.forEach(a -> a.setPersonalData(personalData));
 //		Iterable<Address> toSave = prepareAddress(addresses); //TODO
-		addressRepository.save(addresses.stream().collect(Collectors.toList()));
+//		addressRepository.save(addresses.stream().collect(Collectors.toList()));
 		Patient result = patientRepository.save(patient);
 		return result;
 	}

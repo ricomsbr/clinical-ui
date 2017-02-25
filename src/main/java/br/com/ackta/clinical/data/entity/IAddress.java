@@ -3,7 +3,7 @@ package br.com.ackta.clinical.data.entity;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.beans.BeanUtils;
 
-public interface IAddress extends IPersistable, Comparable<IAddress> {
+public interface IAddress extends Comparable<IAddress> {
 	static final String[] UNMERGED_PROPERTIES = { "id", "active", "version" };
 
 	@Override
@@ -18,7 +18,6 @@ public interface IAddress extends IPersistable, Comparable<IAddress> {
 	Integer getIndex();
 	String getNumber();
 
-	IPersonalData getPersonalData();
 	String getPublicArea();
 
 	public default IAddress merge(IAddress address) {
@@ -26,5 +25,4 @@ public interface IAddress extends IPersistable, Comparable<IAddress> {
 		return this;
 	}
 
-	void setPersonalData(IPersonalData personalData);
 }
