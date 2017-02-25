@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.ackta.clinical.model.entity.Gender;
-import br.com.ackta.clinical.model.entity.IPatient;
 import br.com.ackta.clinical.model.entity.IPersonalData;
 import br.com.ackta.clinical.model.entity.Patient;
 import br.com.ackta.clinical.model.entity.PersonalData;
@@ -33,28 +32,28 @@ public class PatientService implements IPatientService {
 	}
 
 	@Override
-	public Page<IPatient> findAll(Example<Patient> example, Pageable pageable) {
+	public Page<Patient> findAll(Example<Patient> example, Pageable pageable) {
 		@SuppressWarnings("unchecked")
-		Page<IPatient> result = (Page<IPatient>)(Page<?>) patientRepository.findAll(example, pageable);
+		Page<Patient> result = (Page<Patient>)(Page<?>) patientRepository.findAll(example, pageable);
 		return result;
 	}
 
 	@Override
-	public Optional<IPatient> findOne(Long id) {
+	public Optional<Patient> findOne(Long id) {
 		return Optional.of(patientRepository.findOne(id));
 	}
 
 	@Override
-	public IPatient insert(IPatient patient) {
+	public Patient insert(Patient patient) {
 		if (Objects.nonNull(patient.getId())) {
 			throw new ServiceException("Id should be null.");
 		}
-		IPatient result = patientRepository.save((Patient) patient);
+		Patient result = patientRepository.save((Patient) patient);
 		return result;
 	}
 
 	@Override
-	public IPatient update(IPatient patient) {
+	public Patient update(Patient patient) {
 		IPersonalData data = patient.getPersonalData();
 		Patient dbObj = patientRepository.findOne(patient.getId());
 		PersonalData dbData = (PersonalData) dbObj.getPersonalData();
@@ -64,7 +63,7 @@ public class PatientService implements IPatientService {
 		dbData.setGender(Gender.MALE);
 		dbData.setName(data.getName());
 		dbData.setRg(data.getRg());
-		IPatient result = patientRepository.save(dbObj);
+		Patient result = patientRepository.save(dbObj);
 		return result;
 	}
 

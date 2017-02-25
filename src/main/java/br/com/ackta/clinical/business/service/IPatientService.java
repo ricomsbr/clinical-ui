@@ -6,19 +6,18 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import br.com.ackta.clinical.model.entity.IPatient;
 import br.com.ackta.clinical.model.entity.Patient;
 
 public interface IPatientService {
 
 	void delete(Long id);
 
-	Page<IPatient> findAll(Example<Patient> example, Pageable pageable);
+	Page<Patient> findAll(Example<Patient> example, Pageable pageable);
 
-	Optional<IPatient> findOne(Long id);
+	Optional<Patient> findOne(Long id);
 
-	IPatient insert(IPatient patient);
+	Patient insert(Patient patient);
 
-	IPatient update(IPatient patient);
+	Patient update(Patient patient);
 
 }

@@ -47,8 +47,8 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	@Override
-	public IPatient findOne(Long id) {
-		Optional<IPatient> result = patientDao.findOne(id);
+	public Patient findOne(Long id) {
+		Optional<Patient> result = patientDao.findOne(id);
 		return result.get();
 	}
 
@@ -57,7 +57,6 @@ public class PatientHelper implements IPatientHelper {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
 		Patient patient = new Patient(data);
-//		IPatient result = patientDao.insert(patient);
 		IPatient result = patientRepository.save(patient);
 		return result;
 	}
