@@ -1,12 +1,17 @@
 package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -21,6 +26,15 @@ import org.springframework.beans.BeanUtils;
 public class PersonalData implements IPersonalData {
 
 	private static final long serialVersionUID = -2383673733659048451L;
+
+//TODO	Comparator<IAddress> comparator = new Comparator<IAddress>() {
+//
+//		@Override
+//		public int compare(IAddress o1, IAddress o2) {
+//			return o1.getIndex().compareTo(o2.getIndex());
+//		}
+//
+//	};
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,13 +63,33 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "rg", nullable = true)
 	private String rg;
 
+	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Address.class, mappedBy="personalData", orphanRemoval=true)
+//	@JoinTable(name="address",
+//		joinColumns={@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)}
+//TODO	)
+	@OrderBy("index DESC")
+	private SortedSet<Address> addresses = new TreeSet<Address>();
+
+	@Column(name = "children_qty", nullable = true)
+	private Integer childrenQty;
+
 	public PersonalData() {
 		super();
 	}
 
 	@Override
+	public SortedSet<Address> getAddresses() {
+		return addresses;
+	}
+
+	@Override
 	public LocalDate getBirthDate() {
 		return birthDate;
+	}
+
+	@Override
+	public Integer getChildrenQty() {
+		return childrenQty;
 	}
 
 	@Override
@@ -96,17 +130,26 @@ public class PersonalData implements IPersonalData {
 	/**
 	 * Updates a binded object.
 	 *
-	 * @param user
+	 * @param personalData
 	 * @return
 	 */
 	@Override
-	public IPersonalData merge(IPersonalData user) {
-		BeanUtils.copyProperties(this, user, UNMERGED_PROPERTIES);
-		return user;
+	public IPersonalData merge(IPersonalData personalData) {
+		BeanUtils.copyProperties(this, personalData, UNMERGED_PROPERTIES);
+
+		return personalData;
+	}
+
+	public void setAddresses(SortedSet<Address> addresses) {
+		this.addresses = addresses;
 	}
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public void setChildrenQty(Integer childrenQty) {
+		this.childrenQty = childrenQty;
 	}
 
 	public void setCpf(String cpf) {
@@ -134,4 +177,6 @@ public class PersonalData implements IPersonalData {
 	public void setVersion(Long version) {
 		this.version = version;
 	}
+
+
 }

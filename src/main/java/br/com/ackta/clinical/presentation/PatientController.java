@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import br.com.ackta.clinical.business.helper.IPatientHelper;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IPatient;
+import br.com.ackta.clinical.data.entity.Patient;
 
 /**
  *
@@ -71,7 +72,7 @@ public class PatientController {
 	@RequestMapping(value= "/search", method = RequestMethod.POST)
 	public String search(Form form, Model model, Pageable pageable) {
 		LOGGER.info("Method search initialized.");
-		Page<IPatient> patients = helper.search(form, pageable);
+		Page<Patient> patients = helper.search(form, pageable);
 		model.addAttribute("list", patients);
 		model.addAttribute("page", "patient/list");
 		return "index";

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.com.ackta.clinical.data.entity.IPatient;
+import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.presentation.Form;
 
 public interface IPatientHelper {
@@ -14,8 +15,8 @@ public interface IPatientHelper {
 
 	IPatient insert(Form form);
 
-	Page<IPatient> search(Form form, Pageable pageable);
+	Page<Patient> search(Form form, Pageable pageable);
 
-	IPatient update(Long id, Form form);
+	Patient update(Long id, Form form);
 
 }

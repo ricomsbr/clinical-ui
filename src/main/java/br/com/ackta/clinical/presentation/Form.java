@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IPatient;
+import br.com.ackta.clinical.data.entity.IPersonalData;
 
 public class Form {
 	private Long id;
@@ -14,9 +15,15 @@ public class Form {
 	private String name;
 	private String rg;
 	private Gender gender;
+	private String publicArea;
+	private String number;
+	private String district;
+	private String city;
+	private String complement;
 
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate birthDate;
+	private Integer childrenQty;
 
 	/**
 	 *
@@ -27,15 +34,33 @@ public class Form {
 
 	public Form(IPatient patient) {
 		this();
-		BeanUtils.copyProperties(patient.getPersonalData(), this);
+		IPersonalData personalData = patient.getPersonalData();
+		BeanUtils.copyProperties(personalData, this);
+		BeanUtils.copyProperties(personalData.getAddresses().first(), this);
 	}
 
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
+	public Integer getChildrenQty() {
+		return childrenQty;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getComplement() {
+		return complement;
+	}
+
 	public String getCpf() {
 		return cpf;
+	}
+
+	public String getDistrict() {
+		return district;
 	}
 
 	/**
@@ -56,6 +81,14 @@ public class Form {
 		return name;
 	}
 
+	public String getNumber() {
+		return number;
+	}
+
+	public String getPublicArea() {
+		return publicArea;
+	}
+
 	public String getRg() {
 		return rg;
 	}
@@ -64,8 +97,28 @@ public class Form {
 		this.birthDate = birthDate;
 	}
 
+	public void setChilderQty(int i) {
+		childrenQty = i;
+	}
+
+	public void setChildrenQty(Integer childrenQty) {
+		this.childrenQty = childrenQty;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setComplement(String complement) {
+		this.complement = complement;
+	}
+
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 	/**
@@ -86,9 +139,15 @@ public class Form {
 		this.name = name;
 	}
 
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public void setPublicArea(String publicArea) {
+		this.publicArea = publicArea;
+	}
+
 	public void setRg(String rg) {
 		this.rg = rg;
 	}
-
-
 }

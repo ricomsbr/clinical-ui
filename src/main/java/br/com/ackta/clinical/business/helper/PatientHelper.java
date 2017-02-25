@@ -13,42 +13,42 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ackta.clinical.business.service.IPatientService;
+import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
-import br.com.ackta.clinical.data.repository.PatientRepository;
+import br.com.ackta.clinical.data.repository.AddressRepository;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
 @Transactional
 public class PatientHelper implements IPatientHelper {
-	private IPatientService patientDao;
-	PatientRepository patientRepository;
+	private IPatientService patientService;
+	private AddressRepository addressRepository; //TODO
 
 	/**
-	 * @param dao
+	 * @param service
+	 * @param addressRepository1
 	 */
-	public PatientHelper(IPatientService dao, PatientRepository repository) {
+	public PatientHelper(IPatientService service, AddressRepository addressRepository1) {
 		super();
-		this.patientDao = dao;
-		this.patientRepository = repository;
+		this.patientService = service;
+		this.addressRepository = addressRepository1;
 	}
 
 	@Override
 	public void delete(Long id) {
-		patientDao.delete(id);
+		patientService.delete(id);
 	}
 
-	private Page<IPatient> findAll(Example<Patient> example, Pageable pageable) {
-
-		@SuppressWarnings("unchecked")
-		Page<IPatient> result = (Page<IPatient>)(Page<?>) patientRepository.findAll(example, pageable);
+	private Page<Patient> findAll(Example<Patient> example, Pageable pageable) {
+		Page<Patient> result = patientService.findAll(example, pageable);
 		return result;
 	}
 
 	@Override
 	public Patient findOne(Long id) {
-		Optional<Patient> result = patientDao.findOne(id);
+		Optional<Patient> result = patientService.findOne(id);
 		return result.get();
 	}
 
@@ -56,13 +56,16 @@ public class PatientHelper implements IPatientHelper {
 	public IPatient insert(Form form) {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
+		Address address = new Address();
+		BeanUtils.copyProperties(form, address);
+		data.getAddresses().add(address);
 		Patient patient = new Patient(data);
-		IPatient result = patientRepository.save(patient);
+		IPatient result = patientService.insert(patient);
 		return result;
 	}
 
 	@Override
-	public Page<IPatient> search(Form form, Pageable pageable) {
+	public Page<Patient> search(Form form, Pageable pageable) {
 		PersonalData data = new PersonalData();
 
 		String cpf = form.getCpf();
@@ -83,19 +86,22 @@ public class PatientHelper implements IPatientHelper {
 				.withMatcher("personalData.name", match -> match.stringMatcher(StringMatcher.CONTAINING));
 		Example<Patient> example = Example.of(probe, matcher);
 
-		Page<IPatient> result = findAll(example, pageable);
+		Page<Patient> result = findAll(example, pageable);
 
 		return result;
 	}
 
 	@Override
-	public IPatient update(Long id, Form form) {
+	public Patient update(Long id, Form form) {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
 
-		Patient probe = new Patient(data);
-		probe.setId(id);
-		IPatient result = patientDao.update(probe);
+		Patient patient = new Patient(data);
+		patient.setId(id);
+		Address address = new Address();
+		BeanUtils.copyProperties(form, address);
+		data.getAddresses().add(address);
+		Patient result = patientService.update(patient);
 		return result;
 	}
 }

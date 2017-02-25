@@ -3,9 +3,9 @@ logging:
   level:
     org.springframework.web: ERROR
     org.springframework.web.client: ERROR
-    org.springframework.jdbc: DEBUG
-    org.springframework.boot: INFO
-    org.springframework.security: INFO
+    org.springframework.jdbc: ERROR
+    org.springframework.boot: ERROR
+    org.springframework.security: ERROR
     br.com.ackta.clinical: INFO
   
 spring:
@@ -17,7 +17,7 @@ spring:
   mvc:
     locale: pt_BR
   profiles:
-    active: homolog
+    active: test
   jpa:
     show-sql: false
     generate-ddl: false
@@ -30,7 +30,7 @@ server:
 ---
 
 spring:
-  profiles: desenv
+  profiles: test
   datasource:
     url: jdbc:h2:mem:clinical-db;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=false
     username: sa
@@ -52,7 +52,7 @@ spring:
     generate-ddl: false
     hibernate.ddl-auto: none
   datasource:
-    url: jdbc:h2:~/clinical-db;INIT=create schema if not exists Queue;
+    url: jdbc:h2:~/clinical;INIT=create schema if not exists Queue;
     username: rmendonca
     password: a1s2d3f4
     driver-class-name: org.h2.Driver
