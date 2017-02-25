@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,11 +7,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Version;
 
 @Entity
 @Table(name = "ackta_user")
+@SQLDelete(sql = "UPDATE ackta_user SET deleted = 1 WHERE id = ? AND version = ?")
+@Where(clause="deleted = 0")
 public class User implements IUser {
 
 	private static final long serialVersionUID = -3659855708555492709L;
@@ -25,8 +29,8 @@ public class User implements IUser {
 	@Column(name = "version", nullable = false)
 	private Long version;
 
-	@Column(name = "active", nullable = false)
-	private boolean active;
+	@Column(name = "deleted", nullable = false)
+	private boolean deleted;
 
 	@Column(name = "mail", nullable = false)
 	private String mail;
@@ -44,12 +48,12 @@ public class User implements IUser {
 		super();
 	}
 
-	public User(String username, String password, String name, boolean isActive) {
+	public User(String username, String password, String name, boolean isDeleted) {
 		this();
 		this.username = username;
 		this.password = password;
 		this.name = name;
-		this.active = isActive;
+		this.deleted = isDeleted;
 	}
 
 	@Override
@@ -83,8 +87,8 @@ public class User implements IUser {
 	}
 
 	@Override
-	public boolean isActive() {
-		return active;
+	public boolean isDeleted() {
+		return deleted;
 	}
 
 	/**

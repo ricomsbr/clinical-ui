@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
-import br.com.ackta.clinical.model.entity.IPersistable;
+import br.com.ackta.clinical.data.entity.IPersistable;
 
 @EntityScan(basePackageClasses = { Jsr310JpaConverters.class, IPersistable.class })
 @ComponentScan(basePackages = { "br.com.ackta.clinical" }, excludeFilters = {

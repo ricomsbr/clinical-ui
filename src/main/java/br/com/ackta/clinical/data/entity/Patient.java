@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,8 +11,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 @Entity
 @Table(name = "patient")
+@SQLDelete(sql = "UPDATE patient SET deleted = 1 WHERE id = ? AND version = ?")
+@Where(clause="deleted = 0")
 public class Patient implements IPatient {
 
 	private static final long serialVersionUID = -8785925386745821405L;
@@ -26,8 +31,8 @@ public class Patient implements IPatient {
 	@Column(name = "version", nullable = false)
 	private Long version;
 
-	@Column(name = "active", nullable = false)
-	private boolean active;
+	@Column(name = "deleted", nullable = false)
+	private boolean deleted;
 
 	@OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
 	@JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false)
@@ -58,8 +63,8 @@ public class Patient implements IPatient {
 	}
 
 	@Override
-	public boolean isActive() {
-		return active;
+	public boolean isDeleted() {
+		return deleted;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import org.springframework.beans.BeanUtils;
 

@@ -1,6 +1,6 @@
-package br.com.ackta.clinical.model.converter;
+package br.com.ackta.clinical.data.converter;
 
-import br.com.ackta.clinical.model.entity.MaritalState;
+import br.com.ackta.clinical.data.entity.MaritalState;
 
 public class MaritalStateConverter implements PersistableEnumConverter<MaritalState> {
 

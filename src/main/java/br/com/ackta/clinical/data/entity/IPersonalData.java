@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
 
@@ -22,7 +22,7 @@ public interface IPersonalData extends IPersistable {
 		return newData;
 	}
 	//
-	// IAddress getAddress();
+	// List<IAddress> getAddress();
 	//
 	// List<IPhone> getPhones();
 	//

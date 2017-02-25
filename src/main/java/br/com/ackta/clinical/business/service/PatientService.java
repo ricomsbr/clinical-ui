@@ -8,11 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.ackta.clinical.model.entity.Gender;
-import br.com.ackta.clinical.model.entity.IPersonalData;
-import br.com.ackta.clinical.model.entity.Patient;
-import br.com.ackta.clinical.model.entity.PersonalData;
-import br.com.ackta.clinical.model.repository.PatientRepository;
+import br.com.ackta.clinical.data.entity.Gender;
+import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.Patient;
+import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.repository.PatientRepository;
 
 @Service
 public class PatientService implements IPatientService {
@@ -48,7 +48,7 @@ public class PatientService implements IPatientService {
 		if (Objects.nonNull(patient.getId())) {
 			throw new ServiceException("Id should be null.");
 		}
-		Patient result = patientRepository.save((Patient) patient);
+		Patient result = patientRepository.save(patient);
 		return result;
 	}
 

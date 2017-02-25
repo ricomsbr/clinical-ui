@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2016 ACKTA. All Rights Reserved.
  */
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import java.io.Serializable;
 
@@ -20,7 +20,7 @@ public interface IPersistable extends Serializable {
 
 	Long getVersion();
 
-	boolean isActive();
+	boolean isDeleted();
 
 	void setId(Long id);
 

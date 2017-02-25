@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
 
@@ -10,10 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.beans.BeanUtils;
 
 @Entity
 @Table(name = "personal_data")
+@SQLDelete(sql = "UPDATE personal_data SET deleted = 1 WHERE id = ? AND version = ?")
+@Where(clause="deleted = 0")
 public class PersonalData implements IPersonalData {
 
 	private static final long serialVersionUID = -2383673733659048451L;
@@ -27,16 +31,16 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "version", nullable = false)
 	private Long version;
 
-	@Column(name = "active", nullable = false)
-	private boolean active;
+	@Column(name = "deleted", nullable = false)
+	private boolean deleted;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	@Column(name = "birth_dt", nullable = false)
 	private LocalDate birthDate;
 
-	@Column(name = "gender_id", nullable = false)
+	@Column(name = "gender_id", nullable = true)
 	private Gender gender;
 
 	@Column(name = "cpf", nullable = true)
@@ -85,8 +89,8 @@ public class PersonalData implements IPersonalData {
 	}
 
 	@Override
-	public boolean isActive() {
-		return active;
+	public boolean isDeleted() {
+		return deleted;
 	}
 
 	/**

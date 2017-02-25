@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ackta.clinical.business.service.IPatientService;
-import br.com.ackta.clinical.model.entity.IPatient;
-import br.com.ackta.clinical.model.entity.Patient;
-import br.com.ackta.clinical.model.entity.PersonalData;
-import br.com.ackta.clinical.model.repository.PatientRepository;
+import br.com.ackta.clinical.data.entity.IPatient;
+import br.com.ackta.clinical.data.entity.Patient;
+import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.repository.PatientRepository;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service

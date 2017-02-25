@@ -1,6 +1,6 @@
-package br.com.ackta.clinical.model.converter;
+package br.com.ackta.clinical.data.converter;
 
-import br.com.ackta.clinical.model.entity.Gender;
+import br.com.ackta.clinical.data.entity.Gender;
 
 public class GenderConverter implements PersistableEnumConverter<Gender> {
 

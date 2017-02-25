@@ -6,7 +6,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import br.com.ackta.clinical.model.entity.Patient;
+import br.com.ackta.clinical.data.entity.Patient;
 
 public interface IPatientService {
 

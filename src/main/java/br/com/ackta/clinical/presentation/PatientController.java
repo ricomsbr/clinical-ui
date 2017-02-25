@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import br.com.ackta.clinical.business.helper.IPatientHelper;
-import br.com.ackta.clinical.model.entity.Gender;
-import br.com.ackta.clinical.model.entity.IPatient;
+import br.com.ackta.clinical.data.entity.Gender;
+import br.com.ackta.clinical.data.entity.IPatient;
 
 /**
  *
@@ -51,15 +51,6 @@ public class PatientController {
 		return "index";
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public String showDetails(@PathVariable Long id, final Model model) {
-		IPatient patient = helper.findOne(id);
-		model.addAttribute("patient", new Form(patient));
-		model.addAttribute("allGenders", Gender.values());
-		model.addAttribute("page", "patient/details");
-		return "index";
-	}
-
 	@RequestMapping(value = "/insert", method = RequestMethod.GET)
 	public String goToAdd(final Model model) {
 		model.addAttribute("record", new Form());
@@ -83,6 +74,15 @@ public class PatientController {
 		Page<IPatient> patients = helper.search(form, pageable);
 		model.addAttribute("list", patients);
 		model.addAttribute("page", "patient/list");
+		return "index";
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public String showDetails(@PathVariable Long id, final Model model) {
+		IPatient patient = helper.findOne(id);
+		model.addAttribute("patient", new Form(patient));
+		model.addAttribute("allGenders", Gender.values());
+		model.addAttribute("page", "patient/details");
 		return "index";
 	}
 

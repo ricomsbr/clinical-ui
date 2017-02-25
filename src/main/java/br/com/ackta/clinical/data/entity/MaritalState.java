@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,8 +6,6 @@ import java.util.Objects;
 
 public enum MaritalState implements IPersistableEnum {
 	SINGLE(1L), MARRIED(2L), WIDOWER(3L), DIVORCED(4L);
-
-	private Long id;
 
 	private static final Map<Long, MaritalState> ID_TO_ENUM_MAP = new HashMap<Long, MaritalState>();
 
@@ -17,6 +15,14 @@ public enum MaritalState implements IPersistableEnum {
 		}
 	}
 
+	public static MaritalState findById(Long id) {
+		final MaritalState result = ID_TO_ENUM_MAP.get(id);
+		Objects.requireNonNull(result, "No element found by the id.");
+		return result;
+	}
+
+	private Long id;
+
 	private MaritalState(Long id1) {
 		this.id = id1;
 	}
@@ -24,12 +30,6 @@ public enum MaritalState implements IPersistableEnum {
 	@Override
 	public Long getId() {
 		return id;
-	}
-
-	public static MaritalState findById(Long id) {
-		final MaritalState result = ID_TO_ENUM_MAP.get(id);
-		Objects.requireNonNull(result, "No element found by the id.");
-		return result;
 	}
 
 }

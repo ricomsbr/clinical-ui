@@ -16,11 +16,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import br.com.ackta.clinical.model.entity.Gender;
-import br.com.ackta.clinical.model.entity.Patient;
-import br.com.ackta.clinical.model.entity.PersonalData;
-import br.com.ackta.clinical.model.repository.PatientRepository;
-import br.com.ackta.clinical.model.repository.PersonalDataRepository;
+import br.com.ackta.clinical.data.entity.Gender;
+import br.com.ackta.clinical.data.entity.Patient;
+import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.repository.PatientRepository;
+import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 
 /**
  *

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2016 ACKTA. All Rights Reserved.
  */
-package br.com.ackta.clinical.model.entity;
+package br.com.ackta.clinical.data.entity;
 
 /**
  *

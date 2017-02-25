@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import br.com.ackta.clinical.model.entity.Gender;
-import br.com.ackta.clinical.model.entity.IPatient;
+import br.com.ackta.clinical.data.entity.Gender;
+import br.com.ackta.clinical.data.entity.IPatient;
 
 public class Form {
 	private Long id;
@@ -29,37 +29,13 @@ public class Form {
 		this();
 		BeanUtils.copyProperties(patient.getPersonalData(), this);
 	}
-	
+
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
 	public String getCpf() {
 		return cpf;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getRg() {
-		return rg;
-	}
-
-	public void setRg(String rg) {
-		this.rg = rg;
 	}
 
 	/**
@@ -70,6 +46,29 @@ public class Form {
 	}
 
 	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getRg() {
+		return rg;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	/**
 	 * @param gender the gender to set
 	 */
 	public void setGender(Gender gender) {
@@ -77,17 +76,18 @@ public class Form {
 	}
 
 	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setRg(String rg) {
+		this.rg = rg;
 	}
 
 

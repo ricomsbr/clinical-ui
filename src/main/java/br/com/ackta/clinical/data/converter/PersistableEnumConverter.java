@@ -1,8 +1,8 @@
-package br.com.ackta.clinical.model.converter;
+package br.com.ackta.clinical.data.converter;
 
 import javax.persistence.AttributeConverter;
 
-import br.com.ackta.clinical.model.entity.IPersistableEnum;
+import br.com.ackta.clinical.data.entity.IPersistableEnum;
 
 /**
  *
