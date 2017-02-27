@@ -1,19 +1,14 @@
 package br.com.ackta.clinical.business.service;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.SortedSet;
 
-import org.assertj.core.util.Lists;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.ackta.clinical.data.entity.Address;
-import br.com.ackta.clinical.data.entity.IAddress;
 import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
