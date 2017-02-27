@@ -6,7 +6,6 @@ import java.util.SortedSet;
 import org.springframework.beans.BeanUtils;
 
 public interface IPersonalData extends IPersistable {
-	static final String[] UNMERGED_PROPERTIES = { "id", "active", "version" };
 
 	SortedSet<Address> getAddresses();
 
@@ -18,15 +17,18 @@ public interface IPersonalData extends IPersistable {
 
 	Gender getGender();
 
+	String getMail();
+
+	MaritalState getMaritalState();
+
 	String getName();
+
+	SortedSet<Phone> getPhones();
 
 	String getRg();
 
-//	 List<IPhone> getPhones();
-
-	// MaritalState getMaritalState();
 	public default IPersonalData merge(IPersonalData newData) {
-		BeanUtils.copyProperties(newData, this, UNMERGED_PROPERTIES);
+		BeanUtils.copyProperties(newData, this, unmergedProperties);
 		this.getAddresses().first().merge(newData.getAddresses().first());
 		return this;
 	}
@@ -41,9 +43,13 @@ public interface IPersonalData extends IPersistable {
 
 	void setGender(Gender gender);
 
+	void setMail(String mail);
+
+	void setMaritalState(MaritalState maritalState);
+
 	void setName(String name);
 
-	void setRg(String rg);
+	void setPhones(SortedSet<Phone> phones);
 
-//	 String getMail();
+	void setRg(String rg);
 }

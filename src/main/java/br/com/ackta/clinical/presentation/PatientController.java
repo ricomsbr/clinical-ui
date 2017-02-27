@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import br.com.ackta.clinical.business.helper.IPatientHelper;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IPatient;
+import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.Patient;
 
 /**
@@ -56,6 +57,7 @@ public class PatientController {
 	public String goToAdd(final Model model) {
 		model.addAttribute("record", new Form());
 		model.addAttribute("allGenders", Gender.values());
+		model.addAttribute("allMaritalStates", MaritalState.values());
 		model.addAttribute("page", "patient/insert");
 		return "index";
 	}
@@ -83,6 +85,7 @@ public class PatientController {
 		IPatient patient = helper.findOne(id);
 		model.addAttribute("patient", new Form(patient));
 		model.addAttribute("allGenders", Gender.values());
+		model.addAttribute("allMaritalStates", MaritalState.values());
 		model.addAttribute("page", "patient/details");
 		return "index";
 	}

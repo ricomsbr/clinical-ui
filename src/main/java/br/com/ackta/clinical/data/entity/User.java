@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Version;
 
 @Entity
@@ -89,17 +88,6 @@ public class User implements IUser {
 	@Override
 	public boolean isDeleted() {
 		return deleted;
-	}
-
-	/**
-	 * Updates a binded object.
-	 *
-	 * @param user
-	 * @return
-	 */
-	public User merge(User user) {
-		BeanUtils.copyProperties(this, user, UNMERGED_PROPERTIES);
-		return user;
 	}
 
 	@Override

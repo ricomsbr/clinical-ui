@@ -5,9 +5,13 @@ import java.time.LocalDate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import br.com.ackta.clinical.data.entity.Address;
+import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.MaritalState;
+import br.com.ackta.clinical.data.entity.PhoneType;
 
 public class Form {
 	private Long id;
@@ -20,7 +24,14 @@ public class Form {
 	private String district;
 	private String city;
 	private String complement;
-
+	private MaritalState maritalState;
+	private String mobilePhone;
+	private Integer mobileRegionalCode;
+	private String homePhone;
+	private Integer homeRegionalCode;
+	private String mail;
+	private String profession;
+	private String zipCode;
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate birthDate;
 	private Integer childrenQty;
@@ -31,12 +42,23 @@ public class Form {
 	public Form() {
 		super();
 	}
-
 	public Form(IPatient patient) {
 		this();
 		IPersonalData personalData = patient.getPersonalData();
 		BeanUtils.copyProperties(personalData, this);
-		BeanUtils.copyProperties(personalData.getAddresses().first(), this);
+		Address address = personalData.getAddresses().first();
+		BeanUtils.copyProperties(address, this);
+		address.setType(AddressType.HOME);
+		personalData.getPhones().forEach(p -> {
+			if (PhoneType.HOME.equals(p.getType())) {
+				this.setHomePhone(p.getNumber());
+				this.setHomeRegionalCode(p.getRegionalCode());
+			}
+			if (PhoneType.MOBILE.equals(p.getType())) {
+				this.setMobilePhone(p.getNumber());
+				this.setMobileRegionalCode(p.getRegionalCode());
+			}
+		});
 	}
 
 	public LocalDate getBirthDate() {
@@ -70,11 +92,35 @@ public class Form {
 		return gender;
 	}
 
+	public String getHomePhone() {
+		return homePhone;
+	}
+
+	public Integer getHomeRegionalCode() {
+		return homeRegionalCode;
+	}
+
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public MaritalState getMaritalState() {
+		return maritalState;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public Integer getMobileRegionalCode() {
+		return mobileRegionalCode;
 	}
 
 	public String getName() {
@@ -85,12 +131,20 @@ public class Form {
 		return number;
 	}
 
+	public String getProfession() {
+		return profession;
+	}
+
 	public String getPublicArea() {
 		return publicArea;
 	}
 
 	public String getRg() {
 		return rg;
+	}
+
+	public String getZipCode() {
+		return zipCode;
 	}
 
 	public void setBirthDate(LocalDate birthDate) {
@@ -128,11 +182,35 @@ public class Form {
 		this.gender = gender;
 	}
 
+	public void setHomePhone(String homePhone) {
+		this.homePhone = homePhone;
+	}
+
+	public void setHomeRegionalCode(Integer homeRegionalCode) {
+		this.homeRegionalCode = homeRegionalCode;
+	}
+
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public void setMaritalState(MaritalState maritalState) {
+		this.maritalState = maritalState;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public void setMobileRegionalCode(Integer mobileRegionalCode) {
+		this.mobileRegionalCode = mobileRegionalCode;
 	}
 
 	public void setName(String name) {
@@ -143,11 +221,18 @@ public class Form {
 		this.number = number;
 	}
 
+	public void setProfession(String profession) {
+		this.profession = profession;
+	}
+
 	public void setPublicArea(String publicArea) {
 		this.publicArea = publicArea;
 	}
 
 	public void setRg(String rg) {
 		this.rg = rg;
+	}
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 }

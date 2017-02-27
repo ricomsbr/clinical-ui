@@ -27,15 +27,6 @@ public class PersonalData implements IPersonalData {
 
 	private static final long serialVersionUID = -2383673733659048451L;
 
-//TODO	Comparator<IAddress> comparator = new Comparator<IAddress>() {
-//
-//		@Override
-//		public int compare(IAddress o1, IAddress o2) {
-//			return o1.getIndex().compareTo(o2.getIndex());
-//		}
-//
-//	};
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -63,10 +54,9 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "rg", nullable = true)
 	private String rg;
 
-//	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Address.class, mappedBy="personalData", orphanRemoval=true)
-////	@JoinTable(name="address",
-////		joinColumns={@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)}
-////TODO	)
+	@Column(name = "profession", nullable = true)
+	private String profession;
+
 	@ElementCollection(targetClass=Address.class)
 	@CollectionTable(
 	        name="Address",
@@ -75,8 +65,22 @@ public class PersonalData implements IPersonalData {
 	@OrderBy("index DESC")
 	private SortedSet<Address> addresses = new TreeSet<Address>();
 
+	@ElementCollection(targetClass=Phone.class)
+	@CollectionTable(
+	        name="Phone",
+	        joinColumns=@JoinColumn(name="personal_data_id")
+	  )
+	@OrderBy("index DESC")
+	private SortedSet<Phone> phones = new TreeSet<Phone>();
+
 	@Column(name = "children_qty", nullable = true)
 	private Integer childrenQty;
+
+	@Column(name = "mail", nullable = true)
+	private String mail;
+
+	@Column(name = "maritalState", nullable = false)
+	private MaritalState maritalState;
 
 	public PersonalData() {
 		super();
@@ -113,8 +117,27 @@ public class PersonalData implements IPersonalData {
 	}
 
 	@Override
+	public String getMail() {
+		return mail;
+	}
+
+	@Override
+	public MaritalState getMaritalState() {
+		return maritalState;
+	}
+
+	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public SortedSet<Phone> getPhones() {
+		return phones;
+	}
+
+	public String getProfession() {
+		return profession;
 	}
 
 	@Override
@@ -163,8 +186,27 @@ public class PersonalData implements IPersonalData {
 	}
 
 	@Override
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	@Override
+	public void setMaritalState(MaritalState maritalState) {
+		this.maritalState = maritalState;
+	}
+
+	@Override
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public void setPhones(SortedSet<Phone> phones) {
+		this.phones = phones;
+	}
+
+	public void setProfession(String profession) {
+		this.profession = profession;
 	}
 
 	@Override

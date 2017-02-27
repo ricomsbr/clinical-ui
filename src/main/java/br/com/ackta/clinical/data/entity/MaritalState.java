@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public enum MaritalState implements IPersistableEnum {
-	SINGLE(1L), MARRIED(2L), WIDOWER(3L), DIVORCED(4L);
+	SINGLE(1L),
+	MARRIED(2L),
+	WIDOWER(3L),
+	DIVORCED(4L);
 
 	private static final Map<Long, MaritalState> ID_TO_ENUM_MAP = new HashMap<Long, MaritalState>();
 

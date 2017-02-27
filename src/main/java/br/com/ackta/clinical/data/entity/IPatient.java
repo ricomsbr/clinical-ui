@@ -3,12 +3,11 @@ package br.com.ackta.clinical.data.entity;
 import org.springframework.beans.BeanUtils;
 
 public interface IPatient extends IPersistable {
-	static final String[] UNMERGED_PROPERTIES = { "id", "active", "version" };
 
 	IPersonalData getPersonalData();
 
 	public default IPatient merge(IPatient user) {
-		BeanUtils.copyProperties(user, this, UNMERGED_PROPERTIES);
+		BeanUtils.copyProperties(user, this, unmergedProperties);
 		return this;
 	}
 	//TODO

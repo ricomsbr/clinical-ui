@@ -51,21 +51,8 @@ public class PatientService implements IPatientService {
 	@Override
 	public Patient insert(Patient patient) {
 		validateInsert(patient);
-		IPersonalData personalData = patient.getPersonalData();
-		personalData.getAddresses();
-//		addresses.stream()
-//			.forEach(a -> a.setPersonalData(personalData));
-//		Iterable<Address> toSave = prepareAddress(addresses); //TODO
-//		addressRepository.save(addresses.stream().collect(Collectors.toList()));
 		Patient result = patientRepository.save(patient);
 		return result;
-	}
-
-	private Iterable<Address> prepareAddress(SortedSet<IAddress> addresses) {
-		@SuppressWarnings("unchecked")
-		Iterator<Address> iterator = (Iterator<Address>)(Iterator<?>) addresses.iterator();
-		Iterable<Address> toSave = Lists.newArrayList(iterator);
-		return toSave;
 	}
 
 	@Override

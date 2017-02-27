@@ -14,14 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ackta.clinical.business.service.IPatientService;
 import br.com.ackta.clinical.data.entity.Address;
+import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.entity.Phone;
+import br.com.ackta.clinical.data.entity.PhoneType;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
 @Transactional
 public class PatientHelper implements IPatientHelper {
+	private static final Integer COUNTRY_CODE = 55;
 	private IPatientService patientService;
 
 	/**
@@ -31,6 +35,19 @@ public class PatientHelper implements IPatientHelper {
 	public PatientHelper(IPatientService service) {
 		super();
 		this.patientService = service;
+	}
+
+	private void addAddress(Form form, PersonalData data) {
+		Address address = new Address(1, AddressType.HOME);
+		BeanUtils.copyProperties(form, address);
+		data.getAddresses().add(address);
+	}
+
+	private void addPhones(Form form, PersonalData data) {
+		Phone mobile = new Phone(1, PhoneType.MOBILE, COUNTRY_CODE, form.getMobileRegionalCode(), form.getMobilePhone());
+		Phone homePhone = new Phone(2, PhoneType.HOME, COUNTRY_CODE, form.getHomeRegionalCode(), form.getHomePhone());
+		data.getPhones().add(homePhone);
+		data.getPhones().add(mobile);
 	}
 
 	@Override
@@ -53,9 +70,8 @@ public class PatientHelper implements IPatientHelper {
 	public IPatient insert(Form form) {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
-		Address address = new Address();
-		BeanUtils.copyProperties(form, address);
-		data.getAddresses().add(address);
+		addAddress(form, data);
+		addPhones(form, data);
 		Patient patient = new Patient(data);
 		IPatient result = patientService.insert(patient);
 		return result;
@@ -95,9 +111,8 @@ public class PatientHelper implements IPatientHelper {
 
 		Patient patient = new Patient(data);
 		patient.setId(id);
-		Address address = new Address();
-		BeanUtils.copyProperties(form, address);
-		data.getAddresses().add(address);
+		addAddress(form, data);
+		addPhones(form, data);
 		Patient result = patientService.update(patient);
 		return result;
 	}
