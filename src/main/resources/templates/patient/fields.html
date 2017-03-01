@@ -1,12 +1,32 @@
 <script>
 $(document).ready(function(){
-	$("#homePhone").inputmask("(99) 9999-9999");
-	$("#mobilePhone").inputmask("(99) 99999-9999");
+	$("#homePhone").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
+	$("#mobilePhone").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
+	$("#responsiblePhone1").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
+	$("#responsiblePhone2").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
 	$("#zipCode").inputmask("99999-999");
 	$("#cpf").inputmask("999.999.999-99");
 
 });
 </script>
+
+<div class="row">
+	<div class="form-group col-sm-12">
+		<h4>Dados Pessoais</h4>
+	</div>
+</div>
 <div class="row">
 	<div class="form-group col-sm-8">
 		<label class="control-label">Nome *</label>
@@ -90,9 +110,6 @@ $(document).ready(function(){
 <div class="row">
 	<div class="form-group col-sm-2">
 		<label class="control-label">Telefone</label>
-		<input type="number" step="0" class="form-control" tabindex="1" maxlength="2"
-			data-th-field="*{{homeRegionalCode}}"
-			placeholder="DDD" />
 		<input id="homePhone" type="text" class="form-control" tabindex="1" maxlength="14"
 			data-th-field="*{{homePhone}}"
 			placeholder="Telefone" />
@@ -102,9 +119,6 @@ $(document).ready(function(){
 	</div>
 	<div class="form-group col-sm-2">
 		<label class="control-label">Celular</label>
-		<input type="number" step="0" class="form-control" tabindex="1" maxlength="2"
-			data-th-field="*{{mobileRegionalCode}}"
-			placeholder="DDD" />
 		<input id="mobilePhone" type="text" class="form-control" tabindex="1" maxlength="15"
 			data-th-field="*{{mobilePhone}}"
 			placeholder="Celular" />
@@ -174,8 +188,294 @@ $(document).ready(function(){
 		</div>
 	</div>
 </div>
-
-
-
-
-
+<div class="row">
+	<div class="form-group col-sm-2">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{ownConvenantMember}}"
+					placeholder="É membro da igreja?"  />
+				<strong>É membro da igreja?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-2">
+		<label class="control-label">Inscrição do SUS</label>
+		<input id="susCard" type="text" class="form-control" tabindex="1" maxlength="14"
+			data-th-field="*{{susCard}}"
+			placeholder="Inscrição do SUS"  />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<h4>Antecedentes Pessoais</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-1">
+		<label class="control-label">Peso</label>
+		<input id="weight" type="number" class="form-control" tabindex="1" maxlength="15"
+			data-th-field="*{{medicalHistory.weight}}"
+			placeholder="Peso" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<label class="control-label">Altura</label>
+		<input type="text" class="form-control" tabindex="1" maxlength="40"
+			data-th-field="*{{medicalHistory.height}}"
+			placeholder="Altura"  />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-1">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{medicalHistory.smoker}}"
+					placeholder="Fuma?"  />
+				<strong>Fuma?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<label class="control-label">Quant.</label>
+		<input id="smoker" type="number" class="form-control" tabindex="1" maxlength="2" min="0" max="99"
+			data-th-field="*{{medicalHistory.smokeFrequence}}"
+			placeholder="Quant." />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<h5>por</h5>
+	</div>
+	<div class="form-group col-sm-2">
+		<label class="control-label">Período*</label>
+		<select class="form-control" data-th-field="*{{medicalHistory.smokePeriodUnit}}" id="smokePeriodUnit" tabindex="1">
+			<option value="" ></option>
+			<option data-th-each="smokePeriodUnit : ${allPeriodUnits}" 
+  				data-th-value="${smokePeriodUnit}" 
+  				data-th-text="${smokePeriodUnit}"></option>
+			</option>
+		</select>
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-1">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{medicalHistory.drinker}}"
+					placeholder="Consome Álcool?"  />
+				<strong>Consome Álcool?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<label class="control-label">Quant.</label>
+		<input id="drinker" type="number" class="form-control" tabindex="1" maxlength="2" min="0" max="99"
+			data-th-field="*{{medicalHistory.drinkFrequence}}"
+			placeholder="Quant." />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<h5>por</h5>
+	</div>
+	<div class="form-group col-sm-2">
+		<label class="control-label">Período*</label>
+		<select class="form-control" data-th-field="*{{medicalHistory.drinkPeriodUnit}}" id="drinkPeriodUnit" tabindex="1">
+			<option value="" ></option>
+			<option data-th-each="drinkPeriodUnit : ${allPeriodUnits}" 
+  				data-th-value="${drinkPeriodUnit}" 
+  				data-th-text="${drinkPeriodUnit}"></option>
+			</option>
+		</select>
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-1">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{medicalHistory.allergic}}"
+					placeholder="Possui Alergias?"  />
+				<strong>Possui Alergias?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-11">
+		<label class="control-label">Quais?</label>
+		<input id="allergies" type="text" class="form-control" tabindex="1" maxlength="14"
+			data-th-field="*{{medicalHistory.allergies}}"
+			placeholder="Quais?" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-1">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{medicalHistory.hasDiseases}}"
+					placeholder="Doenças?"  />
+				<strong>Doenças?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-11">
+		<label class="control-label">Quais?</label>
+		<input id="diseases" type="text" class="form-control" tabindex="1" maxlength="14"
+			data-th-field="*{{medicalHistory.diseases}}"
+			placeholder="Quais?" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-1">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{medicalHistory.hasSurgeries}}"
+					placeholder="Cirurgias?"  />
+				<strong>Cirurgias?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-11">
+		<label class="control-label">Quais?</label>
+		<input id="surgeries" type="text" class="form-control" tabindex="1" maxlength="14"
+			data-th-field="*{{medicalHistory.surgeries}}"
+			placeholder="Quais?" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<h4>Antecedentes Familiares</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-2">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"
+					data-th-field="*{{motherHistory.alive}}"
+					placeholder="Está Viva?"  />
+				<strong>Está viva?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<label class="control-label">Idade</label>
+		<input id="motherAge" type="number" class="form-control" tabindex="1" maxlength="3" min="0" max="999"
+			data-th-field="*{{motherHistory.age}}"
+			placeholder="Idade" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<label class="control-label">Doenças</label>
+		<input id="fatherAge" type="text" class="form-control" tabindex="1" maxlength="3" min="0" max="999"
+			data-th-field="*{{motherHistory.diseases}}"
+			placeholder="Doenças já diagnosticadas" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<label class="control-label">Medicamentos</label>
+		<input type="text" class="form-control" tabindex="1" maxlength="2" min="0" max="99"
+			data-th-field="*{{motherHistory.medicines}}"
+			placeholder="Medicamentos em uso" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<h4>Responsáveis</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-8">
+		<label class="control-label">Responsável 1</label>
+		<input id="responsibleName1" type="text" class="form-control" tabindex="1" maxlength="255"
+			data-th-field="*{{responsibleName1}}"
+			placeholder="Responsável 1"  />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-2">
+		<label class="control-label">Telefone Responsável 1</label>
+		<input id="responsiblePhone1" type="text" class="form-control" tabindex="1" maxlength="15"
+			data-th-field="*{{responsiblePhone1}}"
+			placeholder="Telefone Responsável 1"  />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-8">
+		<label class="control-label">Responsável 2</label>
+		<input id="responsibleName2" type="text" class="form-control" tabindex="1" maxlength="255"
+			data-th-field="*{{responsibleName2}}"
+			placeholder="Responsável 2"  />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-2">
+		<label class="control-label">Telefone Responsável 2</label>
+		<input id="responsiblePhone2" type="text" class="form-control" tabindex="1" maxlength="15"
+			data-th-field="*{{responsiblePhone2}}"
+			placeholder="Telefone Responsável 2"  />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<h4>Observações Gerais</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-sm-12">
+		<textarea id="observation" class="form-control" tabindex="1" maxlength="14"
+			data-th-field="*{{observation}}"
+			placeholder="Observações gerais sobre o paciente" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+</div>

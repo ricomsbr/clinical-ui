@@ -11,7 +11,7 @@ public interface IPatientHelper {
 
 	void delete(Long id);
 
-	IPatient findOne(Long id);
+	Form findOne(Long id);
 
 	IPatient insert(Form form);
 

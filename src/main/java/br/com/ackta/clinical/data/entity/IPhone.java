@@ -19,8 +19,6 @@ public interface IPhone extends Comparable<IPhone> {
 
 	String getNumber();
 
-	Integer getRegionalCode();
-
 	PhoneType getType();
 
 	public default IPhone merge(IPhone address) {

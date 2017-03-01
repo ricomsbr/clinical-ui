@@ -5,6 +5,8 @@
  */
 package br.com.ackta.clinical.presentation;
 
+import java.time.temporal.ChronoUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import br.com.ackta.clinical.business.helper.IPatientHelper;
 import br.com.ackta.clinical.data.entity.Gender;
-import br.com.ackta.clinical.data.entity.IPatient;
+import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
+import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
 
 /**
@@ -55,9 +58,22 @@ public class PatientController {
 
 	@RequestMapping(value = "/insert", method = RequestMethod.GET)
 	public String goToAdd(final Model model) {
-		model.addAttribute("record", new Form());
+		Form form = new Form();
+		MedicalHistory medicalHistory = new MedicalHistory();
+		FamilyMemberHistoryForm motherHistory = new FamilyMemberHistoryForm();
+		motherHistory.setKinship(Kinship.MOTHER);
+		form.setMotherHistory(motherHistory);
+		FamilyMemberHistoryForm fatherHistory = new FamilyMemberHistoryForm();
+		fatherHistory.setKinship(Kinship.FATHER);
+		form.setMotherHistory(fatherHistory);
+
+		form.setMedicalHistory(medicalHistory);
+		model.addAttribute("record", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
+
+		ChronoUnit[] units = {ChronoUnit.DAYS, ChronoUnit.WEEKS, ChronoUnit.MONTHS};
+		model.addAttribute("allPeriodUnits", units );
 		model.addAttribute("page", "patient/insert");
 		return "index";
 	}
@@ -82,8 +98,8 @@ public class PatientController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String showDetails(@PathVariable Long id, final Model model) {
-		IPatient patient = helper.findOne(id);
-		model.addAttribute("patient", new Form(patient));
+		Form form = helper.findOne(id);
+		model.addAttribute("patient", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
 		model.addAttribute("page", "patient/details");

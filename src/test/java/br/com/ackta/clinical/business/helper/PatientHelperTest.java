@@ -51,9 +51,7 @@ public class PatientHelperTest {
 		form.setRg("324824-4");
 		form.setChilderQty(2);
 		form.setHomePhone("34569876");
-		form.setHomeRegionalCode(11);
 		form.setMobilePhone("998765432");
-		form.setMobileRegionalCode(12);
 		form.setProfession("professor");
 		form.setMaritalState(MaritalState.MARRIED);
 		form.setMail("joao@ackta.com.br");
@@ -85,17 +83,15 @@ public class PatientHelperTest {
 		assertThat(addresses.size()).isEqualTo(1);
 		IAddress firstAddress = addresses.first();
 		assertThat(firstAddress.getCity()).isEqualTo("Recife");
-		assertThat(firstAddress.getZipCode()).isEqualTo(55002003);
+		assertThat(firstAddress.getZipCode()).isEqualTo("55002-003");
 		Phone homePhone = personalData.getPhones().first();
 		Phone mobile = personalData.getPhones().last();
 		assertThat(homePhone.getCountryCode()).isEqualTo(55);
-		assertThat(homePhone.getRegionalCode()).isEqualTo(11);
-		assertThat(homePhone.getNumber()).isEqualTo(34569876);
+		assertThat(homePhone.getNumber()).isEqualTo("34569876");
 		assertThat(homePhone.getType()).isEqualTo(PhoneType.HOME);
 
 		assertThat(mobile.getCountryCode()).isEqualTo(55);
-		assertThat(mobile.getRegionalCode()).isEqualTo(12);
-		assertThat(mobile.getNumber()).isEqualTo(998765432);
+		assertThat(mobile.getNumber()).isEqualTo("998765432");
 		assertThat(mobile.getType()).isEqualTo(PhoneType.MOBILE);
 	}
 
@@ -119,7 +115,7 @@ public class PatientHelperTest {
 		assertThat(personalData.getMail()).isEqualTo("joao@ackta.com.br");
 		Address firstAddress = personalData.getAddresses().first();
 		assertThat(firstAddress.getCity()).isEqualTo(city2);
-		assertThat(firstAddress.getZipCode()).isEqualTo(55002003);
+		assertThat(firstAddress.getZipCode()).isEqualTo("55002-003");
 
 	}
 

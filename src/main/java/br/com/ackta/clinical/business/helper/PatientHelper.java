@@ -12,9 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ackta.clinical.business.service.IConvenantMemberService;
 import br.com.ackta.clinical.business.service.IPatientService;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
+import br.com.ackta.clinical.data.entity.Convenant;
+import br.com.ackta.clinical.data.entity.IConvenantMember;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
@@ -27,14 +30,16 @@ import br.com.ackta.clinical.presentation.Form;
 public class PatientHelper implements IPatientHelper {
 	private static final Integer COUNTRY_CODE = 55;
 	private IPatientService patientService;
+	private IConvenantMemberService convenantMemberService;
 
 	/**
 	 * @param service
 	 * @param addressRepository1
 	 */
-	public PatientHelper(IPatientService service) {
+	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1) {
 		super();
 		this.patientService = service;
+		this.convenantMemberService = convenantMemberService1;
 	}
 
 	private void addAddress(Form form, PersonalData data) {
@@ -44,8 +49,8 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	private void addPhones(Form form, PersonalData data) {
-		Phone mobile = new Phone(1, PhoneType.MOBILE, COUNTRY_CODE, form.getMobileRegionalCode(), form.getMobilePhone());
-		Phone homePhone = new Phone(2, PhoneType.HOME, COUNTRY_CODE, form.getHomeRegionalCode(), form.getHomePhone());
+		Phone mobile = new Phone(1, PhoneType.MOBILE, COUNTRY_CODE, form.getMobilePhone());
+		Phone homePhone = new Phone(2, PhoneType.HOME, COUNTRY_CODE, form.getHomePhone());
 		data.getPhones().add(homePhone);
 		data.getPhones().add(mobile);
 	}
@@ -61,9 +66,14 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	@Override
-	public Patient findOne(Long id) {
-		Optional<Patient> result = patientService.findOne(id);
-		return result.get();
+	public Form findOne(Long id) {
+		Patient patient = patientService.findOne(id).get();
+		Optional<IConvenantMember> susMember = convenantMemberService.findByConvenant(patient.getConvenantMembers(), Convenant.SUS);
+		Optional<IConvenantMember> ownMember = convenantMemberService.findByConvenant(patient.getConvenantMembers(), Convenant.OWN);
+		Boolean isOwnMember = ownMember.isPresent();
+		String susCard = susMember.isPresent() ? susMember.get().getCardNumber() : null;
+		Form result = new Form(patient, isOwnMember, susCard);
+		return result;
 	}
 
 	@Override

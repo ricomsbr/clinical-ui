@@ -6,9 +6,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Phone implements IPhone {
 
-	@Column(name = "regionalCode", nullable = false)
-	private Integer regionalCode;
-
 	@Column(name = "number", nullable = false)
 	private String number;
 
@@ -29,10 +26,9 @@ public class Phone implements IPhone {
 		super();
 	}
 
-	public Phone(Integer index1, PhoneType type, Integer countryCode, Integer regionalCode, String number) {
+	public Phone(Integer index1, PhoneType type, Integer countryCode, String number) {
 		super();
 		this.index = index1;
-		this.regionalCode = regionalCode;
 		this.number = number;
 		this.description = type.getKey();
 		this.countryCode = countryCode;
@@ -57,11 +53,6 @@ public class Phone implements IPhone {
 	@Override
 	public String getNumber() {
 		return number;
-	}
-
-	@Override
-	public Integer getRegionalCode() {
-		return regionalCode;
 	}
 
 	@Override

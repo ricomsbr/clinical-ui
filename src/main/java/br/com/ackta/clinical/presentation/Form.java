@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Gender;
+import br.com.ackta.clinical.data.entity.IFamilyMemberHistory;
+import br.com.ackta.clinical.data.entity.IMedicalHistory;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.MaritalState;
@@ -26,15 +28,23 @@ public class Form {
 	private String complement;
 	private MaritalState maritalState;
 	private String mobilePhone;
-	private Integer mobileRegionalCode;
 	private String homePhone;
-	private Integer homeRegionalCode;
 	private String mail;
 	private String profession;
 	private String zipCode;
+	private String observation;
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate birthDate;
 	private Integer childrenQty;
+	private IMedicalHistory medicalHistory;
+	private Boolean ownConvenantMember;
+	private String susCard;
+	private FamilyMemberHistoryForm motherHistory;
+	private FamilyMemberHistoryForm fatherHistory;
+	private String responsibleName1;
+	private String responsibleName2;
+	private String responsiblePhone1;
+	private String responsiblePhone2;
 
 	/**
 	 *
@@ -42,7 +52,8 @@ public class Form {
 	public Form() {
 		super();
 	}
-	public Form(IPatient patient) {
+
+	public Form(IPatient patient, Boolean isOwnConvenantMember, String susCardNumber) {
 		this();
 		IPersonalData personalData = patient.getPersonalData();
 		BeanUtils.copyProperties(personalData, this);
@@ -52,13 +63,14 @@ public class Form {
 		personalData.getPhones().forEach(p -> {
 			if (PhoneType.HOME.equals(p.getType())) {
 				this.setHomePhone(p.getNumber());
-				this.setHomeRegionalCode(p.getRegionalCode());
 			}
 			if (PhoneType.MOBILE.equals(p.getType())) {
 				this.setMobilePhone(p.getNumber());
-				this.setMobileRegionalCode(p.getRegionalCode());
 			}
 		});
+		medicalHistory = patient.getMedicalHistory();
+		this.ownConvenantMember = isOwnConvenantMember;
+		this.susCard = susCardNumber;
 	}
 
 	public LocalDate getBirthDate() {
@@ -85,6 +97,10 @@ public class Form {
 		return district;
 	}
 
+	public IFamilyMemberHistory getFatherHistory() {
+		return fatherHistory;
+	}
+
 	/**
 	 * @return the gender
 	 */
@@ -96,39 +112,41 @@ public class Form {
 		return homePhone;
 	}
 
-	public Integer getHomeRegionalCode() {
-		return homeRegionalCode;
-	}
-
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
-
 	public String getMail() {
 		return mail;
 	}
-
 	public MaritalState getMaritalState() {
 		return maritalState;
 	}
-
+	public IMedicalHistory getMedicalHistory() {
+		return medicalHistory;
+	}
 	public String getMobilePhone() {
 		return mobilePhone;
 	}
-
-	public Integer getMobileRegionalCode() {
-		return mobileRegionalCode;
+	public IFamilyMemberHistory getMotherHistory() {
+		return motherHistory;
 	}
-
 	public String getName() {
 		return name;
 	}
 
 	public String getNumber() {
 		return number;
+	}
+
+	public String getObservation() {
+		return observation;
+	}
+
+	public Boolean getOwnConvenantMember() {
+		return ownConvenantMember;
 	}
 
 	public String getProfession() {
@@ -139,8 +157,28 @@ public class Form {
 		return publicArea;
 	}
 
+	public String getResponsibleName1() {
+		return responsibleName1;
+	}
+
+	public String getResponsibleName2() {
+		return responsibleName2;
+	}
+
+	public String getResponsiblePhone1() {
+		return responsiblePhone1;
+	}
+
+	public String getResponsiblePhone2() {
+		return responsiblePhone2;
+	}
+
 	public String getRg() {
 		return rg;
+	}
+
+	public String getSusCard() {
+		return susCard;
 	}
 
 	public String getZipCode() {
@@ -175,6 +213,10 @@ public class Form {
 		this.district = district;
 	}
 
+	public void setFatherHistory(FamilyMemberHistoryForm fatherHistory) {
+		this.fatherHistory = fatherHistory;
+	}
+
 	/**
 	 * @param gender the gender to set
 	 */
@@ -184,10 +226,6 @@ public class Form {
 
 	public void setHomePhone(String homePhone) {
 		this.homePhone = homePhone;
-	}
-
-	public void setHomeRegionalCode(Integer homeRegionalCode) {
-		this.homeRegionalCode = homeRegionalCode;
 	}
 
 	/**
@@ -205,12 +243,16 @@ public class Form {
 		this.maritalState = maritalState;
 	}
 
+	public void setMedicalHistory(IMedicalHistory medicalHistory) {
+		this.medicalHistory = medicalHistory;
+	}
+
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
 	}
 
-	public void setMobileRegionalCode(Integer mobileRegionalCode) {
-		this.mobileRegionalCode = mobileRegionalCode;
+	public void setMotherHistory(FamilyMemberHistoryForm motherHistory) {
+		this.motherHistory = motherHistory;
 	}
 
 	public void setName(String name) {
@@ -221,6 +263,14 @@ public class Form {
 		this.number = number;
 	}
 
+	public void setObservation(String observation) {
+		this.observation = observation;
+	}
+
+	public void setOwnConvenantMember(Boolean ownConvenantMember) {
+		this.ownConvenantMember = ownConvenantMember;
+	}
+
 	public void setProfession(String profession) {
 		this.profession = profession;
 	}
@@ -229,9 +279,29 @@ public class Form {
 		this.publicArea = publicArea;
 	}
 
+	public void setResponsibleName1(String responsibleName1) {
+		this.responsibleName1 = responsibleName1;
+	}
+
+	public void setResponsibleName2(String responsibleName2) {
+		this.responsibleName2 = responsibleName2;
+	}
+	public void setResponsiblePhone1(String responsiblePhone1) {
+		this.responsiblePhone1 = responsiblePhone1;
+	}
+
+	public void setResponsiblePhone2(String responsiblePhone2) {
+		this.responsiblePhone2 = responsiblePhone2;
+	}
+
 	public void setRg(String rg) {
 		this.rg = rg;
 	}
+
+	public void setSusCard(String susCard) {
+		this.susCard = susCard;
+	}
+
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
