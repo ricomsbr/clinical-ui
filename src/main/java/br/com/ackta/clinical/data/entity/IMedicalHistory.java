@@ -21,4 +21,5 @@ public interface IMedicalHistory {
 	Boolean getSmoker();
 	String getSurgeries();
 	Double getWeight();
+	void setFamilyHistory(IFamilyHistory familyHistory);
 }

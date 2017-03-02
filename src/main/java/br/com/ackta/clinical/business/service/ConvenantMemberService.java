@@ -16,7 +16,7 @@ public class ConvenantMemberService implements IConvenantMemberService {
 	@Override
 	public Optional<IConvenantMember> findByConvenant(List<IConvenantMember> convenantMembers, Convenant convenant) {
 		Optional<IConvenantMember> result = convenantMembers.stream()
-			.filter(c -> c.getConvenantKey().equals(convenant))
+			.filter(c -> c.getConvenant().equals(convenant))
 			.findAny();
 		return result;
 	}

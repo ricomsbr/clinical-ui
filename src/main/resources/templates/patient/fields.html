@@ -110,7 +110,7 @@ $(document).ready(function(){
 <div class="row">
 	<div class="form-group col-sm-2">
 		<label class="control-label">Telefone</label>
-		<input id="homePhone" type="text" class="form-control" tabindex="1" maxlength="14"
+		<input id="homePhone" type="text" class="form-control" tabindex="1" maxlength="15"
 			data-th-field="*{{homePhone}}"
 			placeholder="Telefone" />
 		<div class="help-block">
@@ -192,8 +192,8 @@ $(document).ready(function(){
 	<div class="form-group col-sm-2">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
-					data-th-field="*{{ownConvenantMember}}"
+				<input type="checkbox" tabindex="1" 
+					data-th-field="*{{isMember}}"
 					placeholder="É membro da igreja?"  />
 				<strong>É membro da igreja?</strong>
 			</label>
@@ -217,7 +217,7 @@ $(document).ready(function(){
 <div class="row">
 	<div class="form-group col-sm-1">
 		<label class="control-label">Peso</label>
-		<input id="weight" type="number" class="form-control" tabindex="1" maxlength="15"
+		<input id="weight" type="number" class="form-control" tabindex="1" maxlength="3" min="1" max="400"
 			data-th-field="*{{medicalHistory.weight}}"
 			placeholder="Peso" />
 		<div class="help-block">
@@ -226,9 +226,9 @@ $(document).ready(function(){
 	</div>
 	<div class="form-group col-sm-1">
 		<label class="control-label">Altura</label>
-		<input type="text" class="form-control" tabindex="1" maxlength="40"
+		<input type="number" class="form-control" tabindex="1" maxlength="3" min="1" max="300"
 			data-th-field="*{{medicalHistory.height}}"
-			placeholder="Altura"  />
+			placeholder="Altura"  />cm
 		<div class="help-block">
 			<span id="message"></span>
 		</div>
@@ -238,7 +238,7 @@ $(document).ready(function(){
 	<div class="form-group col-sm-1">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
+				<input type="checkbox" tabindex="1" 
 					data-th-field="*{{medicalHistory.smoker}}"
 					placeholder="Fuma?"  />
 				<strong>Fuma?</strong>
@@ -257,7 +257,7 @@ $(document).ready(function(){
 	<div class="form-group col-sm-1">
 		<h5>por</h5>
 	</div>
-	<div class="form-group col-sm-2">
+	<!--div class="form-group col-sm-2">
 		<label class="control-label">Período*</label>
 		<select class="form-control" data-th-field="*{{medicalHistory.smokePeriodUnit}}" id="smokePeriodUnit" tabindex="1">
 			<option value="" ></option>
@@ -269,13 +269,13 @@ $(document).ready(function(){
 		<div class="help-block">
 			<span id="message"></span>
 		</div>
-	</div>
+	</div-->
 </div>
 <div class="row">
 	<div class="form-group col-sm-1">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
+				<input type="checkbox" tabindex="1" 
 					data-th-field="*{{medicalHistory.drinker}}"
 					placeholder="Consome Álcool?"  />
 				<strong>Consome Álcool?</strong>
@@ -294,7 +294,7 @@ $(document).ready(function(){
 	<div class="form-group col-sm-1">
 		<h5>por</h5>
 	</div>
-	<div class="form-group col-sm-2">
+	<!--div class="form-group col-sm-2">
 		<label class="control-label">Período*</label>
 		<select class="form-control" data-th-field="*{{medicalHistory.drinkPeriodUnit}}" id="drinkPeriodUnit" tabindex="1">
 			<option value="" ></option>
@@ -306,13 +306,13 @@ $(document).ready(function(){
 		<div class="help-block">
 			<span id="message"></span>
 		</div>
-	</div>
+	</div-->
 </div>
 <div class="row">
 	<div class="form-group col-sm-1">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
+				<input type="checkbox" tabindex="1" 
 					data-th-field="*{{medicalHistory.allergic}}"
 					placeholder="Possui Alergias?"  />
 				<strong>Possui Alergias?</strong>
@@ -333,7 +333,7 @@ $(document).ready(function(){
 	<div class="form-group col-sm-1">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
+				<input type="checkbox" tabindex="1" 
 					data-th-field="*{{medicalHistory.hasDiseases}}"
 					placeholder="Doenças?"  />
 				<strong>Doenças?</strong>
@@ -354,7 +354,7 @@ $(document).ready(function(){
 	<div class="form-group col-sm-1">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
+				<input type="checkbox" tabindex="1" 
 					data-th-field="*{{medicalHistory.hasSurgeries}}"
 					placeholder="Cirurgias?"  />
 				<strong>Cirurgias?</strong>
@@ -380,10 +380,9 @@ $(document).ready(function(){
 	<div class="form-group col-sm-2">
 		<div class="checkbox">
 			<label>
-				<input type="checkbox"
-					data-th-field="*{{motherHistory.alive}}"
-					placeholder="Está Viva?"  />
-				<strong>Está viva?</strong>
+				<input type="checkbox" tabindex="1" 
+					data-th-field="*{{motherHistory.alive}}"/>
+				<strong>Mãe está Viva?</strong>
 			</label>
 		</div>
 	</div>
@@ -396,23 +395,57 @@ $(document).ready(function(){
 			<span id="message"></span>
 		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="form-group col-sm-12">
+	<div class="form-group col-sm-4">
 		<label class="control-label">Doenças</label>
-		<input id="fatherAge" type="text" class="form-control" tabindex="1" maxlength="3" min="0" max="999"
+		<input id="fatherDiseases" type="text" class="form-control" tabindex="1" maxlength="255"
 			data-th-field="*{{motherHistory.diseases}}"
 			placeholder="Doenças já diagnosticadas" />
 		<div class="help-block">
 			<span id="message"></span>
 		</div>
 	</div>
+	<div class="form-group col-sm-4">
+		<label class="control-label">Medicamentos</label>
+		<input type="text" class="form-control" tabindex="1" maxlength="255"
+			data-th-field="*{{motherHistory.medicines}}"
+			placeholder="Medicamentos em uso" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
 </div>
 <div class="row">
-	<div class="form-group col-sm-12">
+	<div class="form-group col-sm-2">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" tabindex="1" 
+					data-th-field="*{{fatherHistory.alive}}"/>
+				<strong>Pai está vivo?</strong>
+			</label>
+		</div>
+	</div>
+	<div class="form-group col-sm-1">
+		<label class="control-label">Idade</label>
+		<input id="fatherAge" type="number" class="form-control" tabindex="1" maxlength="3" min="0" max="999"
+			data-th-field="*{{fatherHistory.age}}"
+			placeholder="Idade" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-4">
+		<label class="control-label">Doenças</label>
+		<input id="fatherDiseases" type="text" class="form-control" tabindex="1" maxlength="255"
+			data-th-field="*{{fatherHistory.diseases}}"
+			placeholder="Doenças já diagnosticadas" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
+	<div class="form-group col-sm-4	">
 		<label class="control-label">Medicamentos</label>
-		<input type="text" class="form-control" tabindex="1" maxlength="2" min="0" max="99"
-			data-th-field="*{{motherHistory.medicines}}"
+		<input type="text" class="form-control" tabindex="1" maxlength="255"
+			data-th-field="*{{fatherHistory.medicines}}"
 			placeholder="Medicamentos em uso" />
 		<div class="help-block">
 			<span id="message"></span>
@@ -471,7 +504,7 @@ $(document).ready(function(){
 </div>
 <div class="row">
 	<div class="form-group col-sm-12">
-		<textarea id="observation" class="form-control" tabindex="1" maxlength="14"
+		<textarea id="observation" class="form-control" tabindex="1" maxlength="2000"
 			data-th-field="*{{observation}}"
 			placeholder="Observações gerais sobre o paciente" />
 		<div class="help-block">

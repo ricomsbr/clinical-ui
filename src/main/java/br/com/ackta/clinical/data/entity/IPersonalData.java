@@ -7,6 +7,8 @@ import org.springframework.beans.BeanUtils;
 
 public interface IPersonalData extends IPersistable {
 
+	void addPhone(Phone phones);
+
 	SortedSet<Address> getAddresses();
 
 	LocalDate getBirthDate();
@@ -48,8 +50,6 @@ public interface IPersonalData extends IPersistable {
 	void setMaritalState(MaritalState maritalState);
 
 	void setName(String name);
-
-	void setPhones(SortedSet<Phone> phones);
 
 	void setRg(String rg);
 }

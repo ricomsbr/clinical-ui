@@ -42,7 +42,7 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
-	@Column(name = "birth_dt", nullable = false)
+	@Column(name = "birth_dt", nullable = true)
 	private LocalDate birthDate;
 
 	@Column(name = "gender_id", nullable = true)
@@ -79,11 +79,16 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "mail", nullable = true)
 	private String mail;
 
-	@Column(name = "maritalState", nullable = false)
+	@Column(name = "maritalState", nullable = true)
 	private MaritalState maritalState;
 
 	public PersonalData() {
 		super();
+	}
+
+	@Override
+	public void addPhone(Phone phone) {
+		this.phones.add(phone);
 	}
 
 	@Override
@@ -198,11 +203,6 @@ public class PersonalData implements IPersonalData {
 	@Override
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Override
-	public void setPhones(SortedSet<Phone> phones) {
-		this.phones = phones;
 	}
 
 	public void setProfession(String profession) {

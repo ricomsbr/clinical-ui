@@ -1,5 +1,7 @@
 package br.com.ackta.clinical.data.entity;
 
+import java.time.Year;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -19,7 +21,7 @@ public class FamilyMemberHistory implements IFamilyMemberHistory {
 	private Boolean alive = true;
 
 	@Column(name = "birth_year", nullable= true)
-	private Integer birthYear;
+	private Year birthYear;
 
 	public FamilyMemberHistory() {
 		super();
@@ -31,7 +33,7 @@ public class FamilyMemberHistory implements IFamilyMemberHistory {
 	}
 
 	@Override
-	public Integer getBirthYear() {
+	public Year getBirthYear() {
 		return birthYear;
 	}
 
@@ -54,8 +56,9 @@ public class FamilyMemberHistory implements IFamilyMemberHistory {
 		this.alive = alive;
 	}
 
-	public void setBirthYear(Integer birthYear) {
-		this.birthYear = birthYear;
+	@Override
+	public void setBirthYear(Year i) {
+		this.birthYear = i;
 	}
 
 	public void setDiseases(String diseases) {

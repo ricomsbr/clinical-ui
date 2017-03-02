@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.assertj.core.util.Lists;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -70,8 +71,14 @@ public class Patient implements IPatient {
 	}
 
 	public Patient(IPersonalData personalData) {
+		this(personalData, Lists.newArrayList(), Lists.newArrayList());
+	}
+
+	public Patient(IPersonalData personalData, List<IConvenantMember> convenantMembers, List<IPersonalData> responsibles) {
 		this();
 		this.personalData = personalData;
+		this.convenantMembers = convenantMembers;
+		this.responsibles = responsibles;
 	}
 
 	@Override

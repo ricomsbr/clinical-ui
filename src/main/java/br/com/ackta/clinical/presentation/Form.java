@@ -8,11 +8,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Gender;
-import br.com.ackta.clinical.data.entity.IFamilyMemberHistory;
 import br.com.ackta.clinical.data.entity.IMedicalHistory;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.MaritalState;
+import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.PhoneType;
 
 public class Form {
@@ -36,8 +36,8 @@ public class Form {
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate birthDate;
 	private Integer childrenQty;
-	private IMedicalHistory medicalHistory;
-	private Boolean ownConvenantMember;
+	private MedicalHistory medicalHistory;
+	private Boolean isMember;
 	private String susCard;
 	private FamilyMemberHistoryForm motherHistory;
 	private FamilyMemberHistoryForm fatherHistory;
@@ -53,7 +53,7 @@ public class Form {
 		super();
 	}
 
-	public Form(IPatient patient, Boolean isOwnConvenantMember, String susCardNumber) {
+	public Form(IPatient patient, Boolean isMember, String susCardNumber) {
 		this();
 		IPersonalData personalData = patient.getPersonalData();
 		BeanUtils.copyProperties(personalData, this);
@@ -68,8 +68,8 @@ public class Form {
 				this.setMobilePhone(p.getNumber());
 			}
 		});
-		medicalHistory = patient.getMedicalHistory();
-		this.ownConvenantMember = isOwnConvenantMember;
+		medicalHistory = (MedicalHistory) patient.getMedicalHistory();
+		this.isMember = isMember;
 		this.susCard = susCardNumber;
 	}
 
@@ -97,7 +97,7 @@ public class Form {
 		return district;
 	}
 
-	public IFamilyMemberHistory getFatherHistory() {
+	public FamilyMemberHistoryForm getFatherHistory() {
 		return fatherHistory;
 	}
 
@@ -118,6 +118,10 @@ public class Form {
 	public Long getId() {
 		return id;
 	}
+
+	public Boolean getIsMember() {
+		return isMember;
+	}
 	public String getMail() {
 		return mail;
 	}
@@ -130,7 +134,7 @@ public class Form {
 	public String getMobilePhone() {
 		return mobilePhone;
 	}
-	public IFamilyMemberHistory getMotherHistory() {
+	public FamilyMemberHistoryForm getMotherHistory() {
 		return motherHistory;
 	}
 	public String getName() {
@@ -143,10 +147,6 @@ public class Form {
 
 	public String getObservation() {
 		return observation;
-	}
-
-	public Boolean getOwnConvenantMember() {
-		return ownConvenantMember;
 	}
 
 	public String getProfession() {
@@ -235,6 +235,10 @@ public class Form {
 		this.id = id;
 	}
 
+	public void setIsMember(Boolean isMember) {
+		this.isMember = isMember;
+	}
+
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
@@ -243,7 +247,7 @@ public class Form {
 		this.maritalState = maritalState;
 	}
 
-	public void setMedicalHistory(IMedicalHistory medicalHistory) {
+	public void setMedicalHistory(MedicalHistory medicalHistory) {
 		this.medicalHistory = medicalHistory;
 	}
 
@@ -265,10 +269,6 @@ public class Form {
 
 	public void setObservation(String observation) {
 		this.observation = observation;
-	}
-
-	public void setOwnConvenantMember(Boolean ownConvenantMember) {
-		this.ownConvenantMember = ownConvenantMember;
 	}
 
 	public void setProfession(String profession) {

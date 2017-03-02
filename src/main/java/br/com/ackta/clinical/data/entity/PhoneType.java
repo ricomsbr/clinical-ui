@@ -6,7 +6,8 @@ import java.util.Objects;
 
 public enum PhoneType implements IPersistableEnum {
 	HOME(1L, "home"),
-	MOBILE(2L, "mobile");
+	MOBILE(2L, "mobile"),
+	GENERAL(3L, "general");
 
 	private static final Map<Long, PhoneType> ID_TO_ENUM_MAP = new HashMap<Long, PhoneType>();
 

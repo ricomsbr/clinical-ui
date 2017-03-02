@@ -9,11 +9,16 @@ public class ConvenantMember implements IConvenantMember {
 	@Column(name = "card_number", nullable = true)
 	private String cardNumber;
 
-	@Column(name = "convenant_key", nullable = false)
-	private String convenantKey;
+	@Column(name = "convenant", nullable = false)
+	private Convenant convenant;
 
 	public ConvenantMember() {
 		super();
+	}
+
+	public ConvenantMember(Convenant convenant1) {
+		super();
+		this.convenant = convenant1;
 	}
 
 	@Override
@@ -22,8 +27,13 @@ public class ConvenantMember implements IConvenantMember {
 	}
 
 	@Override
-	public String getConvenantKey() {
-		return convenantKey;
+	public Convenant getConvenant() {
+		return convenant;
+	}
+
+	@Override
+	public void setCardNumber(String cardNumber1) {
+		cardNumber = cardNumber1;
 	}
 
 }
