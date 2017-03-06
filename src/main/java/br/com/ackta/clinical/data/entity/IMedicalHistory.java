@@ -11,7 +11,7 @@ public interface IMedicalHistory {
 	Boolean getDrinker();
 	Integer getDrinkFrequence();
 	ChronoUnit getDrinkPeriodUnit();
-	IFamilyHistory getFamilyHistory();
+	FamilyHistory getFamilyHistory();
 	Boolean getHasDiseases();
 	Boolean getHasSurgeries();
 	Double getHeight();
@@ -21,5 +21,5 @@ public interface IMedicalHistory {
 	Boolean getSmoker();
 	String getSurgeries();
 	Double getWeight();
-	void setFamilyHistory(IFamilyHistory familyHistory);
+	void setFamilyHistory(FamilyHistory familyHistory);
 }

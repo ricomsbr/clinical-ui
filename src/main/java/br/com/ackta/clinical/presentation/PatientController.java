@@ -58,6 +58,7 @@ public class PatientController {
 
 	@RequestMapping(value = "/insert", method = RequestMethod.GET)
 	public String goToAdd(final Model model) {
+		LOGGER.info("Method goToAdd initialized");
 		Form form = new Form();
 		MedicalHistory medicalHistory = new MedicalHistory();
 		FamilyMemberHistoryForm motherHistory = new FamilyMemberHistoryForm();
@@ -98,6 +99,7 @@ public class PatientController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String showDetails(@PathVariable Long id, final Model model) {
+		LOGGER.info("Method showDetails initialized for id = %1s.", id);
 		Form form = helper.findOne(id);
 		model.addAttribute("patient", form);
 		model.addAttribute("allGenders", Gender.values());

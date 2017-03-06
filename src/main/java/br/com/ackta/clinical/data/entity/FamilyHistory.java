@@ -11,19 +11,19 @@ import org.assertj.core.util.Lists;
 public class FamilyHistory implements IFamilyHistory {
 
 	@Embedded
-	private List<IFamilyMemberHistory> memberHistories = Lists.newArrayList();
+	private List<FamilyMemberHistory> memberHistories = Lists.newArrayList();
 
 	public FamilyHistory() {
 		super();
 	}
 
 	@Override
-	public void addMemberHistories(IFamilyMemberHistory memberHistory) {
+	public void addMemberHistories(FamilyMemberHistory memberHistory) {
 		memberHistories.add(memberHistory);
 	}
 
 	@Override
-	public List<IFamilyMemberHistory> getMemberHistories() {
+	public List<FamilyMemberHistory> getMemberHistories() {
 		return memberHistories;
 	}
 

@@ -1,10 +1,26 @@
 package br.com.ackta.clinical.data.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import java.io.Serializable;
 
-@Embeddable
-public class Phone implements IPhone {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "phone")
+public class Phone implements IPhone, Serializable {
+
+	private static final long serialVersionUID = -238364325324238451L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Long id;
 
 	@Column(name = "number", nullable = false)
 	private String number;
@@ -21,6 +37,9 @@ public class Phone implements IPhone {
 	@Column(name = "type", nullable = false)
 	private PhoneType type;
 
+	@ManyToOne(targetEntity=PersonalData.class)
+	@JoinColumn(nullable=true)
+	private IPersonalData personalData;
 
 	public Phone() {
 		super();
@@ -45,6 +64,10 @@ public class Phone implements IPhone {
 		return description;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	@Override
 	public Integer getIndex() {
 		return index;
@@ -58,5 +81,9 @@ public class Phone implements IPhone {
 	@Override
 	public PhoneType getType() {
 		return type;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

@@ -3,7 +3,7 @@ package br.com.ackta.clinical.data.entity;
 import java.util.List;
 
 public interface IFamilyHistory {
-	void addMemberHistories(IFamilyMemberHistory memberHistory);
+	void addMemberHistories(FamilyMemberHistory memberHistory);
 
-	List<IFamilyMemberHistory> getMemberHistories();
+	List<FamilyMemberHistory> getMemberHistories();
 }

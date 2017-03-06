@@ -1,10 +1,26 @@
 package br.com.ackta.clinical.data.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import java.io.Serializable;
 
-@Embeddable
-public class Address implements IAddress {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "address")
+public class Address implements IAddress, Serializable {
+
+	private static final long serialVersionUID = -238367373324238451L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Long id;
 
 	@Column(name = "publicArea", nullable = true)
 	private String publicArea;
@@ -32,6 +48,10 @@ public class Address implements IAddress {
 
 	@Column(name = "type", nullable = false)
 	private AddressType type;
+
+	@ManyToOne(targetEntity=PersonalData.class)
+	@JoinColumn(nullable=true)
+	private IPersonalData personalData;
 
 	public Address() {
 		super();
@@ -61,6 +81,10 @@ public class Address implements IAddress {
 	@Override
 	public String getDistrict() {
 		return district;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	@Override
@@ -104,6 +128,10 @@ public class Address implements IAddress {
 		this.district = district;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public void setIndex(Integer index) {
 		this.index = index;
 	}
@@ -115,6 +143,7 @@ public class Address implements IAddress {
 	public void setPublicArea(String publicArea) {
 		this.publicArea = publicArea;
 	}
+
 
 	public void setType(AddressType type) {
 		this.type = type;

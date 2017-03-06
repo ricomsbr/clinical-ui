@@ -6,22 +6,19 @@ import org.springframework.beans.BeanUtils;
 
 public interface IPatient extends IPersistable {
 
-	List<IConvenantMember> getConvenantMembers();
+	List<ConvenantMember> getConvenantMembers();
 
-	IMedicalHistory getMedicalHistory();
+	MedicalHistory getMedicalHistory();
 
 	String getObservation();
 
-	IPersonalData getPersonalData();
+	PersonalData getPersonalData();
 
-	List<IPersonalData> getResponsibles();
+	List<PersonalData> getResponsibles();
 
 	public default IPatient merge(IPatient user) {
 		BeanUtils.copyProperties(user, this, unmergedProperties);
 		return this;
 	}
-
-	//TODO
-	// List<IConsult> getConsults();
 
 }

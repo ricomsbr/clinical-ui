@@ -1,12 +1,12 @@
 package br.com.ackta.clinical.presentation;
 
 import java.time.LocalDate;
+import java.util.SortedSet;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import br.com.ackta.clinical.data.entity.Address;
-import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IMedicalHistory;
 import br.com.ackta.clinical.data.entity.IPatient;
@@ -57,9 +57,11 @@ public class Form {
 		this();
 		IPersonalData personalData = patient.getPersonalData();
 		BeanUtils.copyProperties(personalData, this);
-		Address address = personalData.getAddresses().first();
-		BeanUtils.copyProperties(address, this);
-		address.setType(AddressType.HOME);
+		SortedSet<Address> addresses = personalData.getAddresses();
+		if(!addresses.isEmpty()) {
+			Address address = addresses.first();
+			BeanUtils.copyProperties(address, this);
+		}
 		personalData.getPhones().forEach(p -> {
 			if (PhoneType.HOME.equals(p.getType())) {
 				this.setHomePhone(p.getNumber());
@@ -187,10 +189,6 @@ public class Form {
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
-	}
-
-	public void setChilderQty(int i) {
-		childrenQty = i;
 	}
 
 	public void setChildrenQty(Integer childrenQty) {

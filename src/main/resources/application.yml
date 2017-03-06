@@ -45,14 +45,14 @@ spring:
 ---
 
 spring:
-  profiles: homolog
+  profiles: development
   jpa: 
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
     generate-ddl: false
     hibernate.ddl-auto: none
   datasource:
-    url: jdbc:h2:~/clinical;INIT=create schema if not exists Queue;
+    url: jdbc:h2:~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
     username: rmendonca
     password: a1s2d3f4
     driver-class-name: org.h2.Driver
@@ -61,6 +61,25 @@ spring:
       max-active: 5
       min-idle: 1   
   
+---
+
+spring:
+  profiles: homolog
+  jpa: 
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    generate-ddl: false
+    hibernate.ddl-auto: none
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
+    username: rmendonca
+    password: a1s2d3f4
+    driver-class-name: org.h2.Driver
+    tomcat:
+      validation-query: select 1 
+      max-active: 5
+      min-idle: 1
+     
 ---
 
 spring:

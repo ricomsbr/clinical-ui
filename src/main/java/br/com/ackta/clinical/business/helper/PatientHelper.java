@@ -16,8 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ackta.clinical.business.service.IAddressService;
 import br.com.ackta.clinical.business.service.IConvenantMemberService;
 import br.com.ackta.clinical.business.service.IPatientService;
+import br.com.ackta.clinical.business.service.IPhoneService;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Convenant;
@@ -25,11 +27,9 @@ import br.com.ackta.clinical.data.entity.ConvenantMember;
 import br.com.ackta.clinical.data.entity.FamilyHistory;
 import br.com.ackta.clinical.data.entity.FamilyMemberHistory;
 import br.com.ackta.clinical.data.entity.IConvenantMember;
-import br.com.ackta.clinical.data.entity.IFamilyHistory;
-import br.com.ackta.clinical.data.entity.IFamilyMemberHistory;
-import br.com.ackta.clinical.data.entity.IMedicalHistory;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.entity.Phone;
@@ -42,28 +42,34 @@ public class PatientHelper implements IPatientHelper {
 	private static final Integer COUNTRY_CODE = 55;
 	private IPatientService patientService;
 	private IConvenantMemberService convenantMemberService;
+	private IAddressService addressService;
+	private IPhoneService phoneService;
 
 	/**
 	 * @param service
+	 * @param addressService1
+	 * @param phoneService1
 	 * @param addressRepository1
 	 */
-	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1) {
+	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1, IAddressService addressService1, IPhoneService phoneService1) {
 		super();
 		this.patientService = service;
 		this.convenantMemberService = convenantMemberService1;
+		this.addressService = addressService1;
+		this.phoneService = phoneService1;
 	}
 
 	private void addAddress(Form form, PersonalData data) {
 		Address address = new Address(1, AddressType.HOME);
 		BeanUtils.copyProperties(form, address);
-		data.getAddresses().add(address);
+		data.getAddresses().add(addressService.insert(address));
 	}
 
 	private void addPhones(Form form, PersonalData data) {
 		Phone mobile = new Phone(1, PhoneType.MOBILE, COUNTRY_CODE, form.getMobilePhone());
 		Phone homePhone = new Phone(2, PhoneType.HOME, COUNTRY_CODE, form.getHomePhone());
-		data.addPhone(homePhone);
-		data.addPhone(mobile);
+		data.addPhone(phoneService.insert(homePhone));
+		data.addPhone(phoneService.insert(mobile));
 	}
 
 	private IPersonalData createResponsible(Form form, String respName, String respPhone) {
@@ -71,7 +77,8 @@ public class PatientHelper implements IPatientHelper {
 		if (!respName.isEmpty()) {
 			result.setName(respName);
 			if (!respPhone.isEmpty()) {
-				result.addPhone(new Phone(1, PhoneType.GENERAL, COUNTRY_CODE, form.getMobilePhone()));
+				Phone phone = new Phone(1, PhoneType.GENERAL, COUNTRY_CODE, respPhone);
+				result.addPhone(phoneService.insert(phone));
 			}
 		}
 		return result;
@@ -84,30 +91,30 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 
-	private List<IConvenantMember> extractConvenantMembers(Form form) {
-		List<IConvenantMember> result = Lists.newArrayList();
+	private List<ConvenantMember> extractConvenantMembers(Form form) {
+		List<ConvenantMember> result = Lists.newArrayList();
 		if (form.getIsMember()) {
-			IConvenantMember ownMember = new ConvenantMember(Convenant.OWN);
+			ConvenantMember ownMember = new ConvenantMember(Convenant.OWN);
 			result.add(ownMember);
 		}
 		String susCard = form.getSusCard();
 		if (!susCard.isEmpty()) {
-			IConvenantMember susMember = new ConvenantMember(Convenant.SUS);
+			ConvenantMember susMember = new ConvenantMember(Convenant.SUS);
 			susMember.setCardNumber(susCard);
 			result.add(susMember);
 		}
 		return result;
 	}
 
-	private IFamilyHistory extractFamilyHistory(Form form) {
-		IFamilyHistory result = new FamilyHistory();
-		IFamilyMemberHistory motherHistory = new FamilyMemberHistory();
+	private FamilyHistory extractFamilyHistory(Form form) {
+		FamilyHistory result = new FamilyHistory();
+		FamilyMemberHistory motherHistory = new FamilyMemberHistory();
 		BeanUtils.copyProperties(form.getMotherHistory(), motherHistory);
 		if (Objects.nonNull(form.getMotherHistory().getAge())) {
 			motherHistory.setBirthYear(Year.now().minusYears(form.getMotherHistory().getAge()));
 		}
 		result.addMemberHistories(motherHistory);
-		IFamilyMemberHistory fatherHistory = new FamilyMemberHistory();
+		FamilyMemberHistory fatherHistory = new FamilyMemberHistory();
 		BeanUtils.copyProperties(form.getFatherHistory(), fatherHistory);
 		if (Objects.nonNull(form.getFatherHistory().getAge())) {
 			fatherHistory.setBirthYear(Year.now().minusYears(form.getFatherHistory().getAge()));
@@ -147,7 +154,7 @@ public class PatientHelper implements IPatientHelper {
 		addPhones(form, data);
 		Patient patient = new Patient(data, extractConvenantMembers(form), extractResponsibles(form));
 		patient.setObservation(form.getObservation());
-		IMedicalHistory medicalHistory = form.getMedicalHistory();
+		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
 		medicalHistory.setFamilyHistory(extractFamilyHistory(form));
 		patient.setMedicalHistory(medicalHistory);
 		IPatient result = patientService.insert(patient);

@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
+import org.springframework.beans.BeanUtils;
+
 @Embeddable
 public class MedicalHistory implements IMedicalHistory {
 
@@ -59,10 +61,16 @@ public class MedicalHistory implements IMedicalHistory {
 	private String medicines;
 
 	@Embedded
-	private IFamilyHistory familyHistory;
+	private FamilyHistory familyHistory;
 
 	public MedicalHistory() {
 		super();
+		this.date = LocalDate.now();
+	}
+
+	public MedicalHistory(IMedicalHistory medicalHistory) {
+		this();
+		BeanUtils.copyProperties(medicalHistory, this);
 	}
 
 	@Override
@@ -101,7 +109,7 @@ public class MedicalHistory implements IMedicalHistory {
 	}
 
 	@Override
-	public IFamilyHistory getFamilyHistory() {
+	public FamilyHistory getFamilyHistory() {
 		return familyHistory;
 	}
 
@@ -154,6 +162,10 @@ public class MedicalHistory implements IMedicalHistory {
 		this.allergic = allergic;
 	}
 
+	public void setAllergies(String allergies) {
+		this.allergies = allergies;
+	}
+
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
@@ -174,7 +186,8 @@ public class MedicalHistory implements IMedicalHistory {
 		this.drinkPeriodUnit = drinkPeriodUnit;
 	}
 
-	public void setFamilyHistory(IFamilyHistory familyHistory) {
+	@Override
+	public void setFamilyHistory(FamilyHistory familyHistory) {
 		this.familyHistory = familyHistory;
 	}
 
@@ -188,6 +201,10 @@ public class MedicalHistory implements IMedicalHistory {
 
 	public void setHeight(Double height) {
 		this.height = height;
+	}
+
+	public void setMedicines(String medicines) {
+		this.medicines = medicines;
 	}
 
 	public void setSmokeFrequence(Integer smokeFrequence) {

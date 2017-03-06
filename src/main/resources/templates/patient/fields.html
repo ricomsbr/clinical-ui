@@ -79,6 +79,15 @@ $(document).ready(function(){
 			<span id="message"></span>
 		</div>
 	</div>
+	<div class="form-group col-sm-4">
+		<label class="control-label">Complemento</label>
+		<input type="text" class="form-control" tabindex="1" maxlength="255"
+			data-th-field="*{{complement}}"
+			placeholder="Complemento" />
+		<div class="help-block">
+			<span id="message"></span>
+		</div>
+	</div>
 	<div class="form-group col-sm-2">
 		<label class="control-label">Bairro</label>
 		<input type="text" class="form-control" tabindex="1" maxlength="60"
@@ -97,6 +106,8 @@ $(document).ready(function(){
 			<span id="message"></span>
 		</div>
 	</div>
+</div>
+<div class="row">
 	<div class="form-group col-sm-2">
 		<label class="control-label">CEP</label>
 		<input id="zipCode" type="text" class="form-control" tabindex="1" maxlength="9"
@@ -106,8 +117,6 @@ $(document).ready(function(){
 			<span id="message"></span>
 		</div>
 	</div>
-</div>
-<div class="row">
 	<div class="form-group col-sm-2">
 		<label class="control-label">Telefone</label>
 		<input id="homePhone" type="text" class="form-control" tabindex="1" maxlength="15"

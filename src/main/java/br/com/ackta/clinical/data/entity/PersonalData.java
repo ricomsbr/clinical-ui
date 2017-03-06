@@ -4,14 +4,12 @@ import java.time.LocalDate;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -57,19 +55,11 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "profession", nullable = true)
 	private String profession;
 
-	@ElementCollection(targetClass=Address.class)
-	@CollectionTable(
-	        name="Address",
-	        joinColumns=@JoinColumn(name="personal_data_id")
-	  )
+	@OneToMany(targetEntity=Address.class, mappedBy = "personalData")
 	@OrderBy("index DESC")
 	private SortedSet<Address> addresses = new TreeSet<Address>();
 
-	@ElementCollection(targetClass=Phone.class)
-	@CollectionTable(
-	        name="Phone",
-	        joinColumns=@JoinColumn(name="personal_data_id")
-	  )
+	@OneToMany(targetEntity=Phone.class, mappedBy = "personalData")
 	@OrderBy("index DESC")
 	private SortedSet<Phone> phones = new TreeSet<Phone>();
 

@@ -44,37 +44,37 @@ public class Patient implements IPatient {
 
 	@OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
 	@JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false)
-	private IPersonalData personalData;
+	private PersonalData personalData;
 
 	@Column(name = "observation", nullable=true)
 	private String observation;
 
 	@Embedded
-	private IMedicalHistory medicalHistory;
+	private MedicalHistory medicalHistory;
 
 	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
 	@JoinTable(name = "patient_responsible",
 			joinColumns = @JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false),
 			inverseJoinColumns={@JoinColumn(name="patient_id")}
 	)
-	public List<IPersonalData> responsibles;
+	public List<PersonalData> responsibles;
 
 	@ElementCollection(targetClass=ConvenantMember.class)
 	@CollectionTable(
 	        name="ConvenantMember",
 	        joinColumns=@JoinColumn(name="convenant_member_id")
 	  )
-	private List<IConvenantMember> convenantMembers;
+	private List<ConvenantMember> convenantMembers;
 
 	public Patient() {
 		super();
 	}
 
-	public Patient(IPersonalData personalData) {
+	public Patient(PersonalData personalData) {
 		this(personalData, Lists.newArrayList(), Lists.newArrayList());
 	}
 
-	public Patient(IPersonalData personalData, List<IConvenantMember> convenantMembers, List<IPersonalData> responsibles) {
+	public Patient(PersonalData personalData, List<ConvenantMember> convenantMembers, List<PersonalData> responsibles) {
 		this();
 		this.personalData = personalData;
 		this.convenantMembers = convenantMembers;
@@ -82,7 +82,7 @@ public class Patient implements IPatient {
 	}
 
 	@Override
-	public List<IConvenantMember> getConvenantMembers() {
+	public List<ConvenantMember> getConvenantMembers() {
 		return convenantMembers;
 	}
 
@@ -92,7 +92,7 @@ public class Patient implements IPatient {
 	}
 
 	@Override
-	public IMedicalHistory getMedicalHistory() {
+	public MedicalHistory getMedicalHistory() {
 		return medicalHistory;
 	}
 
@@ -102,12 +102,12 @@ public class Patient implements IPatient {
 	}
 
 	@Override
-	public IPersonalData getPersonalData() {
+	public PersonalData getPersonalData() {
 		return personalData;
 	}
 
 	@Override
-	public List<IPersonalData> getResponsibles() {
+	public List<PersonalData> getResponsibles() {
 		return responsibles;
 	}
 
@@ -126,7 +126,7 @@ public class Patient implements IPatient {
 		this.id = id;
 	}
 
-	public void setMedicalHistory(IMedicalHistory medicalHistory) {
+	public void setMedicalHistory(MedicalHistory medicalHistory) {
 		this.medicalHistory = medicalHistory;
 	}
 
