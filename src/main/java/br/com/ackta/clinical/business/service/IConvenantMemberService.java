@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import br.com.ackta.clinical.data.entity.Convenant;
-import br.com.ackta.clinical.data.entity.IConvenantMember;
+import br.com.ackta.clinical.data.entity.ConvenantMember;
 
 public interface IConvenantMemberService {
 
-	Optional<IConvenantMember> findByConvenant(List<IConvenantMember> convenantMembers, Convenant convenant);
+	Optional<ConvenantMember> findByConvenant(List<ConvenantMember> convenantMembers, Convenant convenant);
 
 
 }

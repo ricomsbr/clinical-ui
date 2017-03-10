@@ -20,15 +20,14 @@ import br.com.ackta.clinical.business.service.IAddressService;
 import br.com.ackta.clinical.business.service.IConvenantMemberService;
 import br.com.ackta.clinical.business.service.IPatientService;
 import br.com.ackta.clinical.business.service.IPhoneService;
+import br.com.ackta.clinical.business.service.PersonalDataService;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Convenant;
 import br.com.ackta.clinical.data.entity.ConvenantMember;
-import br.com.ackta.clinical.data.entity.FamilyHistory;
-import br.com.ackta.clinical.data.entity.FamilyMemberHistory;
-import br.com.ackta.clinical.data.entity.IConvenantMember;
+import br.com.ackta.clinical.data.entity.FamilyMember;
 import br.com.ackta.clinical.data.entity.IPatient;
-import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
@@ -44,6 +43,7 @@ public class PatientHelper implements IPatientHelper {
 	private IConvenantMemberService convenantMemberService;
 	private IAddressService addressService;
 	private IPhoneService phoneService;
+	private PersonalDataService personalDataService;
 
 	/**
 	 * @param service
@@ -51,33 +51,36 @@ public class PatientHelper implements IPatientHelper {
 	 * @param phoneService1
 	 * @param addressRepository1
 	 */
-	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1, IAddressService addressService1, IPhoneService phoneService1) {
+	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1, 
+			IAddressService addressService1, IPhoneService phoneService1, 
+			PersonalDataService personalDataService1) {
 		super();
 		this.patientService = service;
 		this.convenantMemberService = convenantMemberService1;
 		this.addressService = addressService1;
 		this.phoneService = phoneService1;
+		this.personalDataService = personalDataService1;
 	}
 
 	private void addAddress(Form form, PersonalData data) {
-		Address address = new Address(1, AddressType.HOME);
+		Address address = new Address(1, AddressType.HOME, data);
 		BeanUtils.copyProperties(form, address);
 		data.getAddresses().add(addressService.insert(address));
 	}
 
 	private void addPhones(Form form, PersonalData data) {
-		Phone mobile = new Phone(1, PhoneType.MOBILE, COUNTRY_CODE, form.getMobilePhone());
-		Phone homePhone = new Phone(2, PhoneType.HOME, COUNTRY_CODE, form.getHomePhone());
+		Phone mobile = new Phone(1, PhoneType.MOBILE, COUNTRY_CODE, form.getMobilePhone(), data);
+		Phone homePhone = new Phone(2, PhoneType.HOME, COUNTRY_CODE, form.getHomePhone(), data);
 		data.addPhone(phoneService.insert(homePhone));
 		data.addPhone(phoneService.insert(mobile));
 	}
 
-	private IPersonalData createResponsible(Form form, String respName, String respPhone) {
-		IPersonalData result = new PersonalData();
+	private PersonalData createResponsible(Form form, String respName, String respPhone) {
+		PersonalData result = new PersonalData();
 		if (!respName.isEmpty()) {
 			result.setName(respName);
 			if (!respPhone.isEmpty()) {
-				Phone phone = new Phone(1, PhoneType.GENERAL, COUNTRY_CODE, respPhone);
+				Phone phone = new Phone(1, PhoneType.GENERAL, COUNTRY_CODE, respPhone, result);
 				result.addPhone(phoneService.insert(phone));
 			}
 		}
@@ -106,27 +109,30 @@ public class PatientHelper implements IPatientHelper {
 		return result;
 	}
 
-	private FamilyHistory extractFamilyHistory(Form form) {
-		FamilyHistory result = new FamilyHistory();
-		FamilyMemberHistory motherHistory = new FamilyMemberHistory();
+	private List<FamilyMember> extractFamilyHistory(Form form) {
+		List<FamilyMember> result = Lists.newArrayList();
+		FamilyMember motherHistory = new FamilyMember(Kinship.MOTHER);
 		BeanUtils.copyProperties(form.getMotherHistory(), motherHistory);
 		if (Objects.nonNull(form.getMotherHistory().getAge())) {
 			motherHistory.setBirthYear(Year.now().minusYears(form.getMotherHistory().getAge()));
 		}
-		result.addMemberHistories(motherHistory);
-		FamilyMemberHistory fatherHistory = new FamilyMemberHistory();
+		result.add(motherHistory);
+		FamilyMember fatherHistory = new FamilyMember(Kinship.FATHER);
 		BeanUtils.copyProperties(form.getFatherHistory(), fatherHistory);
 		if (Objects.nonNull(form.getFatherHistory().getAge())) {
 			fatherHistory.setBirthYear(Year.now().minusYears(form.getFatherHistory().getAge()));
 		}
-		result.addMemberHistories(fatherHistory);
+		result.add(fatherHistory);
 		return result;
 	}
 
-	private List<IPersonalData> extractResponsibles(Form form) {
-		List<IPersonalData> result = Lists.newArrayList();
-		result.add(createResponsible(form, form.getResponsibleName1(), form.getResponsiblePhone1()));
-		result.add(createResponsible(form, form.getResponsibleName2(), form.getResponsiblePhone2()));
+	private List<PersonalData> addResponsibles(Form form) {
+		List<PersonalData> result = Lists.newArrayList();
+		PersonalData responsible1 = createResponsible(form, form.getResponsibleName1(), form.getResponsiblePhone1());
+		PersonalData responsible2 = createResponsible(form, form.getResponsibleName2(), form.getResponsiblePhone2());
+		result.add(personalDataService.insert(responsible1));
+		result.add(personalDataService.insert(responsible2));
+		
 		return result;
 	}
 
@@ -138,8 +144,8 @@ public class PatientHelper implements IPatientHelper {
 	@Override
 	public Form findOne(Long id) {
 		Patient patient = patientService.findOne(id).get();
-		Optional<IConvenantMember> susMember = convenantMemberService.findByConvenant(patient.getConvenantMembers(), Convenant.SUS);
-		Optional<IConvenantMember> ownMember = convenantMemberService.findByConvenant(patient.getConvenantMembers(), Convenant.OWN);
+		Optional<ConvenantMember> susMember = convenantMemberService.findByConvenant(patient.getConvenantMembers(), Convenant.SUS);
+		Optional<ConvenantMember> ownMember = convenantMemberService.findByConvenant(patient.getConvenantMembers(), Convenant.OWN);
 		Boolean isOwnMember = ownMember.isPresent();
 		String susCard = susMember.isPresent() ? susMember.get().getCardNumber() : null;
 		Form result = new Form(patient, isOwnMember, susCard);
@@ -152,10 +158,11 @@ public class PatientHelper implements IPatientHelper {
 		BeanUtils.copyProperties(form, data);
 		addAddress(form, data);
 		addPhones(form, data);
-		Patient patient = new Patient(data, extractConvenantMembers(form), extractResponsibles(form));
+		List<PersonalData> responsibles = addResponsibles(form);
+		Patient patient = new Patient(data, extractConvenantMembers(form), responsibles);
 		patient.setObservation(form.getObservation());
 		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
-		medicalHistory.setFamilyHistory(extractFamilyHistory(form));
+		medicalHistory.getFamilyMembers().addAll(extractFamilyHistory(form));
 		patient.setMedicalHistory(medicalHistory);
 		IPatient result = patientService.insert(patient);
 		return result;
@@ -193,7 +200,7 @@ public class PatientHelper implements IPatientHelper {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
 
-		Patient patient = new Patient(data, extractConvenantMembers(form), extractResponsibles(form));
+		Patient patient = new Patient(data, extractConvenantMembers(form), addResponsibles(form));
 		patient.setId(id);
 		addAddress(form, data);
 		addPhones(form, data);

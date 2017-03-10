@@ -45,13 +45,14 @@ public class Phone implements IPhone, Serializable {
 		super();
 	}
 
-	public Phone(Integer index1, PhoneType type, Integer countryCode, String number) {
+	public Phone(Integer index1, PhoneType type, Integer countryCode, String number, PersonalData personalData1) {
 		super();
 		this.index = index1;
 		this.number = number;
 		this.description = type.getKey();
 		this.countryCode = countryCode;
 		this.type = type;
+		this.personalData = personalData1;
 	}
 
 	@Override

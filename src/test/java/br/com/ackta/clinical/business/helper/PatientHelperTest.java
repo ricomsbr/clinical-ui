@@ -23,7 +23,7 @@ import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Convenant;
 import br.com.ackta.clinical.data.entity.ConvenantMember;
-import br.com.ackta.clinical.data.entity.FamilyMemberHistory;
+import br.com.ackta.clinical.data.entity.FamilyMember;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IAddress;
 import br.com.ackta.clinical.data.entity.IMedicalHistory;
@@ -43,7 +43,7 @@ import br.com.ackta.clinical.presentation.Form;
 @SpringBootTest
 @Rollback
 @Transactional
-@ActiveProfiles("homolog")
+@ActiveProfiles("development")
 public class PatientHelperTest {
 
 	@Autowired
@@ -110,11 +110,12 @@ public class PatientHelperTest {
 		medicalHistory.setDrinkPeriodUnit(ChronoUnit.WEEKS);
 		medicalHistory.setHasDiseases(false);
 		medicalHistory.setHasSurgeries(false);
-		medicalHistory.setMedicines("");
+		medicalHistory.setHeight(123.0);
+		medicalHistory.setMedicines("medicamentos1");
 		medicalHistory.setSmokeFrequence(1);
 		medicalHistory.setSmokePeriodUnit(ChronoUnit.DAYS);
 		medicalHistory.setSmoker(true);
-		medicalHistory.setSurgeries("");
+		medicalHistory.setSurgeries("cirurgias1");
 		medicalHistory.setWeight(89.5);
 		return medicalHistory;
 	}
@@ -130,7 +131,49 @@ public class PatientHelperTest {
 		Form form = buildForm();
 		IPatient patient = helper.insert(form);
 		Form result = helper.findOne(patient.getId());
+		assertThat(result.getId()).isNotNull();
+		assertThat(result.getObservation()).isEqualTo("observation1");
+		assertThat(result.getCity()).isEqualTo("Recife");
+		assertThat(result.getComplement()).isEqualTo("apt 23");
+		assertThat(result.getDistrict()).isEqualTo("Boa Viagem");
+		assertThat(result.getNumber()).isEqualTo("240");
+		assertThat(result.getPublicArea()).isEqualTo("Rua do Futuro");
+		assertThat(result.getZipCode()).isEqualTo("55002-003");
 		assertThat(result.getBirthDate()).isEqualTo(LocalDate.of(1972, 2, 26));
+		assertThat(result.getChildrenQty()).isEqualTo(3);
+		assertThat(result.getCpf()).isEqualTo("834.983.876-84");
+		assertThat(result.getGender()).isEqualTo(Gender.MALE);
+		assertThat(result.getId()).isNotNull();
+		assertThat(result.getMail()).isEqualTo("joao@ackta.com.br");
+		assertThat(result.getMaritalState()).isEqualTo(MaritalState.MARRIED);
+		assertThat(result.getName()).isEqualTo("João da Silva");
+		String homePhone = result.getHomePhone();
+		String mobile = result.getMobilePhone();
+		assertThat(homePhone).isEqualTo("34569876");
+		assertThat(mobile).isEqualTo("998765432");
+		assertThat(result.getRg()).isEqualTo("324824-4");
+		assertThat(result.getIsMember()).isEqualTo(true);
+		assertThat(result.getSusCard()).isEqualTo("888.333-87");
+		IMedicalHistory medicalHist = result.getMedicalHistory();
+		assertThat(medicalHist.getAllergic()).isEqualTo(true);
+		assertThat(medicalHist.getAllergies()).isEqualTo("allergies");
+		assertThat(medicalHist.getDate()).isNotNull();
+		assertThat(medicalHist.getDiseases()).isEqualTo("diseases1");
+		assertThat(medicalHist.getDrinker()).isEqualTo(true);
+		assertThat(medicalHist.getDrinkFrequence()).isEqualTo(3);
+		assertThat(medicalHist.getDrinkPeriodUnit()).isEqualTo(ChronoUnit.WEEKS);
+		assertThat(result.getMotherHistory().getKinship()).isEqualTo(Kinship.MOTHER);
+		assertThat(result.getMotherHistory().getMedicines()).isEqualTo("medicamentos da mãe");
+		assertThat(result.getMotherHistory().getDiseases()).isEqualTo("doenças da mãe");
+		assertThat(result.getFatherHistory().getKinship()).isEqualTo(Kinship.FATHER);
+		assertThat(result.getFatherHistory().getMedicines()).isEqualTo("medicamentos do pai");
+		assertThat(result.getFatherHistory().getDiseases()).isEqualTo("doenças do pai");
+		
+		assertThat(result.getResponsibleName1()).isEqualTo("responsibleName1");
+		assertThat(result.getResponsiblePhone1()).isEqualTo("(11) 92834-9873");
+		assertThat(result.getResponsibleName2()).isEqualTo("responsibleName2");
+		assertThat(result.getResponsiblePhone2()).isEqualTo("(11) 92834-9553");
+		
 	}
 
 	@Test
@@ -190,7 +233,7 @@ public class PatientHelperTest {
 		assertThat(medicalHist.getDrinker()).isEqualTo(true);
 		assertThat(medicalHist.getDrinkFrequence()).isEqualTo(3);
 		assertThat(medicalHist.getDrinkPeriodUnit()).isEqualTo(ChronoUnit.WEEKS);
-		List<FamilyMemberHistory> memberHistories = medicalHist.getFamilyHistory().getMemberHistories();
+		List<FamilyMember> memberHistories = medicalHist.getFamilyMembers();
 		assertThat(memberHistories)
 			.filteredOn("kinship", Kinship.MOTHER)
 			.extracting("medicines")

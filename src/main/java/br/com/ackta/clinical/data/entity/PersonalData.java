@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,7 +38,7 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "deleted", nullable = false)
 	private boolean deleted;
 
-	@Column(name = "name", nullable = false, unique = true)
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	@Column(name = "birth_dt", nullable = true)
@@ -55,11 +56,11 @@ public class PersonalData implements IPersonalData {
 	@Column(name = "profession", nullable = true)
 	private String profession;
 
-	@OneToMany(targetEntity=Address.class, mappedBy = "personalData")
+	@OneToMany(targetEntity=Address.class, mappedBy = "personalData", orphanRemoval=true, cascade={CascadeType.ALL})
 	@OrderBy("index DESC")
 	private SortedSet<Address> addresses = new TreeSet<Address>();
 
-	@OneToMany(targetEntity=Phone.class, mappedBy = "personalData")
+	@OneToMany(targetEntity=Phone.class, mappedBy = "personalData", orphanRemoval=true, cascade={CascadeType.ALL})
 	@OrderBy("index DESC")
 	private SortedSet<Phone> phones = new TreeSet<Phone>();
 

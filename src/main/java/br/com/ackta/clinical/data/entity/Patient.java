@@ -42,7 +42,7 @@ public class Patient implements IPatient {
 	@Column(name = "deleted", nullable = false)
 	private boolean deleted;
 
-	@OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
+	@OneToOne(cascade={CascadeType.ALL}, targetEntity = PersonalData.class)
 	@JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false)
 	private PersonalData personalData;
 
@@ -61,7 +61,7 @@ public class Patient implements IPatient {
 
 	@ElementCollection(targetClass=ConvenantMember.class)
 	@CollectionTable(
-	        name="ConvenantMember",
+	        name="convenant_member",
 	        joinColumns=@JoinColumn(name="convenant_member_id")
 	  )
 	private List<ConvenantMember> convenantMembers;

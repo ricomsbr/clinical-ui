@@ -3,7 +3,9 @@ package br.com.ackta.clinical.data.converter;
 import java.time.temporal.ChronoUnit;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
+@Converter(autoApply = true)
 public class ChronoUnitConverter implements AttributeConverter<ChronoUnit, String> {
 
 	@Override

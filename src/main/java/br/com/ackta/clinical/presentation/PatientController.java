@@ -66,7 +66,7 @@ public class PatientController {
 		form.setMotherHistory(motherHistory);
 		FamilyMemberHistoryForm fatherHistory = new FamilyMemberHistoryForm();
 		fatherHistory.setKinship(Kinship.FATHER);
-		form.setMotherHistory(fatherHistory);
+		form.setFatherHistory(fatherHistory);
 
 		form.setMedicalHistory(medicalHistory);
 		model.addAttribute("record", form);
