@@ -2,11 +2,15 @@ package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import javax.persistence.JoinColumn;
 
+import org.assertj.core.util.Lists;
 import org.springframework.beans.BeanUtils;
 
 @Embeddable
@@ -60,8 +64,12 @@ public class MedicalHistory implements IMedicalHistory {
 	@Column(name = "medicines", nullable=true)
 	private String medicines;
 
-	@Embedded
-	private FamilyHistory familyHistory;
+	@ElementCollection(targetClass=FamilyMember.class)
+	@CollectionTable(
+	        name="family_member",
+	        joinColumns=@JoinColumn(name="family_member_id")
+	  )
+	private List<FamilyMember> familyMembers = Lists.newArrayList();
 
 	public MedicalHistory() {
 		super();
@@ -71,6 +79,11 @@ public class MedicalHistory implements IMedicalHistory {
 	public MedicalHistory(IMedicalHistory medicalHistory) {
 		this();
 		BeanUtils.copyProperties(medicalHistory, this);
+	}
+
+	@Override
+	public void addFamilyMembers(FamilyMember memberHistory) {
+		familyMembers.add(memberHistory);
 	}
 
 	@Override
@@ -109,8 +122,8 @@ public class MedicalHistory implements IMedicalHistory {
 	}
 
 	@Override
-	public FamilyHistory getFamilyHistory() {
-		return familyHistory;
+	public List<FamilyMember> getFamilyMembers() {
+		return familyMembers;
 	}
 
 	@Override
@@ -186,9 +199,8 @@ public class MedicalHistory implements IMedicalHistory {
 		this.drinkPeriodUnit = drinkPeriodUnit;
 	}
 
-	@Override
-	public void setFamilyHistory(FamilyHistory familyHistory) {
-		this.familyHistory = familyHistory;
+	public void setFamilyMembers(List<FamilyMember> members) {
+		this.familyMembers = members;
 	}
 
 	public void setHasDiseases(Boolean hasDiseases) {

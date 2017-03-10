@@ -1,12 +1,24 @@
 package br.com.ackta.clinical.presentation;
 
-import br.com.ackta.clinical.data.entity.FamilyMemberHistory;
+import java.time.Year;
 
-public class FamilyMemberHistoryForm extends FamilyMemberHistory {
+import br.com.ackta.clinical.data.entity.FamilyMember;
+
+public class FamilyMemberHistoryForm extends FamilyMember {
 	private Integer age;
 
 	public FamilyMemberHistoryForm() {
 		super();
+	}
+
+	public FamilyMemberHistoryForm(FamilyMember familyMember) {
+		this();
+		this.age = Year.now().minusYears(familyMember.getBirthYear().getValue()).getValue();
+		this.setAlive(familyMember.getAlive());
+		this.setBirthYear(familyMember.getBirthYear());
+		this.setDiseases(familyMember.getDiseases());
+		this.setKinship(familyMember.getKinship());
+		this.setMedicines(familyMember.getMedicines());
 	}
 
 	public Integer getAge() {

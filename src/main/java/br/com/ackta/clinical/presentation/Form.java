@@ -1,18 +1,22 @@
 package br.com.ackta.clinical.presentation;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import br.com.ackta.clinical.data.entity.Address;
+import br.com.ackta.clinical.data.entity.FamilyMember;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IMedicalHistory;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
+import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.entity.PhoneType;
 
 public class Form {
@@ -70,9 +74,28 @@ public class Form {
 				this.setMobilePhone(p.getNumber());
 			}
 		});
-		medicalHistory = (MedicalHistory) patient.getMedicalHistory();
+		medicalHistory = patient.getMedicalHistory();
+		this.setMedicalHistory(medicalHistory);
+		
+		List<PersonalData> respList = patient.getResponsibles();
+		PersonalData resp1 = respList.get(0);
+		this.responsibleName1 = resp1.getName();
+		this.responsiblePhone1 = resp1.getPhones().first().getNumber();
+		PersonalData resp2 = respList.get(1);
+		this.responsibleName2 = resp2.getName();
+		this.responsiblePhone2 = resp2.getPhones().first().getNumber();
 		this.isMember = isMember;
 		this.susCard = susCardNumber;
+		this.observation = patient.getObservation(); 
+		List<FamilyMember> familyMembers = patient.getMedicalHistory().getFamilyMembers();
+		this.motherHistory = new FamilyMemberHistoryForm(familyMembers
+				.stream()
+				.filter(m -> Kinship.MOTHER.equals(m.getKinship()))
+				.findFirst().get());
+		this.fatherHistory = new FamilyMemberHistoryForm(familyMembers
+				.stream()
+				.filter(m -> Kinship.FATHER.equals(m.getKinship()))
+				.findFirst().get());
 	}
 
 	public LocalDate getBirthDate() {

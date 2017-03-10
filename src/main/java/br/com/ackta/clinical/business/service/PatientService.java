@@ -19,9 +19,6 @@ import br.com.ackta.clinical.data.repository.PatientRepository;
 public class PatientService implements IPatientService {
 	private PatientRepository patientRepository;
 
-	/**
-	 * @param patientRepository
-	 */
 	public PatientService(PatientRepository patientRepository1) {
 		super();
 		this.patientRepository = patientRepository1;
@@ -54,7 +51,7 @@ public class PatientService implements IPatientService {
 	public Patient update(Patient patient) {
 		IPersonalData data = patient.getPersonalData();
 		Patient dbObj = patientRepository.findOne(patient.getId());
-		PersonalData dbData = (PersonalData) dbObj.getPersonalData();
+		PersonalData dbData = dbObj.getPersonalData();
 		dbData.merge(data);
 		Patient result = patientRepository.save(dbObj);
 		return result;

@@ -57,10 +57,11 @@ public class Address implements IAddress, Serializable {
 		super();
 	}
 
-	public Address(Integer index1, AddressType type) {
+	public Address(Integer index1, AddressType type, PersonalData personalData1) {
 		super();
 		this.index = index1;
 		this.type = type;
+		this.personalData = personalData1;
 	}
 
 	@Override

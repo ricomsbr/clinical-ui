@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class FamilyMemberHistory implements IFamilyMemberHistory {
+public class FamilyMember implements IFamilyMemberHistory {
 
 	@Column(name = "medicines", nullable= true)
 	private String medicines;
@@ -23,10 +23,10 @@ public class FamilyMemberHistory implements IFamilyMemberHistory {
 	@Column(name = "birth_year", nullable= true)
 	private Year birthYear;
 
-	public FamilyMemberHistory() {
+	public FamilyMember() {
 		super();
 	}
-
+	
 	@Override
 	public Boolean getAlive() {
 		return alive;

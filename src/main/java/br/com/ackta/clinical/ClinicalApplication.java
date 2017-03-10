@@ -7,9 +7,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
+import br.com.ackta.clinical.data.converter.PersistableEnumConverter;
 import br.com.ackta.clinical.data.entity.IPersistable;
 
-@EntityScan(basePackageClasses = { Jsr310JpaConverters.class, IPersistable.class })
+@EntityScan(basePackageClasses = { Jsr310JpaConverters.class, IPersistable.class, PersistableEnumConverter.class })
 @ComponentScan(basePackages = { "br.com.ackta.clinical" }, excludeFilters = {
 		@ComponentScan.Filter(type = FilterType.ANNOTATION, value = { ScanOnlyForTest.class }) })
 // @EnableJpaRepositories("br.com.ackta.clinical")
