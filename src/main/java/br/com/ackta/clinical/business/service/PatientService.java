@@ -1,6 +1,5 @@
 package br.com.ackta.clinical.business.service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Example;
@@ -18,10 +17,13 @@ import br.com.ackta.clinical.data.repository.PatientRepository;
 @Transactional
 public class PatientService implements IPatientService {
 	private PatientRepository patientRepository;
+	private PersonalDataService personalDataService;
 
-	public PatientService(PatientRepository patientRepository1) {
+	public PatientService(PatientRepository patientRepository1,
+			PersonalDataService personalDataService1) {
 		super();
 		this.patientRepository = patientRepository1;
+		this.personalDataService = personalDataService1;
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class PatientService implements IPatientService {
 
 	@Override
 	public Patient insert(Patient patient) {
-		validateInsert(patient);
+		personalDataService.checkConsistence(patient.getPersonalData());
 		Patient result = patientRepository.save(patient);
 		return result;
 	}
@@ -57,16 +59,4 @@ public class PatientService implements IPatientService {
 		return result;
 	}
 
-	private void validateInsert(Patient patient) {
-		IPersonalData personalData = patient.getPersonalData();
-		if (Objects.nonNull(personalData.getId())) {
-			throw new RuntimeException("Id should be null");
-		}
-		Objects.requireNonNull(personalData.getBirthDate(), "BirthDate should not be null");
-		Integer childrenQty = personalData.getChildrenQty();
-		Objects.requireNonNull(childrenQty, "ChildrenQty should not be null");
-		if (childrenQty < 0) {
-			throw new RuntimeException("ChildrenQty should be a nonNegative value");
-		}
-	}
 }

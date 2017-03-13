@@ -8,4 +8,6 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 @Repository
 public interface PersonalDataRepository extends JpaRepository<PersonalData, Long> {
 
+	PersonalData findByNameOrCpfOrMail(String name, String cpf, String mail);
+
 }
