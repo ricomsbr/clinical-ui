@@ -7,6 +7,8 @@ package br.com.ackta.clinical.presentation;
 
 import java.time.temporal.ChronoUnit;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,7 +54,7 @@ public class PatientController {
 	public String delete(@PathVariable Long id, Model model) {
 		LOGGER.info("Method delete initialized.");
 		helper.delete(id);
-		model.addAttribute("record", new Form());
+		model.addAttribute("form", new Form());
 		model.addAttribute("page", "patient/search");
 		return "index";
 	}
@@ -71,7 +72,7 @@ public class PatientController {
 		form.setFatherHistory(fatherHistory);
 
 		form.setMedicalHistory(medicalHistory);
-		model.addAttribute("record", form);
+		model.addAttribute("form", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
 
@@ -82,17 +83,17 @@ public class PatientController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String insert(Form form, BindingResult bindingResult, Model model) {
+	public String insert(@Valid Form form, BindingResult bindingResult, Model model) {
 		LOGGER.info("Method insert initialized.");
 
-		ObjectError error = new ObjectError("number", "error!!!");
-		bindingResult.addError(error );
+//		FieldError error = new FieldError("form", "number", "Numero não pode ficar sem preenchimento");
+//		bindingResult.addError(error );
 		if (!bindingResult.hasErrors()) {
 			helper.insert(form);
-			model.addAttribute("record", new Form());
+			model.addAttribute("form", new Form());
 			model.addAttribute("page", "patient/search");
 		} else {
-			model.addAttribute("record", form);
+			model.addAttribute("form", form);
 			model.addAttribute("allGenders", Gender.values());
 			model.addAttribute("allMaritalStates", MaritalState.values());
 			ChronoUnit[] units = {ChronoUnit.DAYS, ChronoUnit.WEEKS, ChronoUnit.MONTHS};
@@ -126,7 +127,7 @@ public class PatientController {
 	public String update(@PathVariable Long id, Form form, Model model) {
 		LOGGER.info("Method update initialized.");
 		helper.update(id, form);
-		model.addAttribute("record", new Form());
+		model.addAttribute("form", new Form());
 		model.addAttribute("page", "patient/search");
 		return "index";
 	}

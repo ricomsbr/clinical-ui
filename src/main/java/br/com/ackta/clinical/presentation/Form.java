@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.SortedSet;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,7 +25,11 @@ import br.com.ackta.clinical.data.entity.PhoneType;
 public class Form {
 	private Long id;
 	private String cpf;
+
+	@NotNull
+	@NotEmpty(message="Nome do paciente não pode ficar sem preenchimento")
 	private String name;
+
 	private String rg;
 	private Gender gender;
 	private String publicArea;
@@ -76,7 +83,7 @@ public class Form {
 		});
 		medicalHistory = patient.getMedicalHistory();
 		this.setMedicalHistory(medicalHistory);
-		
+
 		List<PersonalData> respList = patient.getResponsibles();
 		PersonalData resp1 = respList.get(0);
 		this.responsibleName1 = resp1.getName();
@@ -86,7 +93,7 @@ public class Form {
 		this.responsiblePhone2 = resp2.getPhones().first().getNumber();
 		this.isMember = isMember;
 		this.susCard = susCardNumber;
-		this.observation = patient.getObservation(); 
+		this.observation = patient.getObservation();
 		List<FamilyMember> familyMembers = patient.getMedicalHistory().getFamilyMembers();
 		this.motherHistory = new FamilyMemberHistoryForm(familyMembers
 				.stream()
