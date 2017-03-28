@@ -5,7 +5,10 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ValidationUtils;
 
+import br.com.ackta.clinical.business.service.validator.IdValidator;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 
@@ -14,6 +17,7 @@ import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 public class PersonalDataService implements IPersonalDataService {
 
 	private PersonalDataRepository repository;
+	private IdValidator idValidator;
 
 	/**
 	 * @param repository
@@ -25,7 +29,27 @@ public class PersonalDataService implements IPersonalDataService {
 	}
 
 
-	public void checkConsistence(PersonalData personalData) {
+
+
+	@Override
+	public PersonalData insert(PersonalData personalData) {
+		validateInsert(personalData);
+		return repository.save(personalData);
+
+	}
+
+	public PersonalData update(PersonalData data) {
+		return repository.save(data);
+	}
+
+	@Override
+	public void validateInsert(PersonalData personalData) {
+		BindException bindException = new BindException(personalData, personalData.getClass().getName());
+		ValidationUtils.invokeValidator(idValidator, personalData, bindException );
+		ValidationUtils.rejectIfEmpty(errors, "name", "name.empty");
+		ValidationUtils.rejectIfEmpty(errors, "name", "name.empty");
+		ValidationUtils.rejectIfEmpty(errors, "name", "name.empty"); // TODO fazer a valicação de data de nascimento, gender, et
+
 		if (Objects.nonNull(personalData.getId())) {
 			throw new RuntimeException("Id should be null");
 		}
@@ -42,11 +66,6 @@ public class PersonalDataService implements IPersonalDataService {
 		if (Objects.nonNull(repeatedElement)) {
 			throw new RuntimeException("Name, CPF or email already registered.");
 		}
-	}
-
-
-	public PersonalData save(PersonalData data) {
-		return repository.save(data);
 	}
 
 
