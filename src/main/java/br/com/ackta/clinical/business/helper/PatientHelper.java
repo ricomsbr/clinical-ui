@@ -238,8 +238,8 @@ public class PatientHelper implements IPatientHelper {
 		resp1.getPhones().first().setNumber(form.getResponsiblePhone1());
 		resp2.setName(form.getResponsibleName2());
 		resp2.getPhones().first().setNumber(form.getResponsiblePhone2());
-		personalDataService.save(resp1);
-		personalDataService.save(resp2);
+		personalDataService.update(resp1);
+		personalDataService.update(resp2);
 
 		return responsibles;
 	}
