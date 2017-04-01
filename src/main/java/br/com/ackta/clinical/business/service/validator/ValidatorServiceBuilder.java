@@ -1,66 +1,100 @@
 package br.com.ackta.clinical.business.service.validator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.assertj.core.util.Lists;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-
-import br.com.ackta.clinical.business.service.exception.ServiceException;
 
 public class ValidatorServiceBuilder {
 
-	public LinkedMultiValueMap<Object, Validator> validatorMap;
+	private String objectName;
+	private List<FieldNameValidator> validatorList;
+	private Object validatable;
+	
+	/**
+	 * @param objectName
+	 */
+	public ValidatorServiceBuilder(Object validatable1, String objectName) {
+		super();
+		this.objectName = objectName;
+		validatorList = new ArrayList<>();
+		validatable = validatable1;
+	}
 
-	public void append(Object validatable, Validator... validators) {
+	public static ValidatorServiceBuilder build(Object validatable1, String objectName) {
+		return new ValidatorServiceBuilder(validatable1, objectName);
+	}
+
+	public ValidatorServiceBuilder append(FieldNameValidator validator) {
 		Assert.notNull(validatable);
-		Assert.noNullElements(validators);
-		String str = Lists.newArrayList(validators)
-			.stream()
-			.filter(v -> v.supports(validatable.getClass()))
-			.map(v -> String.format("The supplied s% must support the validation of %s instances.", v.getClass().getName(), validatable.getClass().getName()))
-			.reduce("", (s1, s2) -> s1 + "\n" + s2 );
-		if (!str.isEmpty()) {
+		Assert.notNull(validator);
+		Class<?> propertyType = findPropertyType(validatable, validator);
+		if (!validator.supports(propertyType)) {
+			String str = String.format("The supplied %s must support the validation of %s instances.", 
+					validator.getClass().getName(), 
+					validatable.getClass().getName());
 			throw new IllegalArgumentException(str);
 		}
-		validatorMap.put(validatable, Lists.newArrayList(validators));
+		validatorList.add(validator);
+		return this;
+	}
+	
+	/**
+	 * @param validatable1
+	 * @param v
+	 * @return
+	 */
+	private Object findProperty(Object validatable1, FieldNameValidator v) {
+		Object property = null;
+		try {
+			property = PropertyUtils.getProperty(validatable1, v.getFieldName());
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return property;
 	}
 
-	public ValidatorServiceBuilder build() {
-		return new ValidatorServiceBuilder();
+	/**
+	 * @param validatable1
+	 * @param v
+	 * @return
+	 */
+	private Class<?> findPropertyType(Object validatable1, FieldNameValidator v) {
+		Class<?> propertyType = null;
+		try {
+			propertyType = PropertyUtils.getPropertyType(validatable1, v.getFieldName());
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return propertyType;
 	}
-
-	public void validate() throws ServiceException {
+	
+	public void validate() throws ValidatorServiceException {
+		validate((Object[]) null); 
+	}
+	
+	/**
+	 * @param validationHints one or more hint objects to be passed to the validation engine
+	 * @throws ValidatorServiceException
+	 */
+	public void validate(Object... validationHints) throws ValidatorServiceException {	
 		Errors errors = null;
-		for (Entry<Object, List<Validator>> entry : validatorMap.entrySet()) {
-			Object validatable = entry.getKey();
-			BindException bindException = new BindException(validatable, validatable.getClass().getName());
-			for (Validator v : entry.getValue()) {
-				ValidationUtils.invokeValidator(v, validatable, bindException);
-				if (Objects.isNull(errors)) {
-					errors = bindException;
-				} else {
-					errors.addAllErrors(bindException);
-				}
-			};
+		if (Objects.isNull(errors)) {
+			errors = new BindException(validatable, objectName);
 		}
-		if(!errors.getAllErrors().isEmpty()) {
-			throw new ServiceException(errors);
+		for (FieldNameValidator validator: validatorList) {
+			Object property = findProperty(validatable, validator);
+			ValidationUtils.invokeValidator(validator, property, errors, validationHints);
+		}
+		if(errors.hasErrors()) {
+			throw new ValidatorServiceException(errors);
 		}
 	}
-//
-//	private Errors validate(Object validatable, Validator validator)  {
-//		String name = validatable.getClass().getName();
-//		BindException bindException = new BindException(validatable, name);
-//		ValidationUtils.invokeValidator(validator, validatable, bindException );
-//		return bindException.getAllErrors();
-//
-//
-//	}
+
 }

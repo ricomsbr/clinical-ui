@@ -13,14 +13,14 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 
 @Service
-public class PersonalDateValidator implements Validator {
+public class PersonalDataValidator implements Validator {
 
 	private static final long MAX_AGE = 200;
 
 	private PersonalDataRepository repository;
 
 	@Autowired
-	public PersonalDateValidator(PersonalDataRepository repository1) {
+	public PersonalDataValidator(PersonalDataRepository repository1) {
 		super();
 		this.repository = repository1;
 	}
@@ -33,7 +33,7 @@ public class PersonalDateValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "name.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "name.is_empty");
         ValidationUtils.rejectIfEmpty(errors, "gender", "gender.empty");
         ValidationUtils.rejectIfEmpty(errors, "birthDate", "birthDate.empty");
         if (Objects.nonNull(p.getBirthDate())) {

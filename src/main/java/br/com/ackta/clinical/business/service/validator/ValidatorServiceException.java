@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.business.service.exception;
+package br.com.ackta.clinical.business.service.validator;
 
 import org.springframework.validation.Errors;
 
@@ -9,13 +9,13 @@ import org.springframework.validation.Errors;
  * @version @version@
  * @since @since@
  */
-public class ServiceException extends RuntimeException {
+public class ValidatorServiceException extends RuntimeException {
 
 	private static final long serialVersionUID = -2921024874941524787L;
 
 	private Errors errors;
 
-	public ServiceException(Errors errors1) {
+	public ValidatorServiceException(Errors errors1) {
 		super(errors1.getAllErrors().toString());
 		this.errors = errors1;
 	}

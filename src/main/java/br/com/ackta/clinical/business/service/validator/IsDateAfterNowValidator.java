@@ -5,14 +5,19 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
-public class IsBeforeNowValidator implements Validator {
+public class IsDateAfterNowValidator extends FieldNameValidator {
+
+	private static final String ERROR_CODE_SUFIX = ".after_now";
 
 	@Autowired
-	public IsBeforeNowValidator() {
+	public IsDateAfterNowValidator() {
 		super();
+	}
+	
+	@Autowired
+	public IsDateAfterNowValidator(String fieldName1) {
+		super(fieldName1);
 	}
 
 	@Override
@@ -23,12 +28,9 @@ public class IsBeforeNowValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		LocalDate d = (LocalDate) target;
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "name.empty");
-        ValidationUtils.rejectIfEmpty(errors, "gender", "gender.empty");
-        ValidationUtils.rejectIfEmpty(errors, "birthDate", "birthDate.empty");
         if (Objects.nonNull(d)) {
         	if (LocalDate.now().isBefore(d)) {
-	            errors.rejectValue("birthDate", "birthDate.after_now");
+	            errors.rejectValue(fieldName, fieldName + ERROR_CODE_SUFIX);
 	        }
         }
     }

@@ -12,11 +12,18 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 	private static final Locale DEFAULT_LOCALE = new Locale("pt", "BR");
-		
-	@Bean 
+
+	@Bean
 	public LocaleResolver localeResolver() {
 		final SessionLocaleResolver resolver = new SessionLocaleResolver();
 		resolver.setDefaultLocale(DEFAULT_LOCALE);
 		return resolver;
+	}
+
+	@Bean
+	public SerializableResourceBundleMessageSource messageSource() {
+		final SerializableResourceBundleMessageSource serializableResourceBundleMessageSource = new SerializableResourceBundleMessageSource();
+		serializableResourceBundleMessageSource.setBasename("classpath:/i18n/msgs");
+		return serializableResourceBundleMessageSource;
 	}
 }
