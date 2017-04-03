@@ -45,8 +45,7 @@ public class PatientService implements IPatientService {
 	@Override
 	public Patient insert(Patient patient) {
 		PersonalData personalData = personalDataService.insert(patient.getPersonalData());
-
-		personalDataService.validateInsert(patient.getPersonalData());
+		patient.setPersonalData(personalDate);
 		Patient result = patientRepository.save(patient);
 		return result;
 	}

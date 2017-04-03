@@ -50,17 +50,16 @@ public class PersonalDataService implements IPersonalDataService {
 	@Override
 	public void validateInsert(PersonalData personalData) {
 		ValidatorServiceBuilder
-		.build(personalData, personalData.getClass().getName())
-		.append(new IsNotEmptyOrWhitespaceValidator("name"))
-		.append(new IsNotNullValidator("gender"))
-		.append(new IsNotNullValidator("childrenQty"))
-		.append(new IsNotNegativeValidator("childrenQty"))
-		.append(new IsNotNullValidator("birthDate"))
-		.append(new IsNotDateBeforeNowValidator("birthDate"))
-		.append(new IsNotBirthDateTooOldValidator("birthDate", 150))
-		.append(new PersonalDataValidator(repository))
-		.validate();
-
+			.build(personalData, personalData.getClass().getName())
+			.append(new IsNotEmptyOrWhitespaceValidator("name"))
+			.append(new IsNotNullValidator("gender"))
+			.append(new IsNotNullValidator("childrenQty"))
+			.append(new IsNotNegativeValidator("childrenQty"))
+			.append(new IsNotNullValidator("birthDate"))
+			.append(new IsNotDateBeforeNowValidator("birthDate"))
+			.append(new IsNotBirthDateTooOldValidator("birthDate", 150))
+			.append(new PersonalDataValidator(repository))
+			.validate();
 	}
 
 }
