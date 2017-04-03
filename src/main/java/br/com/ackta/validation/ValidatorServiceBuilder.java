@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.business.service.validator;
+package br.com.ackta.validation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -10,25 +10,28 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
 
 public class ValidatorServiceBuilder {
 
+	public static ValidatorServiceBuilder build(Object validatable1, String objectName) {
+		return new ValidatorServiceBuilder(validatable1, objectName);
+	}
 	private String objectName;
-	private List<FieldNameValidator> validatorList;
+	private List<FieldNameValidator> fieldNameValidatorList;
+	private List<Validator> validatorList;
+
 	private Object validatable;
-	
+
 	/**
 	 * @param objectName
 	 */
 	public ValidatorServiceBuilder(Object validatable1, String objectName) {
 		super();
 		this.objectName = objectName;
+		fieldNameValidatorList = new ArrayList<>();
 		validatorList = new ArrayList<>();
 		validatable = validatable1;
-	}
-
-	public static ValidatorServiceBuilder build(Object validatable1, String objectName) {
-		return new ValidatorServiceBuilder(validatable1, objectName);
 	}
 
 	public ValidatorServiceBuilder append(FieldNameValidator validator) {
@@ -36,15 +39,29 @@ public class ValidatorServiceBuilder {
 		Assert.notNull(validator);
 		Class<?> propertyType = findPropertyType(validatable, validator);
 		if (!validator.supports(propertyType)) {
-			String str = String.format("The supplied %s must support the validation of %s instances.", 
-					validator.getClass().getName(), 
-					validatable.getClass().getName());
+			String str = String.format("The supplied %s must support the validation of %s instances.",
+					validator.getClass().getName(),
+					propertyType);
+			throw new IllegalArgumentException(str);
+		}
+		fieldNameValidatorList.add(validator);
+		return this;
+	}
+
+	public ValidatorServiceBuilder append(Validator validator) {
+		Assert.notNull(validatable);
+		Assert.notNull(validator);
+		Class<? extends Object> class1 = validatable.getClass();
+		if (!validator.supports(class1)) {
+			String str = String.format("The supplied %s must support the validation of %s instances.",
+					validator.getClass().getName(),
+					class1);
 			throw new IllegalArgumentException(str);
 		}
 		validatorList.add(validator);
 		return this;
 	}
-	
+
 	/**
 	 * @param validatable1
 	 * @param v
@@ -74,23 +91,26 @@ public class ValidatorServiceBuilder {
 		}
 		return propertyType;
 	}
-	
+
 	public void validate() throws ValidatorServiceException {
-		validate((Object[]) null); 
+		validate((Object[]) null);
 	}
-	
+
 	/**
 	 * @param validationHints one or more hint objects to be passed to the validation engine
 	 * @throws ValidatorServiceException
 	 */
-	public void validate(Object... validationHints) throws ValidatorServiceException {	
+	public void validate(Object... validationHints) throws ValidatorServiceException {
 		Errors errors = null;
 		if (Objects.isNull(errors)) {
 			errors = new BindException(validatable, objectName);
 		}
-		for (FieldNameValidator validator: validatorList) {
+		for (FieldNameValidator validator: fieldNameValidatorList) {
 			Object property = findProperty(validatable, validator);
 			ValidationUtils.invokeValidator(validator, property, errors, validationHints);
+		}
+		for (Validator validator: validatorList) {
+			ValidationUtils.invokeValidator(validator, validatable, errors, validationHints);
 		}
 		if(errors.hasErrors()) {
 			throw new ValidatorServiceException(errors);

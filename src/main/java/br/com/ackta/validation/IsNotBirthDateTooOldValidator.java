@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.business.service.validator;
+package br.com.ackta.validation;
 
 import java.time.LocalDate;
 import java.util.Objects;

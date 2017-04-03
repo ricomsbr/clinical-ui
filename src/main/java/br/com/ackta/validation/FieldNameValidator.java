@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.business.service.validator;
+package br.com.ackta.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;

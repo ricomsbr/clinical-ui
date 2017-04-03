@@ -1,4 +1,4 @@
-package br.com.ackta.clinical.business.service.validator;
+package br.com.ackta.validation;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -6,17 +6,17 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
-public class IsDateAfterNowValidator extends FieldNameValidator {
+public class IsNotDateBeforeNowValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_SUFIX = ".after_now";
+	private static final String ERROR_CODE_SUFIX = ".not_before_now";
 
 	@Autowired
-	public IsDateAfterNowValidator() {
+	public IsNotDateBeforeNowValidator() {
 		super();
 	}
-	
+
 	@Autowired
-	public IsDateAfterNowValidator(String fieldName1) {
+	public IsNotDateBeforeNowValidator(String fieldName1) {
 		super(fieldName1);
 	}
 
