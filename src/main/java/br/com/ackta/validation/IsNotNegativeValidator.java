@@ -4,17 +4,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
 public class IsNotNegativeValidator extends FieldNameValidator {
 
 	private static final String ERROR_CODE_SUFIX = ".is_negative";
-
-	@Autowired
-	public IsNotNegativeValidator() {
-		super();
-	}
 
 	@Autowired
 	public IsNotNegativeValidator(String fieldName1) {
@@ -52,7 +48,8 @@ public class IsNotNegativeValidator extends FieldNameValidator {
 		        }
 			}
 			if (reject) {
-				errors.rejectValue(fieldName, fieldName + ERROR_CODE_SUFIX);
+				String errorCode = fieldName + ERROR_CODE_SUFIX;
+				errors.rejectValue(fieldName, errorCode, Arrays.array(target), errorCode);
 			}
 	    }
 	}

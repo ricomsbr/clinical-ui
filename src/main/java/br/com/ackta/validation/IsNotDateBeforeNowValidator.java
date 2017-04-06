@@ -3,17 +3,13 @@ package br.com.ackta.validation;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
 public class IsNotDateBeforeNowValidator extends FieldNameValidator {
 
 	private static final String ERROR_CODE_SUFIX = ".not_before_now";
-
-	@Autowired
-	public IsNotDateBeforeNowValidator() {
-		super();
-	}
 
 	@Autowired
 	public IsNotDateBeforeNowValidator(String fieldName1) {
@@ -30,7 +26,8 @@ public class IsNotDateBeforeNowValidator extends FieldNameValidator {
 		LocalDate d = (LocalDate) target;
         if (Objects.nonNull(d)) {
         	if (LocalDate.now().isBefore(d)) {
-	            errors.rejectValue(fieldName, fieldName + ERROR_CODE_SUFIX);
+	            String errorCode = fieldName + ERROR_CODE_SUFIX;
+				errors.rejectValue(fieldName, errorCode, Arrays.array(target), errorCode);
 	        }
         }
     }

@@ -31,7 +31,7 @@ public class PersonalDataServiceTest {
 		PersonalData personalData = new PersonalData();
 		personalData.setId(1L);
 		personalData.setBirthDate(LocalDate.of(6000, 1, 1));
-		assertThatThrownBy(() -> service.validateInsert(personalData))
+		assertThatThrownBy(() -> service.validate(personalData))
 			.isInstanceOf(ValidatorServiceException.class)
 			.extracting("errors")
 			.extracting("bindingResult")

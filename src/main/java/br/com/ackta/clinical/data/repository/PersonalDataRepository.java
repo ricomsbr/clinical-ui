@@ -10,10 +10,10 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 @Repository
 public interface PersonalDataRepository extends JpaRepository<PersonalData, Long> {
 
-	Optional<PersonalData> findFirstByCpf(String cpf);
+	Optional<PersonalData> findByCpf(String cpf);
 
-	Optional<PersonalData> findFirstByMail(String mail);
+	Optional<PersonalData> findByNameIgnoreCase(String name);
 
-	Optional<PersonalData> findFirstByName(String name);
+	Optional<PersonalData> findByMailIgnoreCase(String mail);
 
 }

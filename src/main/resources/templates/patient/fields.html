@@ -42,6 +42,7 @@ $(document).ready(function(){
 	</div>
 	</div>
 	<div class="form-group col-sm-2">
+	<div data-th-class="${#fields.hasErrors('gender')} ? has-error : has-sucess " > 
 		<label class="control-label">Gênero *</label>
 		<select class="form-control" data-th-field="*{{gender}}" id="gender" tabindex="1">
 			<option value="" ></option>
@@ -54,7 +55,9 @@ $(document).ready(function(){
 			<span id="message"></span>
 		</div>
 	</div>
+	</div>
 	<div class="form-group col-sm-2">
+	<div data-th-class="${#fields.hasErrors('birthDate')} ? has-error : has-sucess " > 
 		<label class="control-label">Data de Nascimento *</label>
 		<input type="date" class="form-control" tabindex="1" 
 			data-th-field="*{{birthDate}}"
@@ -62,6 +65,7 @@ $(document).ready(function(){
 		<div class="help-block">
 			<span id="message"></span>
 		</div>
+	</div>
 	</div>
 </div>
 <div class="row">
@@ -102,7 +106,7 @@ $(document).ready(function(){
 		</div>
 	</div>
 	<div class="form-group col-sm-3">
-		<label class="control-label">Cidade *</label>
+		<label class="control-label">Cidade</label>
 		<input type="text" class="form-control" tabindex="1" maxlength="40"
 			data-th-field="*{{city}}"
 			placeholder="Cidade" />

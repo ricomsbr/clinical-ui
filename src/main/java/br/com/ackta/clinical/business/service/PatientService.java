@@ -8,10 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ackta.clinical.business.service.validator.PatientValidator;
 import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PatientRepository;
+import br.com.ackta.validation.IsNotNullValidator;
+import br.com.ackta.validation.ValidatorServiceBuilder;
 
 @Service
 @Transactional
@@ -43,13 +47,34 @@ public class PatientService implements IPatientService {
 	}
 
 	@Override
-	public Patient insert(Patient patient) {
-		PersonalData personalData = personalDataService.insert(patient.getPersonalData());
-		patient.setPersonalData(personalDate);
+	public Patient validateAndSave(Patient patient) {
+		validate(patient);
 		Patient result = patientRepository.save(patient);
 		return result;
 	}
+	
+	@Override
+	public void validate(Patient patient) {
+		ValidatorServiceBuilder
+			.build(patient, patient.getClass().getName())
+			.append(new PatientValidator(personalDataService))
+			.validate();
+		validateMedicalHistory(patient);
+	}
 
+	private void validateMedicalHistory(Patient patient) {
+		MedicalHistory history = patient.getMedicalHistory();
+		ValidatorServiceBuilder
+			.build(history, patient.getClass().getName())
+			.append(new IsNotNullValidator("medicalHistory.allergic"))
+			.append(new IsNotNullValidator("medicalHistory.smoker"))
+			.append(new IsNotNullValidator("medicalHistory.hasDiseases"))
+			.append(new IsNotNullValidator("medicalHistory.hasSurgeries"))
+			.append(new IsNotNullValidator("medicalHistory.weight"))
+			.append(new IsNotNullValidator("medicalHistory.height"))
+			.validate();
+	}
+	
 	@Override
 	public Patient update(Patient patient) {
 		IPersonalData data = patient.getPersonalData();

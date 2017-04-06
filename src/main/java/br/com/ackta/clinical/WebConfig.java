@@ -23,7 +23,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public SerializableResourceBundleMessageSource messageSource() {
 		final SerializableResourceBundleMessageSource serializableResourceBundleMessageSource = new SerializableResourceBundleMessageSource();
-		serializableResourceBundleMessageSource.setBasename("classpath:/i18n/msgs");
+		serializableResourceBundleMessageSource.setBasenames("classpath:/i18n/msgs", "classpath:/i18n/ValidatorMessages");
 		return serializableResourceBundleMessageSource;
 	}
 }

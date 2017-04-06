@@ -7,12 +7,6 @@ import org.springframework.validation.Validator;
 public abstract class FieldNameValidator implements Validator {
 
 	String fieldName;
-
-	@Autowired
-	public FieldNameValidator() {
-		super();
-		this.fieldName = "date";
-	}
 	
 	@Autowired
 	public FieldNameValidator(String fieldName1) {

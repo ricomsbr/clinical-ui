@@ -1,5 +1,6 @@
 package br.com.ackta.validation;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -12,11 +13,6 @@ public class IsNotEmptyOrWhitespaceValidator extends FieldNameValidator {
 	public IsNotEmptyOrWhitespaceValidator(String fieldName1) {
 		super(fieldName1);
 	}
-	
-	@Autowired
-	public IsNotEmptyOrWhitespaceValidator() {
-		super();
-	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -25,6 +21,7 @@ public class IsNotEmptyOrWhitespaceValidator extends FieldNameValidator {
 
 	@Override
 	public void validate(Object target, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, fieldName, fieldName + ERROR_CODE_SUFIX);
+        String errorCode = fieldName + ERROR_CODE_SUFIX;
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, fieldName, errorCode, Arrays.array(target), errorCode);
     }
 }

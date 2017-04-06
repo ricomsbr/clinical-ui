@@ -17,7 +17,7 @@ spring:
   mvc:
     locale: pt_BR
   profiles:
-    active: development
+    active: test
   jpa:
     show-sql: false
     generate-ddl: false

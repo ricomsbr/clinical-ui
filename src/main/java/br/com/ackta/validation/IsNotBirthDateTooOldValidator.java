@@ -3,6 +3,7 @@ package br.com.ackta.validation;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -41,10 +42,9 @@ public class IsNotBirthDateTooOldValidator extends FieldNameValidator {
 		LocalDate date = (LocalDate) target;
         if (Objects.nonNull(date)) {
         	if (LocalDate.now().minusYears(maxAgeInYears).isAfter(date)) {
-	            errors.rejectValue(fieldName, fieldName + ERROR_CODE_SUFIX);
+	            String errorCode = fieldName + ERROR_CODE_SUFIX;
+				errors.rejectValue(fieldName, errorCode, Arrays.array(target), errorCode);
 	        }
         }
     }
-
-
 }

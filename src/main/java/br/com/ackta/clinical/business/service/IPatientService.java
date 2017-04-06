@@ -16,8 +16,10 @@ public interface IPatientService {
 
 	Optional<Patient> findOne(Long id);
 
-	Patient insert(Patient patient);
-
+	Patient validateAndSave(Patient patient);
+	
 	Patient update(Patient patient);
+	
+	void validate(Patient patient);
 
 }

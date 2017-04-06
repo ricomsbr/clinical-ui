@@ -2,11 +2,11 @@ package br.com.ackta.clinical.business.helper;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.assertj.core.util.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -76,25 +76,29 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	private List<PersonalData> addResponsibles(Form form) {
-		List<PersonalData> result = Lists.newArrayList();
-		PersonalData responsible1 = createResponsible(form, form.getResponsibleName1(), form.getResponsiblePhone1());
-		PersonalData responsible2 = createResponsible(form, form.getResponsibleName2(), form.getResponsiblePhone2());
-		result.add(personalDataService.save(responsible1));
-		result.add(personalDataService.save(responsible2));
-
+		List<PersonalData> result = new ArrayList<>();
+		Optional<PersonalData> responsible1 = createResponsible(form, form.getResponsibleName1(), form.getResponsiblePhone1());
+		Optional<PersonalData> responsible2 = createResponsible(form, form.getResponsibleName2(), form.getResponsiblePhone2());
+		if (responsible1.isPresent()) {
+			result.add(personalDataService.save(responsible1.get()));
+		}
+		if (responsible2.isPresent()) {
+			result.add(personalDataService.save(responsible2.get()));
+		}
 		return result;
 	}
 
-	private PersonalData createResponsible(Form form, String respName, String respPhone) {
-		PersonalData result = new PersonalData();
+	private Optional<PersonalData> createResponsible(Form form, String respName, String respPhone) {
+		PersonalData result = null;
 		if (!respName.isEmpty()) {
+			result = new PersonalData();
 			result.setName(respName);
 			if (!respPhone.isEmpty()) {
 				Phone phone = new Phone(1, PhoneType.GENERAL, COUNTRY_CODE, respPhone, result);
 				result.addPhone(phoneService.insert(phone));
 			}
 		}
-		return result;
+		return Optional.ofNullable(result);
 	}
 
 	@Override
@@ -103,7 +107,7 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	private List<ConvenantMember> extractConvenantMembers(Form form) {
-		List<ConvenantMember> result = Lists.newArrayList();
+		List<ConvenantMember> result = new ArrayList<>();
 		if (form.getIsMember()) {
 			ConvenantMember ownMember = new ConvenantMember(Convenant.OWN);
 			result.add(ownMember);
@@ -119,7 +123,7 @@ public class PatientHelper implements IPatientHelper {
 
 
 	private List<FamilyMember> extractFamilyMembers(Form form) {
-		List<FamilyMember> result = Lists.newArrayList();
+		List<FamilyMember> result = new ArrayList<>();
 		FamilyMember motherHistory = new FamilyMember();
 		BeanUtils.copyProperties(form.getMotherHistory(), motherHistory);
 		motherHistory.setKinship(Kinship.MOTHER);
@@ -158,15 +162,15 @@ public class PatientHelper implements IPatientHelper {
 	public IPatient insert(Form form) {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
+		List<PersonalData> responsibles = addResponsibles(form);
+		PersonalData personalData = personalDataService.validateAndSave(data);
 		addAddress(form, data);
 		addPhones(form, data);
-		List<PersonalData> responsibles = addResponsibles(form);
-		Patient patient = new Patient(data, extractConvenantMembers(form), responsibles);
-		patient.setObservation(form.getObservation());
+		Patient patient = new Patient(personalData, extractConvenantMembers(form), responsibles, form.getObservation());
 		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
 		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
 		patient.setMedicalHistory(medicalHistory);
-		IPatient result = patientService.insert(patient);
+		IPatient result = patientService.validateAndSave(patient);
 		return result;
 	}
 
@@ -186,7 +190,7 @@ public class PatientHelper implements IPatientHelper {
 		if (birthDate != null) {
 			data.setBirthDate(birthDate);
 		}
-		Patient probe = new Patient(data, null, null);
+		Patient probe = new Patient(data);
 		ExampleMatcher matcher = ExampleMatcher.matching()
 				.withIgnoreCase()
 				.withMatcher("personalData.name", match -> match.stringMatcher(StringMatcher.CONTAINING));
@@ -238,8 +242,10 @@ public class PatientHelper implements IPatientHelper {
 		resp1.getPhones().first().setNumber(form.getResponsiblePhone1());
 		resp2.setName(form.getResponsibleName2());
 		resp2.getPhones().first().setNumber(form.getResponsiblePhone2());
-		personalDataService.update(resp1);
-		personalDataService.update(resp2);
+		personalDataService.validateName(resp1);
+		personalDataService.save(resp1);
+		personalDataService.validateName(resp2);
+		personalDataService.save(resp2);
 
 		return responsibles;
 	}

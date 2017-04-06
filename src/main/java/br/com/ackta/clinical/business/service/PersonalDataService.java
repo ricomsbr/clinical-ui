@@ -1,11 +1,16 @@
 package br.com.ackta.clinical.business.service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
-import br.com.ackta.clinical.business.service.validator.PersonalDataValidator;
+import br.com.ackta.clinical.business.service.validator.PersonalDataCpfValidator;
+import br.com.ackta.clinical.business.service.validator.PersonalDataMailValidator;
+import br.com.ackta.clinical.business.service.validator.PersonalDataNameValidator;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 import br.com.ackta.validation.IsNotBirthDateTooOldValidator;
@@ -31,24 +36,18 @@ public class PersonalDataService implements IPersonalDataService {
 	}
 
 	@Override
-	public PersonalData insert(PersonalData personalData) {
-		Assert.notNull(personalData.getId());
-		validateInsert(personalData);
+	public PersonalData validateAndSave(PersonalData personalData) {
+		validate(personalData);
 		return repository.save(personalData);
-
 	}
 
-	public PersonalData save(PersonalData data) { //TODO remover esse método quando criar entidade Responsibles
-		return repository.save(data);
-	}
-
-	public PersonalData update(PersonalData data) {
-		return repository.save(data);
-	}
-
-	// TODO remover
 	@Override
-	public void validateInsert(PersonalData personalData) {
+	public PersonalData save(PersonalData data) { 
+		return repository.save(data);
+	}
+
+	@Override
+	public void validate(PersonalData personalData) {
 		ValidatorServiceBuilder
 			.build(personalData, personalData.getClass().getName())
 			.append(new IsNotEmptyOrWhitespaceValidator("name"))
@@ -58,8 +57,46 @@ public class PersonalDataService implements IPersonalDataService {
 			.append(new IsNotNullValidator("birthDate"))
 			.append(new IsNotDateBeforeNowValidator("birthDate"))
 			.append(new IsNotBirthDateTooOldValidator("birthDate", 150))
-			.append(new PersonalDataValidator(repository))
+			.append(new PersonalDataNameValidator(repository))
+			.append(new PersonalDataMailValidator(repository))
+			.append(new PersonalDataCpfValidator(repository))
 			.validate();
+	}
+
+	@Override
+	public Optional<PersonalData> findByNameIgnoreCase(String name) {
+		return repository.findByNameIgnoreCase(name);
+	}
+
+	@Override
+	public Optional<PersonalData> findByMailIgnoreCase(String mail) {
+		return repository.findByMailIgnoreCase(mail);
+	}
+
+	@Override
+	public Optional<PersonalData> findByCpf(String cpf) {
+		return repository.findByCpf(cpf);
+	}
+
+	@Override
+	public void validateName(PersonalData personalData) {
+		ValidatorServiceBuilder
+			.build(personalData, personalData.getClass().getName())
+			.append(new IsNotEmptyOrWhitespaceValidator("name"))
+			.append(new PersonalDataNameValidator(repository))
+			.validate();
+	}
+
+	@Override
+	public long calculateAge(PersonalData personalData) {
+		return calculateAge(personalData, LocalDate.now());
+	}
+
+	@Override
+	public long calculateAge(PersonalData personalData, LocalDate currentDate) {
+		Period period = Period.between(personalData.getBirthDate(), currentDate);
+		long result = period.getYears();
+		return result;
 	}
 
 }

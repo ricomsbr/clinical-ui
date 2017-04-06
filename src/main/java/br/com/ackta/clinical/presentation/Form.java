@@ -27,10 +27,12 @@ public class Form {
 	private String cpf;
 
 	@NotNull
-	@NotEmpty(message="Nome do paciente não pode ficar sem preenchimento")
+	@NotEmpty
 	private String name;
 
 	private String rg;
+	
+	@NotNull
 	private Gender gender;
 	private String publicArea;
 	private String number;
@@ -44,6 +46,7 @@ public class Form {
 	private String profession;
 	private String zipCode;
 	private String observation;
+	
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate birthDate;
 	private Integer childrenQty;

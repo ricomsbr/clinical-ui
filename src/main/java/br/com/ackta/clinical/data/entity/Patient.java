@@ -42,7 +42,7 @@ public class Patient implements IPatient {
 	@Column(name = "deleted", nullable = false)
 	private boolean deleted;
 
-	@OneToOne(cascade={CascadeType.ALL}, targetEntity = PersonalData.class)
+	@OneToOne(cascade={}, targetEntity = PersonalData.class)
 	@JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false)
 	private PersonalData personalData;
 
@@ -71,14 +71,18 @@ public class Patient implements IPatient {
 	}
 
 	public Patient(PersonalData personalData) {
-		this(personalData, Lists.newArrayList(), Lists.newArrayList());
+		this(personalData, Lists.newArrayList(), Lists.newArrayList(), null);
 	}
 
-	public Patient(PersonalData personalData, List<ConvenantMember> convenantMembers, List<PersonalData> responsibles) {
+	public Patient(PersonalData personalData1, 
+			List<ConvenantMember> convenantMembers1, 
+			List<PersonalData> responsibles1, 
+			String observation1) {
 		this();
-		this.personalData = personalData;
-		this.convenantMembers = convenantMembers;
-		this.responsibles = responsibles;
+		this.personalData = personalData1;
+		this.convenantMembers = convenantMembers1;
+		this.responsibles = responsibles1;
+		this.observation = observation1;
 	}
 
 	@Override
@@ -145,5 +149,10 @@ public class Patient implements IPatient {
 	@Override
 	public void setVersion(Long version) {
 		this.version = version;
+	}
+
+	
+	public void setPersonalData(PersonalData personalData2) {
+		this.personalData = personalData2;		
 	}
 }

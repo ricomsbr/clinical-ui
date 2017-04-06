@@ -1,5 +1,6 @@
 package br.com.ackta.clinical.business.service.validator;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -9,12 +10,12 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 
 @Service
-public class PersonalDataValidator implements Validator {
+public class PersonalDataMailValidator implements Validator {
 
 	private PersonalDataRepository repository;
 
 	@Autowired
-	public PersonalDataValidator(PersonalDataRepository repository1) {
+	public PersonalDataMailValidator(PersonalDataRepository repository1) {
 		super();
 		this.repository = repository1;
 	}
@@ -27,14 +28,10 @@ public class PersonalDataValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
-		if (repository.findFirstByCpf(p.getCpf()).isPresent()) {
-			errors.rejectValue("cpf", "cpf.already_exists");
-		}
-		if (repository.findFirstByName(p.getName()).isPresent()) {
-			errors.rejectValue("name", "name.already_exists");
-		}
-		if (repository.findFirstByMail(p.getMail()).isPresent()) {
-			errors.rejectValue("mail", "mail.already_exists");
+		String mail = p.getMail();
+		if (repository.findByMailIgnoreCase(mail).isPresent()) {
+			String errorCode = "mail.already_exists";
+			errors.rejectValue("mail", errorCode, Arrays.array(mail), errorCode);
 		}
 	}
 }
