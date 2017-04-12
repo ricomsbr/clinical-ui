@@ -15,4 +15,11 @@
 			</div>
 		</div>
 	</form>
+	<form action="#" data-th-action="@{/patients/{id}/report(id = ${id})}" enctype="application/x-www-form-urlencoded" novalidate="novalidate" data-th-method="get">
+		<div class="row">
+			<div class="form-group col-sm-6">
+				<button type="submit" class="btn btn-info" tabindex="1">Imprimir</button>
+			</div>
+		</div>
+	</form>
 </div>

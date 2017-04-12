@@ -10,12 +10,14 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 
 @Service
-public class PersonalDataNameValidator implements Validator {
+public class NotDuplicatePatientMailValidator implements Validator {
 
+	private static final String ERROR_CODE_PREFIX = "NotDuplicatePatientMail";
+	private static final String DEFAULT_FIELD_NAME = "mail";
 	private PersonalDataRepository repository;
 
 	@Autowired
-	public PersonalDataNameValidator(PersonalDataRepository repository1) {
+	public NotDuplicatePatientMailValidator(PersonalDataRepository repository1) {
 		super();
 		this.repository = repository1;
 	}
@@ -28,10 +30,12 @@ public class PersonalDataNameValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
-		String name = p.getName();
-		if (repository.findByNameIgnoreCase(name).isPresent()) {
-			String errorCode = "name.already_exists";
-			errors.rejectValue("name", errorCode, Arrays.array(name), errorCode);
+		String mail = p.getMail();
+		if (repository.findByMailIgnoreCase(mail).isPresent()) {
+			errors.rejectValue(DEFAULT_FIELD_NAME, 
+					ERROR_CODE_PREFIX, 
+					Arrays.array(mail), 
+					ERROR_CODE_PREFIX);
 		}
 	}
 }

@@ -10,12 +10,14 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 
 @Service
-public class PersonalDataMailValidator implements Validator {
+public class NotDuplicatePatientCpfValidator implements Validator {
 
+	private static final String ERROR_CODE_PREFIX = "NotDuplicatePatientCpf";
+	private static final String DEFAULT_FIELD_NAME = "cpf";
 	private PersonalDataRepository repository;
 
 	@Autowired
-	public PersonalDataMailValidator(PersonalDataRepository repository1) {
+	public NotDuplicatePatientCpfValidator(PersonalDataRepository repository1) {
 		super();
 		this.repository = repository1;
 	}
@@ -28,10 +30,12 @@ public class PersonalDataMailValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
-		String mail = p.getMail();
-		if (repository.findByMailIgnoreCase(mail).isPresent()) {
-			String errorCode = "mail.already_exists";
-			errors.rejectValue("mail", errorCode, Arrays.array(mail), errorCode);
+		String cpf = p.getCpf();
+		if (repository.findByCpf(cpf).isPresent()) {
+			errors.rejectValue(DEFAULT_FIELD_NAME, 
+					ERROR_CODE_PREFIX, 
+					Arrays.array(cpf), 
+					ERROR_CODE_PREFIX);
 		}
 	}
 }

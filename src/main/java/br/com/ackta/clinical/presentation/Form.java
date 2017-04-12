@@ -20,6 +20,7 @@ import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.entity.Phone;
 import br.com.ackta.clinical.data.entity.PhoneType;
 
 public class Form {
@@ -88,12 +89,22 @@ public class Form {
 		this.setMedicalHistory(medicalHistory);
 
 		List<PersonalData> respList = patient.getResponsibles();
-		PersonalData resp1 = respList.get(0);
-		this.responsibleName1 = resp1.getName();
-		this.responsiblePhone1 = resp1.getPhones().first().getNumber();
-		PersonalData resp2 = respList.get(1);
-		this.responsibleName2 = resp2.getName();
-		this.responsiblePhone2 = resp2.getPhones().first().getNumber();
+		if (respList.size() > 0) {
+			PersonalData resp1 = respList.get(0);
+			this.responsibleName1 = resp1.getName();
+			SortedSet<Phone> phones1 = resp1.getPhones();
+			if (phones1.size() > 0) {
+				this.responsiblePhone1 = phones1.first().getNumber();
+			}
+		}
+		if (respList.size() > 1) {
+			PersonalData resp2 = respList.get(1);
+			this.responsibleName2 = resp2.getName();
+			SortedSet<Phone> phones2 = resp2.getPhones();
+			if (phones2.size() > 0) {
+				this.responsiblePhone2 = phones2.first().getNumber();
+			}
+		}
 		this.isMember = isMember;
 		this.susCard = susCardNumber;
 		this.observation = patient.getObservation();

@@ -13,6 +13,8 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 public class PatientValidator implements Validator{
 
 	private static final int AGE_OF_MAJORITY = 18;
+//	private static final String NOT_DUPLICATED_RESP_NAME = "NotDuplicatedResponsibleName";
+	private static final String NOT_NULL_RESP = "NotNullPatientResponsible";
 	private IPersonalDataService personalDataService;
 
 	public PatientValidator(IPersonalDataService personalDataService1) {
@@ -29,18 +31,14 @@ public class PatientValidator implements Validator{
 	public void validate(Object target, Errors errors) {
 		Patient patient = (Patient) target;
 		List<PersonalData> responsibles = patient.getResponsibles();
-		responsibles.forEach(d -> {
-			String name = d.getName();
-			if (personalDataService.findByNameIgnoreCase(name).isPresent()) {
-				String errorCode1 = "responsable_name.already_exists";
-				errors.rejectValue("responsable_name", errorCode1, Arrays.array(name), errorCode1);
-			}
-		});
 		
 		PersonalData personalData = patient.getPersonalData();
-		if ((personalDataService.calculateAge(personalData) < AGE_OF_MAJORITY) && (responsibles.size() == 0)) {
-			String errorCode2 = "responsibles.is_empty";
-			errors.rejectValue("responsibles", errorCode2, errorCode2);
+		long age = personalDataService.calculateAge(personalData);
+		if ((age < AGE_OF_MAJORITY) && (responsibles.size() == 0)) {
+			errors.rejectValue("responsibles", 
+					NOT_NULL_RESP, 
+					Arrays.array(age), 
+					NOT_NULL_RESP);
 		}
 	}
 

@@ -22,4 +22,8 @@ public interface IPatientService {
 	
 	void validate(Patient patient);
 
+	void generatePdfFile(Patient patient);
+	
+	byte[] generatePdf(Patient patient);
+
 }

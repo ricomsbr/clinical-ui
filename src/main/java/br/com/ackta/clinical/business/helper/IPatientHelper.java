@@ -19,4 +19,6 @@ public interface IPatientHelper {
 
 	Patient update(Long id, Form form);
 
+	byte[] generatePdf(Long id);
+
 }

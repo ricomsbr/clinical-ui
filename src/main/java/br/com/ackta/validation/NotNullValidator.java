@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-public class IsNotNullValidator extends FieldNameValidator {
+public class NotNullValidator extends FieldNameValidator {
 
-	private static final String DOT = ".";
 	private static final String ERROR_CODE_PREFIX = "NotNull";
 
 	@Autowired
-	public IsNotNullValidator(String fieldName1) {
+	public NotNullValidator(String fieldName1) {
 		super(fieldName1);
 	}
 
@@ -22,7 +21,7 @@ public class IsNotNullValidator extends FieldNameValidator {
 
 	@Override
 	public void validate(Object target, Errors errors) {
-        String errorCode = ERROR_CODE_PREFIX;
-		ValidationUtils.rejectIfEmpty(errors, fieldName, errorCode, Arrays.array(target), errorCode + DOT + fieldName);
+		ValidationUtils.rejectIfEmpty(errors, fieldName, ERROR_CODE_PREFIX, 
+				Arrays.array(target), ERROR_CODE_PREFIX);
     }
 }

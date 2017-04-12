@@ -8,27 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
-public class IsNotBirthDateTooOldValidator extends FieldNameValidator {
+public class NotTooOldValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_SUFIX = ".too_old";
+	private static final String ERROR_CODE_PREFIX = "NotTooOld";
 	private static final long DEFAULT_MAX_AGE = 200L;
-	private static final String DEFAULT_FIELD_NAME = "birthDate"; 
+	private static final String DEFAULT_FIELD_NAME = "date"; 
 	private long maxAgeInYears = 200;
 
 	@Autowired
-	public IsNotBirthDateTooOldValidator(String fieldName1, long maxAgeInYears1) {
+	public NotTooOldValidator(String fieldName1, long maxAgeInYears1) {
 		super(fieldName1);
 		Assert.isTrue(maxAgeInYears1 >= 0);
 		this.maxAgeInYears = maxAgeInYears1;
 	}
 
 	@Autowired
-	public IsNotBirthDateTooOldValidator(String fieldName1) {
+	public NotTooOldValidator(String fieldName1) {
 		this(fieldName1, DEFAULT_MAX_AGE);
 	}
 	
 	@Autowired
-	public IsNotBirthDateTooOldValidator() {
+	public NotTooOldValidator() {
 		this(DEFAULT_FIELD_NAME);
 	}
 	
@@ -42,8 +42,8 @@ public class IsNotBirthDateTooOldValidator extends FieldNameValidator {
 		LocalDate date = (LocalDate) target;
         if (Objects.nonNull(date)) {
         	if (LocalDate.now().minusYears(maxAgeInYears).isAfter(date)) {
-	            String errorCode = fieldName + ERROR_CODE_SUFIX;
-				errors.rejectValue(fieldName, errorCode, Arrays.array(target), errorCode);
+				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
+						Arrays.array(target), ERROR_CODE_PREFIX);
 	        }
         }
     }

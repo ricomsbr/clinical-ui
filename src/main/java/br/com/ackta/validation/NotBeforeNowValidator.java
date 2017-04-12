@@ -7,15 +7,15 @@ import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
-public class IsNotDateBeforeNowValidator extends FieldNameValidator {
+public class NotBeforeNowValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_SUFIX = ".not_before_now";
+	private static final String ERROR_CODE_PREFIX = "NotBeforeNow";
 
 	@Autowired
-	public IsNotDateBeforeNowValidator(String fieldName1) {
+	public NotBeforeNowValidator(String fieldName1) {
 		super(fieldName1);
 	}
-
+	
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return LocalDate.class.equals(clazz);
@@ -26,8 +26,8 @@ public class IsNotDateBeforeNowValidator extends FieldNameValidator {
 		LocalDate d = (LocalDate) target;
         if (Objects.nonNull(d)) {
         	if (LocalDate.now().isBefore(d)) {
-	            String errorCode = fieldName + ERROR_CODE_SUFIX;
-				errors.rejectValue(fieldName, errorCode, Arrays.array(target), errorCode);
+				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
+						Arrays.array(target), ERROR_CODE_PREFIX);
 	        }
         }
     }

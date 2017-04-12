@@ -1,8 +1,8 @@
 package br.com.ackta.clinical.data.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -18,7 +18,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.assertj.core.util.Lists;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -52,7 +51,7 @@ public class Patient implements IPatient {
 	@Embedded
 	private MedicalHistory medicalHistory;
 
-	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = PersonalData.class)
+	@ManyToMany(cascade={}, targetEntity = PersonalData.class)
 	@JoinTable(name = "patient_responsible",
 			joinColumns = @JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false),
 			inverseJoinColumns={@JoinColumn(name="patient_id")}
@@ -71,7 +70,7 @@ public class Patient implements IPatient {
 	}
 
 	public Patient(PersonalData personalData) {
-		this(personalData, Lists.newArrayList(), Lists.newArrayList(), null);
+		this(personalData, new ArrayList<>(), new ArrayList<>(), null);
 	}
 
 	public Patient(PersonalData personalData1, 

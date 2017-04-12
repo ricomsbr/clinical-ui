@@ -8,12 +8,12 @@ import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
-public class IsNotNegativeValidator extends FieldNameValidator {
+public class NonNegativeValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_SUFIX = ".is_negative";
+	private static final String ERROR_CODE_PREFIX = "NonNegative";
 
 	@Autowired
-	public IsNotNegativeValidator(String fieldName1) {
+	public NonNegativeValidator(String fieldName1) {
 		super(fieldName1);
 	}
 
@@ -48,8 +48,8 @@ public class IsNotNegativeValidator extends FieldNameValidator {
 		        }
 			}
 			if (reject) {
-				String errorCode = fieldName + ERROR_CODE_SUFIX;
-				errors.rejectValue(fieldName, errorCode, Arrays.array(target), errorCode);
+				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
+						Arrays.array(target), ERROR_CODE_PREFIX);
 			}
 	    }
 	}

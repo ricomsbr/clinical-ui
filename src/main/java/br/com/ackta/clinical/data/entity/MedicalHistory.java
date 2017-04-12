@@ -2,6 +2,7 @@ package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -10,7 +11,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 
-import org.assertj.core.util.Lists;
 import org.springframework.beans.BeanUtils;
 
 @Embeddable
@@ -69,7 +69,7 @@ public class MedicalHistory implements IMedicalHistory {
 	        name="family_member",
 	        joinColumns=@JoinColumn(name="family_member_id")
 	  )
-	private List<FamilyMember> familyMembers = Lists.newArrayList();
+	private List<FamilyMember> familyMembers = new ArrayList<>();
 
 	public MedicalHistory() {
 		super();

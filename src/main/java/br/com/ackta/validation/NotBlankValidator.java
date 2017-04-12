@@ -5,15 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-public class IsNotEmptyOrWhitespaceValidator extends FieldNameValidator {
+public class NotBlankValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_SUFIX = ".is_empty";
+	private static final String ERROR_CODE_PREFIX = "NotBlank";
 	
 	@Autowired
-	public IsNotEmptyOrWhitespaceValidator(String fieldName1) {
+	public NotBlankValidator(String fieldName1) {
 		super(fieldName1);
 	}
-
+	
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return String.class.equals(clazz);
@@ -21,7 +21,9 @@ public class IsNotEmptyOrWhitespaceValidator extends FieldNameValidator {
 
 	@Override
 	public void validate(Object target, Errors errors) {
-        String errorCode = fieldName + ERROR_CODE_SUFIX;
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, fieldName, errorCode, Arrays.array(target), errorCode);
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, fieldName, 
+				ERROR_CODE_PREFIX, 
+				Arrays.array(target), 
+				ERROR_CODE_PREFIX);
     }
 }

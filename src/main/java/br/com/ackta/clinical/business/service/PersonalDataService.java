@@ -8,16 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.ackta.clinical.business.service.validator.PersonalDataCpfValidator;
-import br.com.ackta.clinical.business.service.validator.PersonalDataMailValidator;
-import br.com.ackta.clinical.business.service.validator.PersonalDataNameValidator;
+import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientNameValidator;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
-import br.com.ackta.validation.IsNotBirthDateTooOldValidator;
-import br.com.ackta.validation.IsNotDateBeforeNowValidator;
-import br.com.ackta.validation.IsNotEmptyOrWhitespaceValidator;
-import br.com.ackta.validation.IsNotNegativeValidator;
-import br.com.ackta.validation.IsNotNullValidator;
+import br.com.ackta.validation.NonNegativeValidator;
+import br.com.ackta.validation.NotBeforeNowValidator;
+import br.com.ackta.validation.NotBlankValidator;
+import br.com.ackta.validation.NotNullValidator;
+import br.com.ackta.validation.NotTooOldValidator;
 import br.com.ackta.validation.ValidatorServiceBuilder;
 
 @Service
@@ -50,19 +48,29 @@ public class PersonalDataService implements IPersonalDataService {
 	public void validate(PersonalData personalData) {
 		ValidatorServiceBuilder
 			.build(personalData, personalData.getClass().getName())
-			.append(new IsNotEmptyOrWhitespaceValidator("name"))
-			.append(new IsNotNullValidator("gender"))
-			.append(new IsNotNullValidator("childrenQty"))
-			.append(new IsNotNegativeValidator("childrenQty"))
-			.append(new IsNotNullValidator("birthDate"))
-			.append(new IsNotDateBeforeNowValidator("birthDate"))
-			.append(new IsNotBirthDateTooOldValidator("birthDate", 150))
-			.append(new PersonalDataNameValidator(repository))
-			.append(new PersonalDataMailValidator(repository))
-			.append(new PersonalDataCpfValidator(repository))
+			.append(new NotBlankValidator("name"))
+			.append(new NotNullValidator("gender"))
+			.append(new NotNullValidator("childrenQty"))
+			.append(new NonNegativeValidator("childrenQty"))
+			.append(new NotNullValidator("birthDate"))
+			.append(new NotBeforeNowValidator("birthDate"))
+			.append(new NotTooOldValidator("birthDate", 150))
+			.append(new NotDuplicatePatientNameValidator(repository))
+//			.append(new NotDuplicatePatientMailValidator(repository))
+//			.append(new NotDuplicatePatientCpfValidator(repository))
 			.validate();
 	}
 
+	@Override
+	public void validateName(PersonalData personalData) {
+		ValidatorServiceBuilder
+		.build(personalData, personalData.getClass().getName())
+		.append(new NotBlankValidator("name"))
+//		.append(new NotEmptyValidator("phones"))
+//		.append(new NotDuplicatePatientNameValidator(repository))
+		.validate();
+	}
+	
 	@Override
 	public Optional<PersonalData> findByNameIgnoreCase(String name) {
 		return repository.findByNameIgnoreCase(name);
@@ -76,15 +84,6 @@ public class PersonalDataService implements IPersonalDataService {
 	@Override
 	public Optional<PersonalData> findByCpf(String cpf) {
 		return repository.findByCpf(cpf);
-	}
-
-	@Override
-	public void validateName(PersonalData personalData) {
-		ValidatorServiceBuilder
-			.build(personalData, personalData.getClass().getName())
-			.append(new IsNotEmptyOrWhitespaceValidator("name"))
-			.append(new PersonalDataNameValidator(repository))
-			.validate();
 	}
 
 	@Override

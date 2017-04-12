@@ -77,24 +77,28 @@ public class PatientHelper implements IPatientHelper {
 
 	private List<PersonalData> addResponsibles(Form form) {
 		List<PersonalData> result = new ArrayList<>();
-		Optional<PersonalData> responsible1 = createResponsible(form, form.getResponsibleName1(), form.getResponsiblePhone1());
-		Optional<PersonalData> responsible2 = createResponsible(form, form.getResponsibleName2(), form.getResponsiblePhone2());
+		Optional<PersonalData> responsible1 = createResponsible(1, form, form.getResponsibleName1(), form.getResponsiblePhone1());
+		Optional<PersonalData> responsible2 = createResponsible(2, form, form.getResponsibleName2(), form.getResponsiblePhone2());
 		if (responsible1.isPresent()) {
-			result.add(personalDataService.save(responsible1.get()));
+			PersonalData resp1 = responsible1.get();
+			result.add(resp1);
 		}
 		if (responsible2.isPresent()) {
-			result.add(personalDataService.save(responsible2.get()));
+			PersonalData resp2 = responsible2.get();
+			result.add(resp2);
 		}
 		return result;
 	}
 
-	private Optional<PersonalData> createResponsible(Form form, String respName, String respPhone) {
+	private Optional<PersonalData> createResponsible(int index, Form form, String respName, String respPhone) {
 		PersonalData result = null;
 		if (!respName.isEmpty()) {
 			result = new PersonalData();
 			result.setName(respName);
+			personalDataService.validateName(result);
+			result = personalDataService.save(result);
 			if (!respPhone.isEmpty()) {
-				Phone phone = new Phone(1, PhoneType.GENERAL, COUNTRY_CODE, respPhone, result);
+				Phone phone = new Phone(index, PhoneType.GENERAL, COUNTRY_CODE, respPhone, result);
 				result.addPhone(phoneService.insert(phone));
 			}
 		}
@@ -248,5 +252,11 @@ public class PatientHelper implements IPatientHelper {
 		personalDataService.save(resp2);
 
 		return responsibles;
+	}
+
+	@Override
+	public byte[] generatePdf(Long id) {
+		Patient patient = patientService.findOne(id).get();
+		return patientService.generatePdf(patient);
 	}
 }

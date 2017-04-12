@@ -5,9 +5,14 @@
  */
 package br.com.ackta.clinical.presentation;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.assertj.core.util.Lists;
@@ -24,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import br.com.ackta.clinical.SerializableResourceBundleMessageSource;
 import br.com.ackta.clinical.business.helper.IPatientHelper;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.Kinship;
@@ -44,17 +48,16 @@ import br.com.ackta.validation.ValidatorServiceException;
 @RequestMapping(value = "/patients")
 public class PatientController {
 	private static final String DOT = ".";
+	private static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
 	private static Logger LOGGER = LoggerFactory.getLogger(PatientController.class);
 
 	private IPatientHelper helper;
-	private SerializableResourceBundleMessageSource messageSource;
 
 	@Autowired
-	public PatientController(IPatientHelper helper1, SerializableResourceBundleMessageSource messageSource1) {
+	public PatientController(IPatientHelper helper1) {
 		super();
 		this.helper = helper1;
-		this.messageSource = messageSource1;
 	}
 
 
@@ -83,7 +86,6 @@ public class PatientController {
 		model.addAttribute("form", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
-
 		ChronoUnit[] units = {ChronoUnit.DAYS, ChronoUnit.WEEKS, ChronoUnit.MONTHS};
 		model.addAttribute("allPeriodUnits", units );
 		model.addAttribute("page", "patient/insert");
@@ -173,4 +175,26 @@ public class PatientController {
 		model.addAttribute("page", "patient/search");
 		return "index";
 	}
+	
+    @RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
+    public void generatePdf(@PathVariable Long id, Model model, HttpServletResponse response) {
+        LOGGER.info(String.format("Method geraPlanilha initialized"));
+        byte[] pdfBytes = helper.generatePdf(id);
+		model.addAttribute("form", new Form());
+		model.addAttribute("page", "patient/search");
+		
+        response.setContentType("application/pdf");
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern(YYYYMMDDHHMMSS));
+        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
+        ServletOutputStream outStream;
+		try {
+			outStream = response.getOutputStream();
+	        outStream.write(pdfBytes);
+	        outStream.close();
+	        outStream.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+    }
+    
 }

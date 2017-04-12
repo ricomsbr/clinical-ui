@@ -35,7 +35,7 @@ public class MainController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String getIndex(final Model model) {
 		LOGGER.info("Method getIndex initialized.");
-		model.addAttribute("record", new Form());
+		model.addAttribute("form", new Form());
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("page", "patient/search");
 		return "index";

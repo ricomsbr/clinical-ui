@@ -17,7 +17,7 @@ spring:
   mvc:
     locale: pt_BR
   profiles:
-    active: test
+    active: development
   jpa:
     show-sql: false
     generate-ddl: false
@@ -27,6 +27,10 @@ spring:
 server:
   port: 8888
   
+clinical:
+  report:
+    patientReportLayout: classpath:templates/report/patient.jrxml
+    patientReportPath: pdfs/
 ---
 
 spring:
