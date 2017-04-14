@@ -31,10 +31,10 @@ public class NotDuplicatePatientMailValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
 		String mail = p.getMail();
-		if (repository.findByMailIgnoreCase(mail).isPresent()) {
-			errors.rejectValue(DEFAULT_FIELD_NAME, 
-					ERROR_CODE_PREFIX, 
-					Arrays.array(mail), 
+		if (repository.findFirstByMailIgnoreCase(mail).isPresent()) {
+			errors.rejectValue(DEFAULT_FIELD_NAME,
+					ERROR_CODE_PREFIX,
+					Arrays.array(mail),
 					ERROR_CODE_PREFIX);
 		}
 	}

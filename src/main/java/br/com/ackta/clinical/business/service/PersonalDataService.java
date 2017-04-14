@@ -34,13 +34,34 @@ public class PersonalDataService implements IPersonalDataService {
 	}
 
 	@Override
-	public PersonalData validateAndSave(PersonalData personalData) {
-		validate(personalData);
-		return repository.save(personalData);
+	public long calculateAge(PersonalData personalData) {
+		return calculateAge(personalData, LocalDate.now());
 	}
 
 	@Override
-	public PersonalData save(PersonalData data) { 
+	public long calculateAge(PersonalData personalData, LocalDate currentDate) {
+		Period period = Period.between(personalData.getBirthDate(), currentDate);
+		long result = period.getYears();
+		return result;
+	}
+
+	@Override
+	public Optional<PersonalData> findByCpf(String cpf) {
+		return repository.findFirstByCpf(cpf);
+	}
+
+	@Override
+	public Optional<PersonalData> findByMailIgnoreCase(String mail) {
+		return repository.findFirstByMailIgnoreCase(mail);
+	}
+
+	@Override
+	public Optional<PersonalData> findByNameIgnoreCase(String name) {
+		return repository.findFirstByNameIgnoreCase(name);
+	}
+
+	@Override
+	public PersonalData save(PersonalData data) {
 		return repository.save(data);
 	}
 
@@ -62,6 +83,12 @@ public class PersonalDataService implements IPersonalDataService {
 	}
 
 	@Override
+	public PersonalData validateAndSave(PersonalData personalData) {
+		validate(personalData);
+		return repository.save(personalData);
+	}
+
+	@Override
 	public void validateName(PersonalData personalData) {
 		ValidatorServiceBuilder
 		.build(personalData, personalData.getClass().getName())
@@ -69,33 +96,6 @@ public class PersonalDataService implements IPersonalDataService {
 //		.append(new NotEmptyValidator("phones"))
 //		.append(new NotDuplicatePatientNameValidator(repository))
 		.validate();
-	}
-	
-	@Override
-	public Optional<PersonalData> findByNameIgnoreCase(String name) {
-		return repository.findByNameIgnoreCase(name);
-	}
-
-	@Override
-	public Optional<PersonalData> findByMailIgnoreCase(String mail) {
-		return repository.findByMailIgnoreCase(mail);
-	}
-
-	@Override
-	public Optional<PersonalData> findByCpf(String cpf) {
-		return repository.findByCpf(cpf);
-	}
-
-	@Override
-	public long calculateAge(PersonalData personalData) {
-		return calculateAge(personalData, LocalDate.now());
-	}
-
-	@Override
-	public long calculateAge(PersonalData personalData, LocalDate currentDate) {
-		Period period = Period.between(personalData.getBirthDate(), currentDate);
-		long result = period.getYears();
-		return result;
 	}
 
 }

@@ -60,6 +60,30 @@ public class PatientController {
 		this.helper = helper1;
 	}
 
+	/**
+	 * @param bindingResult
+	 * @param ex
+	 */
+	private void bindExceptionErrors(String objectName, BindingResult bindingResult, ValidatorServiceException ex) {
+		ex.getErrors().getFieldErrors()
+			.forEach(error -> {
+				String str = error.getCode() +  DOT + objectName + DOT + error.getField();
+				ArrayList<String> list = new ArrayList<String>();
+				list.add(str);
+				list.addAll(Lists.newArrayList(error.getCodes()));
+			FieldError fieldError = new FieldError(objectName,
+					error.getObjectName(),
+					error.getRejectedValue(),
+					false,
+					list.toArray(new String[]{}),
+					error.getArguments(),
+					error.getDefaultMessage());
+			bindingResult.addError(fieldError);
+		});
+		ex.getErrors().getGlobalErrors()
+			.forEach(error -> bindingResult.addError(error));
+	}
+
 	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
 	public String delete(@PathVariable Long id, Model model) {
 		LOGGER.info("Method delete initialized.");
@@ -68,6 +92,27 @@ public class PatientController {
 		model.addAttribute("page", "patient/search");
 		return "index";
 	}
+
+	@RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
+    public void generatePdf(@PathVariable Long id, Model model, HttpServletResponse response) {
+        LOGGER.info(String.format("Method geraPlanilha initialized"));
+        byte[] pdfBytes = helper.generatePdf(id);
+		model.addAttribute("form", new Form());
+		model.addAttribute("page", "patient/search");
+
+        response.setContentType("application/pdf");
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern(YYYYMMDDHHMMSS));
+        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
+        ServletOutputStream outStream;
+		try {
+			outStream = response.getOutputStream();
+	        outStream.write(pdfBytes);
+	        outStream.close();
+	        outStream.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+    }
 
 	@RequestMapping(value = "/insert", method = RequestMethod.GET)
 	public String goToAdd(final Model model) {
@@ -115,56 +160,6 @@ public class PatientController {
 		}
 		return "index";
 	}
-	
-	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	public String update(@PathVariable Long id, Form form, Model model, BindingResult bindingResult) {
-		LOGGER.info("Method update initialized.");
-		if (!bindingResult.hasErrors()) {
-			try {
-				helper.update(id, form);
-				model.addAttribute("form", new Form());
-				model.addAttribute("page", "patient/search");
-			} catch (ValidatorServiceException ex) {
-				model.addAttribute("form", form);
-				model.addAttribute("allGenders", Gender.values());
-				model.addAttribute("allMaritalStates", MaritalState.values());
-				model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
-				model.addAttribute("page", "patient/insert");
-				bindExceptionErrors("form", bindingResult, ex);
-			}
-		} else {
-			model.addAttribute("form", form);
-			model.addAttribute("allGenders", Gender.values());
-			model.addAttribute("allMaritalStates", MaritalState.values());
-			model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
-			model.addAttribute("page", "patient/insert");
-		}	
-		return "index";
-	}
-
-	/**
-	 * @param bindingResult
-	 * @param ex
-	 */
-	private void bindExceptionErrors(String objectName, BindingResult bindingResult, ValidatorServiceException ex) {
-		ex.getErrors().getFieldErrors()
-			.forEach(error -> {
-				String str = error.getCode() +  DOT + objectName + DOT + error.getField();
-				ArrayList<String> list = new ArrayList<String>();
-				list.add(str);
-				list.addAll(Lists.newArrayList(error.getCodes()));
-			FieldError fieldError = new FieldError(objectName, 
-					error.getObjectName(), 
-					error.getRejectedValue(),
-					false, 
-					list.toArray(new String[]{}), 
-					error.getArguments(), 
-					error.getDefaultMessage());
-			bindingResult.addError(fieldError);
-		});
-		ex.getErrors().getGlobalErrors()
-			.forEach(error -> bindingResult.addError(error));
-	}
 
 	@RequestMapping(value= "/search", method = RequestMethod.POST)
 	public String search(Form form, Model model, Pageable pageable) {
@@ -179,7 +174,7 @@ public class PatientController {
 	public String showDetails(@PathVariable Long id, final Model model) {
 		LOGGER.info(String.format("Method showDetails initialized for id = %1s.", id));
 		Form form = helper.findOne(id);
-		model.addAttribute("patient", form);
+		model.addAttribute("form", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
 		model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
@@ -187,26 +182,31 @@ public class PatientController {
 		return "index";
 	}
 
-	
-    @RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
-    public void generatePdf(@PathVariable Long id, Model model, HttpServletResponse response) {
-        LOGGER.info(String.format("Method geraPlanilha initialized"));
-        byte[] pdfBytes = helper.generatePdf(id);
-		model.addAttribute("form", new Form());
-		model.addAttribute("page", "patient/search");
-		
-        response.setContentType("application/pdf");
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern(YYYYMMDDHHMMSS));
-        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
-        ServletOutputStream outStream;
-		try {
-			outStream = response.getOutputStream();
-	        outStream.write(pdfBytes);
-	        outStream.close();
-	        outStream.flush();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+
+    @RequestMapping(value="/{id}", method = RequestMethod.PUT)
+	public String update(@PathVariable Long id, Form form, Model model, BindingResult bindingResult) {
+		LOGGER.info("Method update initialized.");
+		if (!bindingResult.hasErrors()) {
+			try {
+				helper.update(id, form);
+				model.addAttribute("form", new Form());
+				model.addAttribute("page", "patient/search");
+			} catch (ValidatorServiceException ex) {
+				model.addAttribute("form", form);
+				model.addAttribute("allGenders", Gender.values());
+				model.addAttribute("allMaritalStates", MaritalState.values());
+				model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
+				model.addAttribute("page", "patient/details");
+				bindExceptionErrors("form", bindingResult, ex);
+			}
+		} else {
+			model.addAttribute("form", form);
+			model.addAttribute("allGenders", Gender.values());
+			model.addAttribute("allMaritalStates", MaritalState.values());
+			model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
+			model.addAttribute("page", "patient/details");
 		}
-    }
-    
+		return "index";
+	}
+
 }

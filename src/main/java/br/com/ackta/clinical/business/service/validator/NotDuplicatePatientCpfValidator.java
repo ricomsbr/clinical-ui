@@ -31,10 +31,10 @@ public class NotDuplicatePatientCpfValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
 		String cpf = p.getCpf();
-		if (repository.findByCpf(cpf).isPresent()) {
-			errors.rejectValue(DEFAULT_FIELD_NAME, 
-					ERROR_CODE_PREFIX, 
-					Arrays.array(cpf), 
+		if (repository.findFirstByCpf(cpf).isPresent()) {
+			errors.rejectValue(DEFAULT_FIELD_NAME,
+					ERROR_CODE_PREFIX,
+					Arrays.array(cpf),
 					ERROR_CODE_PREFIX);
 		}
 	}

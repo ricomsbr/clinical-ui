@@ -17,7 +17,7 @@ spring:
   mvc:
     locale: pt_BR
   profiles:
-    active: homolog
+    active: development
   jpa:
     show-sql: false
     generate-ddl: false
@@ -44,7 +44,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect    
     show-sql: true
     generate-ddl: true
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: create
   
 ---
 
