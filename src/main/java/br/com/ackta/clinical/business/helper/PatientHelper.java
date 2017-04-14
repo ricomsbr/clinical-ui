@@ -35,7 +35,6 @@ import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.entity.Phone;
 import br.com.ackta.clinical.data.entity.PhoneType;
-import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
@@ -47,9 +46,6 @@ public class PatientHelper implements IPatientHelper {
 	private IAddressService addressService;
 	private IPhoneService phoneService;
 	private IPersonalDataService personalDataService;
-
-	@Autowired
-	private PersonalDataRepository rep; // TODO remover
 
 	/**
 	 * @param service
@@ -170,6 +166,12 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	@Override
+	public byte[] generatePdf(Long id) {
+		Patient patient = patientService.findOne(id).get();
+		return patientService.generatePdf(patient);
+	}
+
+	@Override
 	public IPatient insert(Form form) {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
@@ -182,6 +184,33 @@ public class PatientHelper implements IPatientHelper {
 		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
 		patient.setMedicalHistory(medicalHistory);
 		IPatient result = patientService.validateAndSave(patient);
+		return result;
+	}
+
+	@Override
+	public Page<Patient> search(Form form, Pageable pageable) {
+		PersonalData data = new PersonalData();
+
+		String cpf = form.getCpf();
+		if(!cpf.isEmpty()) {
+			data.setCpf(cpf);
+		}
+		String name = form.getName();
+		if (!name.isEmpty()) {
+			data.setName(name);
+		}
+		LocalDate birthDate = form.getBirthDate();
+		if (birthDate != null) {
+			data.setBirthDate(birthDate);
+		}
+		Patient probe = new Patient(data);
+		ExampleMatcher matcher = ExampleMatcher.matching()
+				.withIgnoreCase()
+				.withMatcher("personalData.name", match -> match.stringMatcher(StringMatcher.CONTAINING));
+		Example<Patient> example = Example.of(probe, matcher);
+
+		Page<Patient> result = findAll(example, pageable);
+
 		return result;
 	}
 
@@ -200,33 +229,6 @@ public class PatientHelper implements IPatientHelper {
 		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
 		patient.setMedicalHistory(medicalHistory);
 		Patient result = patientService.update(patient);
-		return result;
-	}
-	
-	@Override
-	public Page<Patient> search(Form form, Pageable pageable) {
-		PersonalData data = new PersonalData();
-		
-		String cpf = form.getCpf();
-		if(!cpf.isEmpty()) {
-			data.setCpf(cpf);
-		}
-		String name = form.getName();
-		if (!name.isEmpty()) {
-			data.setName(name);
-		}
-		LocalDate birthDate = form.getBirthDate();
-		if (birthDate != null) {
-			data.setBirthDate(birthDate);
-		}
-		Patient probe = new Patient(data);
-		ExampleMatcher matcher = ExampleMatcher.matching()
-				.withIgnoreCase()
-				.withMatcher("personalData.name", match -> match.stringMatcher(StringMatcher.CONTAINING));
-		Example<Patient> example = Example.of(probe, matcher);
-		
-		Page<Patient> result = findAll(example, pageable);
-		
 		return result;
 	}
 
@@ -269,11 +271,5 @@ public class PatientHelper implements IPatientHelper {
 			personalDataService.save(resp2);
 		}
 		return responsibles;
-	}
-
-	@Override
-	public byte[] generatePdf(Long id) {
-		Patient patient = patientService.findOne(id).get();
-		return patientService.generatePdf(patient);
 	}
 }

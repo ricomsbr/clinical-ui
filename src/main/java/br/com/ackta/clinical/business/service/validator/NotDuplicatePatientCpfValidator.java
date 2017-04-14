@@ -1,5 +1,7 @@
 package br.com.ackta.clinical.business.service.validator;
 
+import java.util.List;
+
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,12 @@ public class NotDuplicatePatientCpfValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		PersonalData p = (PersonalData) target;
 		String cpf = p.getCpf();
-		if (repository.findFirstByCpf(cpf).isPresent()) {
+		List<PersonalData> findResult = repository.findByCpf(cpf);
+		boolean hasDuplicated = findResult
+				.stream()
+				.filter(d -> !d.getId().equals(p.getId()))
+				.count() > 0;
+		if (hasDuplicated) {
 			errors.rejectValue(DEFAULT_FIELD_NAME,
 					ERROR_CODE_PREFIX,
 					Arrays.array(cpf),

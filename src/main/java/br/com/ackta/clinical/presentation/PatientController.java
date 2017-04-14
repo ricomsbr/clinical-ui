@@ -184,13 +184,12 @@ public class PatientController {
 
 
     @RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	public String update(@PathVariable Long id, Form form, Model model, BindingResult bindingResult) {
+	public String update(@PathVariable Long id, Form form, Model model, BindingResult bindingResult, Pageable pageable) {
 		LOGGER.info("Method update initialized.");
 		if (!bindingResult.hasErrors()) {
 			try {
 				helper.update(id, form);
-				model.addAttribute("form", new Form());
-				model.addAttribute("page", "patient/search");
+				search(form, model, pageable);
 			} catch (ValidatorServiceException ex) {
 				model.addAttribute("form", form);
 				model.addAttribute("allGenders", Gender.values());
