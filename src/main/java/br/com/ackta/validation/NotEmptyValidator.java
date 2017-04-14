@@ -1,8 +1,6 @@
 package br.com.ackta.validation;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +17,7 @@ public class NotEmptyValidator extends FieldNameValidator {
 	
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return findInInterfaces(clazz, Collection.class);
-	}
-
-	private boolean findInInterfaces(Class<?> source, Class<?> target) {
-		List<Class<?>> allInterfaces = findAllInterfaces(source, new ArrayList<>());
-		return allInterfaces.contains(target);
-	}
-	
-	private List<Class<?>> findAllInterfaces(Class<?> clazz, List<Class<?>> result) {
-		for (Class<?> interf : clazz.getInterfaces()) {
-			if (!result.contains(interf)) {
-				result.add(interf);
-				result = findAllInterfaces(interf, result);
-			}
-		}
-		return result;
+		return Collection.class.isAssignableFrom(clazz);
 	}
 
 	@Override
@@ -43,7 +26,7 @@ public class NotEmptyValidator extends FieldNameValidator {
 		if (collection.isEmpty()) {
 			errors.rejectValue(fieldName,  
 				ERROR_CODE_PREFIX, 
-				Arrays.array(target), 
+				Arrays.array(), 
 				ERROR_CODE_PREFIX);
 		}
     }

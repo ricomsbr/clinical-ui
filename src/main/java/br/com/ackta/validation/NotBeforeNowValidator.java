@@ -27,7 +27,7 @@ public class NotBeforeNowValidator extends FieldNameValidator {
         if (Objects.nonNull(d)) {
         	if (LocalDate.now().isBefore(d)) {
 				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
-						Arrays.array(target), ERROR_CODE_PREFIX);
+						Arrays.array(), ERROR_CODE_PREFIX);
 	        }
         }
     }

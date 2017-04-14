@@ -13,7 +13,6 @@ import br.com.ackta.clinical.data.entity.IPersistable;
 @EntityScan(basePackageClasses = { Jsr310JpaConverters.class, IPersistable.class, PersistableEnumConverter.class })
 @ComponentScan(basePackages = { "br.com.ackta.clinical" }, excludeFilters = {
 		@ComponentScan.Filter(type = FilterType.ANNOTATION, value = { ScanOnlyForTest.class }) })
-// @EnableJpaRepositories("br.com.ackta.clinical")
 @SpringBootApplication
 public class ClinicalApplication {
 

@@ -23,7 +23,7 @@ public class NotBlankValidator extends FieldNameValidator {
 	public void validate(Object target, Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, fieldName, 
 				ERROR_CODE_PREFIX, 
-				Arrays.array(target), 
+				Arrays.array(), 
 				ERROR_CODE_PREFIX);
     }
 }

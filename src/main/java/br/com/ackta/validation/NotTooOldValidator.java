@@ -43,7 +43,7 @@ public class NotTooOldValidator extends FieldNameValidator {
         if (Objects.nonNull(date)) {
         	if (LocalDate.now().minusYears(maxAgeInYears).isAfter(date)) {
 				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
-						Arrays.array(target), ERROR_CODE_PREFIX);
+						Arrays.array(maxAgeInYears), ERROR_CODE_PREFIX);
 	        }
         }
     }

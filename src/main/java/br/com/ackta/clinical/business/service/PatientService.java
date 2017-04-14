@@ -20,14 +20,17 @@ import br.com.ackta.clinical.SerializableResourceBundleMessageSource;
 import br.com.ackta.clinical.WebConfig;
 import br.com.ackta.clinical.business.service.validator.PatientValidator;
 import br.com.ackta.clinical.data.entity.Address;
-import br.com.ackta.clinical.data.entity.Gender;
+import br.com.ackta.clinical.data.entity.FamilyMember;
 import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.entity.Phone;
 import br.com.ackta.clinical.data.repository.PatientRepository;
 import br.com.ackta.util.EnumUtil;
 import br.com.ackta.util.ReportUtil;
+import br.com.ackta.validation.MaxValidator;
+import br.com.ackta.validation.MinValidator;
 import br.com.ackta.validation.NotNullValidator;
 import br.com.ackta.validation.ValidatorServiceBuilder;
 
@@ -74,6 +77,16 @@ public class PatientService implements IPatientService {
 	}
 	
 	@Override
+	public Patient update(Patient patient) {
+		IPersonalData data = patient.getPersonalData();
+		Patient dbObj = patientRepository.findOne(patient.getId());
+		PersonalData dbData = dbObj.getPersonalData();
+		dbData.merge(data);
+		Patient result = validateAndSave(dbObj);
+		return result;
+	}
+	
+	@Override
 	public void validate(Patient patient) {
 		ValidatorServiceBuilder
 			.build(patient, patient.getClass().getName())
@@ -91,18 +104,12 @@ public class PatientService implements IPatientService {
 			.append(new NotNullValidator("hasDiseases"))
 			.append(new NotNullValidator("hasSurgeries"))
 			.append(new NotNullValidator("weight"))
+			.append(new MinValidator("weight", 1d))
+			.append(new MaxValidator("weight", 400d))
 			.append(new NotNullValidator("height"))
+			.append(new MinValidator("height", 15d))
+			.append(new MaxValidator("height", 260d))
 			.validate();
-	}
-	
-	@Override
-	public Patient update(Patient patient) {
-		IPersonalData data = patient.getPersonalData();
-		Patient dbObj = patientRepository.findOne(patient.getId());
-		PersonalData dbData = dbObj.getPersonalData();
-		dbData.merge(data);
-		Patient result = patientRepository.save(dbObj);
-		return result;
 	}
 
 	@Override
@@ -127,16 +134,14 @@ public class PatientService implements IPatientService {
 	 */
 	private Collection<Map<String, Object>> prepareBeanCollection(Patient patient) {
 		Map<String, Object> map = new HashMap<>();
+		Locale locale = LocaleContextHolder.getLocale();
 		PersonalData personalData = patient.getPersonalData();
 		map.put("name", personalData.getName());
 		map.put("childrenQty", personalData.getChildrenQty());
 		map.put("cpf", personalData.getCpf());
-		Gender gender = personalData.getGender();
-		String code = EnumUtil.getKey(gender);
-		Locale locale = LocaleContextHolder.getLocale();
-		map.put("gender", messageSource.getMessage(code, null, code, locale));
+		String gender = EnumUtil.getKey(personalData.getGender());
+		map.put("gender", messageSource.getMessage(gender, null, gender, locale));
 		map.put("birthDate", Date.valueOf(personalData.getBirthDate()));
-		map.put("observation", patient.getObservation());
 		Address address = personalData.getAddresses().first();
 		map.put("publicArea", address.getPublicArea());
 		map.put("city", address.getCity());
@@ -144,6 +149,35 @@ public class PatientService implements IPatientService {
 		map.put("district", address.getDistrict());
 		map.put("number", address.getNumber());
 		map.put("zipCode", address.getZipCode());
+		Collection<Phone> phones = personalData.getPhones();
+		map.put("phones", phones);
+		map.put("mail", personalData.getMail());
+		map.put("maritalState", personalData.getMaritalState());
+		map.put("profession", personalData.getProfession());
+		map.put("rg", personalData.getRg());
+		map.put("convenantMembers", patient.getConvenantMembers());
+		MedicalHistory medicalHistory = patient.getMedicalHistory();
+		map.put("weight", medicalHistory.getWeight());
+		map.put("height", medicalHistory.getHeight());
+		map.put("smoker", medicalHistory.getSmoker());
+		map.put("smokeFrequence", medicalHistory.getSmokeFrequence());
+		String smokePeriodicityUnit = EnumUtil.getKey(medicalHistory.getSmokePeriodicityUnit());
+		map.put("smokePeriodicityUnit", messageSource.getMessage(smokePeriodicityUnit, null, smokePeriodicityUnit, locale));
+		map.put("drinker", medicalHistory.getDrinker());
+		map.put("drinkFrequence", medicalHistory.getDrinkFrequence());
+		String drinkPeriodicityUnit = EnumUtil.getKey(medicalHistory.getDrinkPeriodicityUnit());
+		map.put("drinkPeriodicityUnit", messageSource.getMessage(drinkPeriodicityUnit, null, drinkPeriodicityUnit, locale));
+		map.put("allergic", medicalHistory.getAllergic());
+		map.put("allergies", medicalHistory.getAllergies());
+		map.put("hasDiseases", medicalHistory.getHasDiseases());
+		map.put("diseases", medicalHistory.getDiseases());
+		map.put("hasSurgeries", medicalHistory.getHasSurgeries());
+		map.put("surgeries", medicalHistory.getSurgeries());
+		Collection<FamilyMember> familyMembers = medicalHistory.getFamilyMembers();
+		map.put("familyMembers", familyMembers);
+		Collection<PersonalData> responsibles = patient.getResponsibles();
+		map.put("responsibles", responsibles);
+		map.put("observation", patient.getObservation());
 		Collection<Map<String, Object>> beanCollection = new ArrayList<>();
 		beanCollection.add(map);
 		return beanCollection;

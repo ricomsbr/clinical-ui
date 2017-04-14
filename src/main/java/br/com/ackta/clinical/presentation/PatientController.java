@@ -8,7 +8,6 @@ package br.com.ackta.clinical.presentation;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import javax.servlet.ServletOutputStream;
@@ -35,6 +34,7 @@ import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
+import br.com.ackta.clinical.data.entity.PeriodicityUnit;
 import br.com.ackta.validation.ValidatorServiceException;
 
 /**
@@ -59,7 +59,6 @@ public class PatientController {
 		super();
 		this.helper = helper1;
 	}
-
 
 	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
 	public String delete(@PathVariable Long id, Model model) {
@@ -86,8 +85,7 @@ public class PatientController {
 		model.addAttribute("form", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
-		ChronoUnit[] units = {ChronoUnit.DAYS, ChronoUnit.WEEKS, ChronoUnit.MONTHS};
-		model.addAttribute("allPeriodUnits", units );
+		model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 		model.addAttribute("page", "patient/insert");
 		return "index";
 	}
@@ -97,7 +95,6 @@ public class PatientController {
 		LOGGER.info("Method insert initialized.");
 		if (!bindingResult.hasErrors()) {
 			try {
-
 				helper.insert(form);
 				model.addAttribute("form", new Form());
 				model.addAttribute("page", "patient/search");
@@ -105,8 +102,7 @@ public class PatientController {
 				model.addAttribute("form", form);
 				model.addAttribute("allGenders", Gender.values());
 				model.addAttribute("allMaritalStates", MaritalState.values());
-				ChronoUnit[] units = {ChronoUnit.DAYS, ChronoUnit.WEEKS, ChronoUnit.MONTHS};
-				model.addAttribute("allPeriodUnits", units );
+				model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 				model.addAttribute("page", "patient/insert");
 				bindExceptionErrors("form", bindingResult, ex);
 			}
@@ -114,13 +110,37 @@ public class PatientController {
 			model.addAttribute("form", form);
 			model.addAttribute("allGenders", Gender.values());
 			model.addAttribute("allMaritalStates", MaritalState.values());
-			ChronoUnit[] units = {ChronoUnit.DAYS, ChronoUnit.WEEKS, ChronoUnit.MONTHS};
-			model.addAttribute("allPeriodUnits", units );
+			model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 			model.addAttribute("page", "patient/insert");
 		}
 		return "index";
 	}
-
+	
+	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
+	public String update(@PathVariable Long id, Form form, Model model, BindingResult bindingResult) {
+		LOGGER.info("Method update initialized.");
+		if (!bindingResult.hasErrors()) {
+			try {
+				helper.update(id, form);
+				model.addAttribute("form", new Form());
+				model.addAttribute("page", "patient/search");
+			} catch (ValidatorServiceException ex) {
+				model.addAttribute("form", form);
+				model.addAttribute("allGenders", Gender.values());
+				model.addAttribute("allMaritalStates", MaritalState.values());
+				model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
+				model.addAttribute("page", "patient/insert");
+				bindExceptionErrors("form", bindingResult, ex);
+			}
+		} else {
+			model.addAttribute("form", form);
+			model.addAttribute("allGenders", Gender.values());
+			model.addAttribute("allMaritalStates", MaritalState.values());
+			model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
+			model.addAttribute("page", "patient/insert");
+		}	
+		return "index";
+	}
 
 	/**
 	 * @param bindingResult
@@ -130,7 +150,6 @@ public class PatientController {
 		ex.getErrors().getFieldErrors()
 			.forEach(error -> {
 				String str = error.getCode() +  DOT + objectName + DOT + error.getField();
-//				String message = messageSource.getMessage(str, null, str, LocaleContextHolder.getLocale());
 				ArrayList<String> list = new ArrayList<String>();
 				list.add(str);
 				list.addAll(Lists.newArrayList(error.getCodes()));
@@ -158,23 +177,16 @@ public class PatientController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String showDetails(@PathVariable Long id, final Model model) {
-		LOGGER.info("Method showDetails initialized for id = %1s.", id);
+		LOGGER.info(String.format("Method showDetails initialized for id = %1s.", id));
 		Form form = helper.findOne(id);
 		model.addAttribute("patient", form);
 		model.addAttribute("allGenders", Gender.values());
 		model.addAttribute("allMaritalStates", MaritalState.values());
+		model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 		model.addAttribute("page", "patient/details");
 		return "index";
 	}
 
-	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	public String update(@PathVariable Long id, Form form, Model model) {
-		LOGGER.info("Method update initialized.");
-		helper.update(id, form);
-		model.addAttribute("form", new Form());
-		model.addAttribute("page", "patient/search");
-		return "index";
-	}
 	
     @RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
     public void generatePdf(@PathVariable Long id, Model model, HttpServletResponse response) {

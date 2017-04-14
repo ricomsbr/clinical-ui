@@ -8,13 +8,15 @@ import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
-public class NonNegativeValidator extends FieldNameValidator {
+public class MaxValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_PREFIX = "NonNegative";
+	private static final String ERROR_CODE_PREFIX = "Max";
+	private Double maxValue;
 
 	@Autowired
-	public NonNegativeValidator(String fieldName1) {
+	public MaxValidator(String fieldName1, Double maxValue) {
 		super(fieldName1);
+		this.maxValue = maxValue;
 	}
 
 	@Override
@@ -30,25 +32,24 @@ public class NonNegativeValidator extends FieldNameValidator {
 			boolean reject = false;
 			if (number instanceof BigDecimal) {
 				BigDecimal b1 = (BigDecimal) number;
-				BigDecimal b2 = BigDecimal.ZERO;
-				if (b1.compareTo(b2) < 0) {
+				BigDecimal max = BigDecimal.valueOf(maxValue);
+				if (b1.compareTo(max) > 0) {
 					reject  = true;
 				}
 			} else if (number instanceof BigInteger) {
 				BigInteger b1 = (BigInteger) number;
-				BigInteger b2 = BigInteger.ZERO;
-				if (b1.compareTo(b2) < 0) {
+				BigInteger max = BigInteger.valueOf(maxValue.intValue());
+				if (b1.compareTo(max) > 0) {
 					reject = true;
 				}
 			} else {
-				Double zeroDouble = new Double(0d);
-				if (zeroDouble.compareTo(number.doubleValue()) > 0) {
+				if (maxValue.compareTo(number.doubleValue()) < 0) {
 		            reject = true;
 		        }
 			}
 			if (reject) {
 				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
-						Arrays.array(), ERROR_CODE_PREFIX);
+						Arrays.array(maxValue), ERROR_CODE_PREFIX);
 			}
 	    }
 	}

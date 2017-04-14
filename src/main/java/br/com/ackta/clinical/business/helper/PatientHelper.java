@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedSet;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -19,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.ackta.clinical.business.service.IAddressService;
 import br.com.ackta.clinical.business.service.IConvenantMemberService;
 import br.com.ackta.clinical.business.service.IPatientService;
+import br.com.ackta.clinical.business.service.IPersonalDataService;
 import br.com.ackta.clinical.business.service.IPhoneService;
-import br.com.ackta.clinical.business.service.PersonalDataService;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Convenant;
@@ -33,6 +35,7 @@ import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.entity.Phone;
 import br.com.ackta.clinical.data.entity.PhoneType;
+import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
@@ -43,7 +46,10 @@ public class PatientHelper implements IPatientHelper {
 	private IConvenantMemberService convenantMemberService;
 	private IAddressService addressService;
 	private IPhoneService phoneService;
-	private PersonalDataService personalDataService;
+	private IPersonalDataService personalDataService;
+
+	@Autowired
+	private PersonalDataRepository rep; // TODO remover
 
 	/**
 	 * @param service
@@ -51,9 +57,10 @@ public class PatientHelper implements IPatientHelper {
 	 * @param phoneService1
 	 * @param addressRepository1
 	 */
+	@Autowired
 	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1,
 			IAddressService addressService1, IPhoneService phoneService1,
-			PersonalDataService personalDataService1) {
+			IPersonalDataService personalDataService1) {
 		super();
 		this.patientService = service;
 		this.convenantMemberService = convenantMemberService1;
@@ -179,9 +186,27 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	@Override
+	public Patient update(Long id, Form form) {
+		Patient patient = patientService.findOne(id).get();
+		PersonalData data = patient.getPersonalData();
+		BeanUtils.copyProperties(form, data, "id");
+		personalDataService.validate(data);
+		updateAddress(form, data);
+		updatePhones(form, data);
+		patient.setConvenantMembers(extractConvenantMembers(form));
+		updateResponsibles(patient, form);
+		patient.setObservation(form.getObservation());
+		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
+		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
+		patient.setMedicalHistory(medicalHistory);
+		Patient result = patientService.update(patient);
+		return result;
+	}
+	
+	@Override
 	public Page<Patient> search(Form form, Pageable pageable) {
 		PersonalData data = new PersonalData();
-
+		
 		String cpf = form.getCpf();
 		if(!cpf.isEmpty()) {
 			data.setCpf(cpf);
@@ -199,26 +224,9 @@ public class PatientHelper implements IPatientHelper {
 				.withIgnoreCase()
 				.withMatcher("personalData.name", match -> match.stringMatcher(StringMatcher.CONTAINING));
 		Example<Patient> example = Example.of(probe, matcher);
-
+		
 		Page<Patient> result = findAll(example, pageable);
-
-		return result;
-	}
-
-	@Override
-	public Patient update(Long id, Form form) {
-		Patient patient = patientService.findOne(id).get();
-		PersonalData data = patient.getPersonalData();
-		BeanUtils.copyProperties(form, data, "id");
-		updateAddress(form, data);
-		updatePhones(form, data);
-		patient.setConvenantMembers(extractConvenantMembers(form));
-		updateResponsibles(patient, form);
-		patient.setObservation(form.getObservation());
-		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
-		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
-		patient.setMedicalHistory(medicalHistory);
-		Patient result = patientService.update(patient);
+		
 		return result;
 	}
 
@@ -240,17 +248,26 @@ public class PatientHelper implements IPatientHelper {
 
 	private List<PersonalData> updateResponsibles(Patient patient, Form form) {
 		List<PersonalData> responsibles = patient.getResponsibles();
-		PersonalData resp1 = responsibles.get(0);
-		PersonalData resp2 = responsibles.get(1);
-		resp1.setName(form.getResponsibleName1());
-		resp1.getPhones().first().setNumber(form.getResponsiblePhone1());
-		resp2.setName(form.getResponsibleName2());
-		resp2.getPhones().first().setNumber(form.getResponsiblePhone2());
-		personalDataService.validateName(resp1);
-		personalDataService.save(resp1);
-		personalDataService.validateName(resp2);
-		personalDataService.save(resp2);
-
+		if (responsibles.size() > 0) {
+			PersonalData resp1 = responsibles.get(0);
+			resp1.setName(form.getResponsibleName1());
+			SortedSet<Phone> phones = resp1.getPhones();
+			if (!phones.isEmpty()) {
+				phones.first().setNumber(form.getResponsiblePhone1());
+			}
+			personalDataService.validateName(resp1);
+			personalDataService.save(resp1);
+		}
+		if (responsibles.size() > 1) {
+			PersonalData resp2 = responsibles.get(1);
+			resp2.setName(form.getResponsibleName2());
+			SortedSet<Phone> phones = resp2.getPhones();
+			if (!phones.isEmpty()) {
+				phones.first().setNumber(form.getResponsiblePhone2());
+			}
+			personalDataService.validateName(resp2);
+			personalDataService.save(resp2);
+		}
 		return responsibles;
 	}
 

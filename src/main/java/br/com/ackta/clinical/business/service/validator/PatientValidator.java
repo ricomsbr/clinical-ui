@@ -13,7 +13,6 @@ import br.com.ackta.clinical.data.entity.PersonalData;
 public class PatientValidator implements Validator{
 
 	private static final int AGE_OF_MAJORITY = 18;
-//	private static final String NOT_DUPLICATED_RESP_NAME = "NotDuplicatedResponsibleName";
 	private static final String NOT_NULL_RESP = "NotNullPatientResponsible";
 	private IPersonalDataService personalDataService;
 

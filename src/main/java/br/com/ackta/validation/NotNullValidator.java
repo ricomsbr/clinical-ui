@@ -22,6 +22,6 @@ public class NotNullValidator extends FieldNameValidator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		ValidationUtils.rejectIfEmpty(errors, fieldName, ERROR_CODE_PREFIX, 
-				Arrays.array(target), ERROR_CODE_PREFIX);
+				Arrays.array(), ERROR_CODE_PREFIX);
     }
 }

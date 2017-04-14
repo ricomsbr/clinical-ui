@@ -32,6 +32,14 @@ public class PatientServiceTest {
 
 	@Test
 	public void testGeneratePdf() {
+		Patient patient = buildPatient();
+		service.generatePdf(patient);
+	}
+
+	/**
+	 * @return
+	 */
+	private Patient buildPatient() {
 		PersonalData personalData = new PersonalData();
 		personalData.setId(1L);
 		personalData.setBirthDate(LocalDate.of(2017, 5, 27));
@@ -57,7 +65,7 @@ public class PatientServiceTest {
 		Patient patient = new Patient();
 		patient.setId(1L);
 		patient.setPersonalData(personalData);
-		service.generatePdf(patient);
+		return patient;
 	}
 
 }

@@ -1,7 +1,6 @@
 package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +30,8 @@ public class MedicalHistory implements IMedicalHistory {
 	@Column(name = "smoke_frequence", nullable=true)
 	private Integer smokeFrequence;
 
-	@Column(name = "smoke_period_unit", nullable=true)
-	private ChronoUnit smokePeriodUnit;
+	@Column(name = "smoke_periodicity_unit", nullable=true)
+	private PeriodicityUnit smokePeriodicityUnit;
 
 	@Column(name = "drinker", nullable=false)
 	private Boolean drinker;
@@ -40,8 +39,8 @@ public class MedicalHistory implements IMedicalHistory {
 	@Column(name = "drink_frequence", nullable=true)
 	private Integer drinkFrequence;
 
-	@Column(name = "drink_period_unit", nullable=true)
-	private ChronoUnit drinkPeriodUnit;
+	@Column(name = "drink_periodicity_unit", nullable=true)
+	private PeriodicityUnit drinkPeriodicityUnit;
 
 	@Column(name = "allergic", nullable=false)
 	private Boolean allergic;
@@ -117,8 +116,8 @@ public class MedicalHistory implements IMedicalHistory {
 	}
 
 	@Override
-	public ChronoUnit getDrinkPeriodUnit() {
-		return drinkPeriodUnit;
+	public PeriodicityUnit getDrinkPeriodicityUnit() {
+		return drinkPeriodicityUnit;
 	}
 
 	@Override
@@ -152,8 +151,8 @@ public class MedicalHistory implements IMedicalHistory {
 	}
 
 	@Override
-	public ChronoUnit getSmokePeriodUnit() {
-		return smokePeriodUnit;
+	public PeriodicityUnit getSmokePeriodicityUnit() {
+		return smokePeriodicityUnit;
 	}
 
 	@Override
@@ -195,8 +194,8 @@ public class MedicalHistory implements IMedicalHistory {
 		this.drinkFrequence = drinkFrequence;
 	}
 
-	public void setDrinkPeriodUnit(ChronoUnit drinkPeriodUnit) {
-		this.drinkPeriodUnit = drinkPeriodUnit;
+	public void setDrinkPeriodicityUnit(PeriodicityUnit drinkPeriodicityUnit) {
+		this.drinkPeriodicityUnit = drinkPeriodicityUnit;
 	}
 
 	public void setFamilyMembers(List<FamilyMember> members) {
@@ -223,8 +222,8 @@ public class MedicalHistory implements IMedicalHistory {
 		this.smokeFrequence = smokeFrequence;
 	}
 
-	public void setSmokePeriodUnit(ChronoUnit smokePeriodUnit) {
-		this.smokePeriodUnit = smokePeriodUnit;
+	public void setSmokePeriodicityUnit(PeriodicityUnit smokePeriodicityUnit) {
+		this.smokePeriodicityUnit = smokePeriodicityUnit;
 	}
 
 	public void setSmoker(Boolean smoker) {

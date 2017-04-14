@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
@@ -33,6 +32,7 @@ import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
+import br.com.ackta.clinical.data.entity.PeriodicityUnit;
 import br.com.ackta.clinical.data.entity.Phone;
 import br.com.ackta.clinical.data.entity.PhoneType;
 import br.com.ackta.clinical.data.repository.PatientRepository;
@@ -107,13 +107,13 @@ public class PatientHelperTest {
 		medicalHistory.setDiseases("diseases1");
 		medicalHistory.setDrinker(true);
 		medicalHistory.setDrinkFrequence(3);
-		medicalHistory.setDrinkPeriodUnit(ChronoUnit.WEEKS);
+		medicalHistory.setDrinkPeriodicityUnit(PeriodicityUnit.WEEKLY);
 		medicalHistory.setHasDiseases(false);
 		medicalHistory.setHasSurgeries(false);
 		medicalHistory.setHeight(123.0);
 		medicalHistory.setMedicines("medicamentos1");
 		medicalHistory.setSmokeFrequence(1);
-		medicalHistory.setSmokePeriodUnit(ChronoUnit.DAYS);
+		medicalHistory.setSmokePeriodicityUnit(PeriodicityUnit.DAILY);
 		medicalHistory.setSmoker(true);
 		medicalHistory.setSurgeries("cirurgias1");
 		medicalHistory.setWeight(89.5);
@@ -161,7 +161,7 @@ public class PatientHelperTest {
 		assertThat(medicalHist.getDiseases()).isEqualTo("diseases1");
 		assertThat(medicalHist.getDrinker()).isEqualTo(true);
 		assertThat(medicalHist.getDrinkFrequence()).isEqualTo(3);
-		assertThat(medicalHist.getDrinkPeriodUnit()).isEqualTo(ChronoUnit.WEEKS);
+		assertThat(medicalHist.getDrinkPeriodicityUnit()).isEqualTo(PeriodicityUnit.WEEKLY);
 		assertThat(result.getMotherHistory().getKinship()).isEqualTo(Kinship.MOTHER);
 		assertThat(result.getMotherHistory().getMedicines()).isEqualTo("medicamentos da mãe");
 		assertThat(result.getMotherHistory().getDiseases()).isEqualTo("doenças da mãe");
@@ -232,7 +232,7 @@ public class PatientHelperTest {
 		assertThat(medicalHist.getDiseases()).isEqualTo("diseases1");
 		assertThat(medicalHist.getDrinker()).isEqualTo(true);
 		assertThat(medicalHist.getDrinkFrequence()).isEqualTo(3);
-		assertThat(medicalHist.getDrinkPeriodUnit()).isEqualTo(ChronoUnit.WEEKS);
+		assertThat(medicalHist.getDrinkPeriodicityUnit()).isEqualTo(PeriodicityUnit.WEEKLY);
 		List<FamilyMember> memberHistories = medicalHist.getFamilyMembers();
 		assertThat(memberHistories)
 			.filteredOn("kinship", Kinship.MOTHER)

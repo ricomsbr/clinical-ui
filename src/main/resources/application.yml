@@ -17,7 +17,7 @@ spring:
   mvc:
     locale: pt_BR
   profiles:
-    active: development
+    active: homolog
   jpa:
     show-sql: false
     generate-ddl: false
@@ -44,7 +44,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect    
     show-sql: true
     generate-ddl: true
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
   
 ---
 
@@ -54,7 +54,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
     generate-ddl: true
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
   datasource:
     url: jdbc:h2:~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
     username: rmendonca
@@ -73,7 +73,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
     generate-ddl: true
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
   datasource:
     url: jdbc:h2:tcp://localhost/~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
     username: rmendonca

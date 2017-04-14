@@ -1,7 +1,6 @@
 package br.com.ackta.clinical.data.entity;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public interface IMedicalHistory {
@@ -11,13 +10,13 @@ public interface IMedicalHistory {
 	String getDiseases();
 	Boolean getDrinker();
 	Integer getDrinkFrequence();
-	ChronoUnit getDrinkPeriodUnit();
+	PeriodicityUnit getDrinkPeriodicityUnit();
 	Boolean getHasDiseases();
 	Boolean getHasSurgeries();
 	Double getHeight();
 	String getMedicines();
 	Integer getSmokeFrequence();
-	ChronoUnit getSmokePeriodUnit();
+	PeriodicityUnit getSmokePeriodicityUnit();
 	Boolean getSmoker();
 	String getSurgeries();
 	Double getWeight();

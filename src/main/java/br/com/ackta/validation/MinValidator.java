@@ -8,13 +8,15 @@ import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
-public class NonNegativeValidator extends FieldNameValidator {
+public class MinValidator extends FieldNameValidator {
 
-	private static final String ERROR_CODE_PREFIX = "NonNegative";
+	private static final String ERROR_CODE_PREFIX = "Min";
+	private Double minValue;
 
 	@Autowired
-	public NonNegativeValidator(String fieldName1) {
+	public MinValidator(String fieldName1, Double minValue) {
 		super(fieldName1);
+		this.minValue = minValue;
 	}
 
 	@Override
@@ -30,25 +32,24 @@ public class NonNegativeValidator extends FieldNameValidator {
 			boolean reject = false;
 			if (number instanceof BigDecimal) {
 				BigDecimal b1 = (BigDecimal) number;
-				BigDecimal b2 = BigDecimal.ZERO;
-				if (b1.compareTo(b2) < 0) {
+				BigDecimal min = BigDecimal.valueOf(minValue);
+				if (b1.compareTo(min) < 0) {
 					reject  = true;
 				}
 			} else if (number instanceof BigInteger) {
 				BigInteger b1 = (BigInteger) number;
-				BigInteger b2 = BigInteger.ZERO;
-				if (b1.compareTo(b2) < 0) {
+				BigInteger min = BigInteger.valueOf(minValue.intValue());
+				if (b1.compareTo(min) < 0) {
 					reject = true;
 				}
 			} else {
-				Double zeroDouble = new Double(0d);
-				if (zeroDouble.compareTo(number.doubleValue()) > 0) {
+				if (minValue.compareTo(number.doubleValue()) > 0) {
 		            reject = true;
 		        }
 			}
 			if (reject) {
 				errors.rejectValue(fieldName, ERROR_CODE_PREFIX, 
-						Arrays.array(), ERROR_CODE_PREFIX);
+						Arrays.array(minValue), ERROR_CODE_PREFIX);
 			}
 	    }
 	}
