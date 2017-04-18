@@ -3,6 +3,7 @@ package br.com.ackta.clinical.data.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -12,8 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -51,12 +51,8 @@ public class Patient implements IPatient {
 	@Embedded
 	private MedicalHistory medicalHistory;
 
-	@ManyToMany(cascade={}, targetEntity = PersonalData.class)
-	@JoinTable(name = "patient_responsible",
-			joinColumns = @JoinColumn(name = "personal_data_id", referencedColumnName = "id", nullable = false),
-			inverseJoinColumns={@JoinColumn(name="patient_id")}
-	)
-	public List<PersonalData> responsibles;
+	@OneToMany(cascade = {CascadeType.ALL}, targetEntity = Responsible.class, mappedBy = "patient", orphanRemoval=true)
+	public List<Responsible> responsibles;
 
 	@ElementCollection(targetClass=ConvenantMember.class)
 	@CollectionTable(
@@ -73,9 +69,9 @@ public class Patient implements IPatient {
 		this(personalData, new ArrayList<>(), new ArrayList<>(), null);
 	}
 
-	public Patient(PersonalData personalData1, 
-			List<ConvenantMember> convenantMembers1, 
-			List<PersonalData> responsibles1, 
+	public Patient(PersonalData personalData1,
+			List<ConvenantMember> convenantMembers1,
+			List<Responsible> responsibles1,
 			String observation1) {
 		this();
 		this.personalData = personalData1;
@@ -110,7 +106,7 @@ public class Patient implements IPatient {
 	}
 
 	@Override
-	public List<PersonalData> getResponsibles() {
+	public List<Responsible> getResponsibles() {
 		return responsibles;
 	}
 
@@ -141,17 +137,17 @@ public class Patient implements IPatient {
 		this.observation = observation;
 	}
 
-	public void setResponsibles(List<PersonalData> responsibles1) {
+	public void setPersonalData(PersonalData personalData2) {
+		this.personalData = personalData2;
+	}
+
+	public void setResponsibles(List<Responsible> responsibles1) {
 		this.responsibles = responsibles1;
 	}
+
 
 	@Override
 	public void setVersion(Long version) {
 		this.version = version;
-	}
-
-	
-	public void setPersonalData(PersonalData personalData2) {
-		this.personalData = personalData2;		
 	}
 }

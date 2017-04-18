@@ -2,13 +2,11 @@ package br.com.ackta.clinical.business.service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientNameValidator;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.repository.PersonalDataRepository;
 import br.com.ackta.validation.NonNegativeValidator;
@@ -46,22 +44,8 @@ public class PersonalDataService implements IPersonalDataService {
 	}
 
 	@Override
-	public Optional<PersonalData> findByCpf(String cpf) {
-		return repository.findFirstByCpf(cpf);
-	}
-
-	@Override
-	public Optional<PersonalData> findByMailIgnoreCase(String mail) {
-		return repository.findFirstByMailIgnoreCase(mail);
-	}
-
-	@Override
-	public Optional<PersonalData> findByNameIgnoreCase(String name) {
-		return repository.findFirstByNameIgnoreCase(name);
-	}
-
-	@Override
 	public PersonalData save(PersonalData data) {
+		validateName(data);
 		return repository.save(data);
 	}
 
@@ -76,9 +60,6 @@ public class PersonalDataService implements IPersonalDataService {
 			.append(new NotNullValidator("birthDate"))
 			.append(new NotBeforeNowValidator("birthDate"))
 			.append(new NotTooOldValidator("birthDate", 150))
-			.append(new NotDuplicatePatientNameValidator(repository))
-//			.append(new NotDuplicatePatientMailValidator(repository))
-//			.append(new NotDuplicatePatientCpfValidator(repository))
 			.validate();
 	}
 
@@ -88,13 +69,10 @@ public class PersonalDataService implements IPersonalDataService {
 		return repository.save(personalData);
 	}
 
-	@Override
-	public void validateName(PersonalData personalData) {
+	private void validateName(PersonalData personalData) {
 		ValidatorServiceBuilder
 		.build(personalData, personalData.getClass().getName())
 		.append(new NotBlankValidator("name"))
-//		.append(new NotEmptyValidator("phones"))
-//		.append(new NotDuplicatePatientNameValidator(repository))
 		.validate();
 	}
 

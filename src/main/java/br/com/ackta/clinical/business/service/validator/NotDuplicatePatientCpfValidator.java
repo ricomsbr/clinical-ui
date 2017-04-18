@@ -8,41 +8,45 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
-import br.com.ackta.clinical.data.repository.PersonalDataRepository;
+import br.com.ackta.clinical.data.repository.PatientRepository;
 
 @Service
 public class NotDuplicatePatientCpfValidator implements Validator {
 
 	private static final String ERROR_CODE_PREFIX = "NotDuplicatePatientCpf";
 	private static final String DEFAULT_FIELD_NAME = "cpf";
-	private PersonalDataRepository repository;
+	private PatientRepository repository;
 
 	@Autowired
-	public NotDuplicatePatientCpfValidator(PersonalDataRepository repository1) {
+	public NotDuplicatePatientCpfValidator(PatientRepository repository1) {
 		super();
 		this.repository = repository1;
 	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return PersonalData.class.equals(clazz);
+		return Patient.class.equals(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		PersonalData p = (PersonalData) target;
-		String cpf = p.getCpf();
-		List<PersonalData> findResult = repository.findByCpf(cpf);
-		boolean hasDuplicated = findResult
-				.stream()
-				.filter(d -> !d.getId().equals(p.getId()))
-				.count() > 0;
-		if (hasDuplicated) {
-			errors.rejectValue(DEFAULT_FIELD_NAME,
-					ERROR_CODE_PREFIX,
-					Arrays.array(cpf),
-					ERROR_CODE_PREFIX);
+		Patient patient = (Patient) target;
+		PersonalData personalData = patient.getPersonalData();
+		String cpf = personalData.getCpf();
+		if (cpf != null && !cpf.isEmpty()) {
+			List<Patient> findResult = repository.findByPersonalData_Cpf(cpf);
+			boolean hasDuplicated = findResult
+					.stream()
+					.filter(d -> !d.getId().equals(patient.getId()))
+					.count() > 0;
+			if (hasDuplicated) {
+				errors.rejectValue(DEFAULT_FIELD_NAME,
+						ERROR_CODE_PREFIX,
+						Arrays.array(cpf),
+						ERROR_CODE_PREFIX);
+			}
 		}
 	}
 }

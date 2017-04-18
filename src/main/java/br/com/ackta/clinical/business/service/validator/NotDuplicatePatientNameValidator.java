@@ -8,41 +8,45 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
-import br.com.ackta.clinical.data.repository.PersonalDataRepository;
+import br.com.ackta.clinical.data.repository.PatientRepository;
 
 @Service
 public class NotDuplicatePatientNameValidator implements Validator {
 
 	private static final String ERROR_CODE_PREFIX = "NotDuplicatedPatientName";
 	private static final String DEFAULT_FIELD_NAME = "name";
-	private PersonalDataRepository repository;
+	private PatientRepository repository;
 
 	@Autowired
-	public NotDuplicatePatientNameValidator(PersonalDataRepository repository1) {
+	public NotDuplicatePatientNameValidator(PatientRepository repository1) {
 		super();
 		this.repository = repository1;
 	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return PersonalData.class.equals(clazz);
+		return Patient.class.equals(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		PersonalData p = (PersonalData) target;
-		String name = p.getName();
-		List<PersonalData> findResult = repository.findByNameIgnoreCase(name);
-		boolean hasDuplicated = findResult
-				.stream()
-				.filter(d -> !d.getId().equals(p.getId()))
-				.count() > 0;
-		if (hasDuplicated) {
-			errors.rejectValue(DEFAULT_FIELD_NAME,
-					ERROR_CODE_PREFIX,
-					Arrays.array(name),
-					ERROR_CODE_PREFIX);
+		Patient patient = (Patient) target;
+		PersonalData personalData = patient.getPersonalData();
+		String name = personalData.getName();
+		if (name != null && !name.isEmpty()) {
+			List<Patient> findResult = repository.findByPersonalData_NameIgnoreCase(name);
+			boolean hasDuplicated = findResult
+					.stream()
+					.filter(d -> !d.getId().equals(patient.getId()))
+					.count() > 0;
+			if (hasDuplicated) {
+				errors.rejectValue(DEFAULT_FIELD_NAME,
+						ERROR_CODE_PREFIX,
+						Arrays.array(name),
+						ERROR_CODE_PREFIX);
+			}
 		}
 	}
 }

@@ -315,7 +315,9 @@
 				<text><![CDATA[convenantMembers]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="e0d2a098-847d-49f7-8b77-0aced66e3ee4" x="100" y="200" width="100" height="20"/>
+				<reportElement uuid="e0d2a098-847d-49f7-8b77-0aced66e3ee4" x="100" y="200" width="100" height="20">
+					<printWhenExpression><![CDATA[$F{convenantMembers} != null && !$F{convenantMembers}.isEmpty()]]></printWhenExpression>
+				</reportElement>
 				<textElement/>
 				<textFieldExpression><![CDATA[(((br.com.ackta.clinical.data.entity.ConvenantMember)$F{convenantMembers}.toArray()[0])
     .getConvenant())]]></textFieldExpression>
@@ -326,7 +328,9 @@
 				<text><![CDATA[convenantMembers]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="cc4310ca-02b0-49f3-a39a-4f0fe8840a0e" x="100" y="220" width="100" height="20"/>
+				<reportElement uuid="cc4310ca-02b0-49f3-a39a-4f0fe8840a0e" x="100" y="220" width="100" height="20">
+					<printWhenExpression><![CDATA[$F{convenantMembers} != null && $F{convenantMembers}.size() > 1]]></printWhenExpression>
+				</reportElement>
 				<textElement/>
 				<textFieldExpression><![CDATA[(((br.com.ackta.clinical.data.entity.ConvenantMember)$F{convenantMembers}.toArray()[1])
     .getConvenant())]]></textFieldExpression>

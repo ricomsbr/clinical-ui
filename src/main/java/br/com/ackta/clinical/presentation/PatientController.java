@@ -6,6 +6,7 @@
 package br.com.ackta.clinical.presentation;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,14 +28,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.ackta.clinical.business.helper.IPatientHelper;
 import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.Kinship;
-import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
-import br.com.ackta.clinical.data.entity.PeriodicityUnit;
 import br.com.ackta.validation.ValidatorServiceException;
 
 /**
@@ -85,19 +85,31 @@ public class PatientController {
 	}
 
 	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-	public String delete(@PathVariable Long id, Model model) {
+	public String delete(@PathVariable Long id,
+			@RequestParam String searchName, 
+			@RequestParam String searchCpf,
+			@RequestParam String searchRg,
+			@RequestParam Gender searchGender,
+			@RequestParam LocalDate searchBirthDate,
+			Model model) {
 		LOGGER.info("Method delete initialized.");
 		helper.delete(id);
-		model.addAttribute("form", new Form());
+		addSearchFieldAttributes(model, searchName, searchCpf, searchRg, searchGender, searchBirthDate);
 		model.addAttribute("page", "patient/search");
 		return "index";
 	}
 
 	@RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
-    public void generatePdf(@PathVariable Long id, Model model, HttpServletResponse response) {
+    public void generatePdf(@PathVariable Long id,
+    		@RequestParam String searchName, 
+			@RequestParam String searchCpf,
+			@RequestParam String searchRg,
+			@RequestParam Gender searchGender,
+			@RequestParam LocalDate searchBirthDate,
+    		Model model, HttpServletResponse response) {
         LOGGER.info(String.format("Method geraPlanilha initialized"));
         byte[] pdfBytes = helper.generatePdf(id);
-		model.addAttribute("form", new Form());
+        addSearchFieldAttributes(model, searchName, searchCpf, searchRg, searchGender, searchBirthDate);
 		model.addAttribute("page", "patient/search");
 
         response.setContentType("application/pdf");
@@ -115,7 +127,7 @@ public class PatientController {
     }
 
 	@RequestMapping(value = "/insert", method = RequestMethod.GET)
-	public String goToAdd(final Model model) {
+	public String goToInsertPage(final Model model) {
 		LOGGER.info("Method goToAdd initialized");
 		Form form = new Form();
 		MedicalHistory medicalHistory = new MedicalHistory();
@@ -128,9 +140,6 @@ public class PatientController {
 
 		form.setMedicalHistory(medicalHistory);
 		model.addAttribute("form", form);
-		model.addAttribute("allGenders", Gender.values());
-		model.addAttribute("allMaritalStates", MaritalState.values());
-		model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 		model.addAttribute("page", "patient/insert");
 		return "index";
 	}
@@ -141,68 +150,109 @@ public class PatientController {
 		if (!bindingResult.hasErrors()) {
 			try {
 				helper.insert(form);
-				model.addAttribute("form", new Form());
+				model.addAttribute("allGenders", Gender.values());
 				model.addAttribute("page", "patient/search");
 			} catch (ValidatorServiceException ex) {
 				model.addAttribute("form", form);
-				model.addAttribute("allGenders", Gender.values());
-				model.addAttribute("allMaritalStates", MaritalState.values());
-				model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 				model.addAttribute("page", "patient/insert");
 				bindExceptionErrors("form", bindingResult, ex);
 			}
 		} else {
 			model.addAttribute("form", form);
-			model.addAttribute("allGenders", Gender.values());
-			model.addAttribute("allMaritalStates", MaritalState.values());
-			model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 			model.addAttribute("page", "patient/insert");
 		}
 		return "index";
 	}
 
-	@RequestMapping(value= "/search", method = RequestMethod.POST)
-	public String search(Form form, Model model, Pageable pageable) {
-		LOGGER.info("Method search initialized.");
-		Page<Patient> patients = helper.search(form, pageable);
+	@RequestMapping(value= "/", method = RequestMethod.GET)
+	public String goToSearch(
+			@RequestParam String searchName, 
+			@RequestParam String searchCpf,
+			@RequestParam String searchRg,
+			@RequestParam Gender searchGender,
+			@RequestParam LocalDate searchBirthDate,
+			final Model model) {
+		LOGGER.info("Method getIndex initialized.");
+		addSearchFieldAttributes(model, searchName, searchCpf, searchRg, searchGender, searchBirthDate);
+		model.addAttribute("allGenders", Gender.values());
+		model.addAttribute("page", "patient/search");
+		return "index";
+	}
+	
+	@RequestMapping(value= "/search", method = RequestMethod.GET)
+	public String search(
+			@RequestParam String searchName, 
+			@RequestParam String searchCpf,
+			@RequestParam String searchRg,
+			@RequestParam Gender searchGender,
+			@RequestParam LocalDate searchBirthDate,
+			Model model, Pageable pageable) {
+		LOGGER.info(String.format("Method search initialized, name: %1s, cpf: %2s, rg: %3s, gender: %4s, birthDate: %5s.", 
+				searchName, searchCpf, searchRg, searchGender, searchBirthDate));
+		Page<Patient> patients = helper.search(searchName, searchCpf, searchRg, searchGender, searchBirthDate, pageable);
 		model.addAttribute("list", patients);
+		addSearchFieldAttributes(model, searchName, searchCpf, searchRg, searchGender, searchBirthDate);
 		model.addAttribute("page", "patient/list");
 		return "index";
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public String showDetails(@PathVariable Long id, final Model model) {
-		LOGGER.info(String.format("Method showDetails initialized for id = %1s.", id));
-		Form form = helper.findOne(id);
-		model.addAttribute("form", form);
-		model.addAttribute("allGenders", Gender.values());
-		model.addAttribute("allMaritalStates", MaritalState.values());
-		model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
+	public String showDetails(Form form, @PathVariable Long id,
+			@RequestParam String searchName, 
+			@RequestParam String searchCpf,
+			@RequestParam String searchRg,
+			@RequestParam Gender searchGender,
+			@RequestParam LocalDate searchBirthDate,
+			final Model model) {
+		LOGGER.info(String.format("Method showDetails initialized for id = %1s, name: %2s, cpf: %3s, "
+				+ "rg: %4s, gender: %5s, birthDate: %6s.", id, searchName, searchCpf, searchRg, searchGender, searchBirthDate));
+		Form newForm = helper.findOne(id);
+		addSearchFieldAttributes(model, searchName, searchCpf, searchRg, searchGender, searchBirthDate);
+		model.addAttribute("form", newForm);
 		model.addAttribute("page", "patient/details");
 		return "index";
 	}
 
+	/**
+	 * @param model
+	 * @param searchName
+	 * @param searchCpf
+	 * @param searchRg
+	 * @param searchGender
+	 * @param searchBirthDate
+	 */
+	private void addSearchFieldAttributes(final Model model, String searchName, String searchCpf, String searchRg, Gender searchGender,
+			LocalDate searchBirthDate) {
+		model.addAttribute("searchName", searchName);
+		model.addAttribute("searchCpf", searchCpf);
+		model.addAttribute("searchRg", searchRg);
+		model.addAttribute("searchGender", searchGender);
+		model.addAttribute("searchBirthDate", searchBirthDate);
+		model.addAttribute("allGenders", Gender.values());
+	}
 
-    @RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	public String update(@PathVariable Long id, Form form, Model model, BindingResult bindingResult, Pageable pageable) {
+
+    @RequestMapping(value="/{id}", method = RequestMethod.POST)
+	public String update(@PathVariable Long id, 
+			@RequestParam String searchName, 
+			@RequestParam String searchCpf,
+			@RequestParam String searchRg,
+			@RequestParam Gender searchGender,
+			@RequestParam LocalDate searchBirthDate,
+			Form form, Model model, BindingResult bindingResult, Pageable pageable) {
 		LOGGER.info("Method update initialized.");
+		addSearchFieldAttributes(model, searchName, searchCpf, searchRg, searchGender, searchBirthDate);
 		if (!bindingResult.hasErrors()) {
 			try {
 				helper.update(id, form);
-				search(form, model, pageable);
+				search(searchName, searchCpf, searchRg, searchGender, searchBirthDate, model, pageable);
 			} catch (ValidatorServiceException ex) {
 				model.addAttribute("form", form);
-				model.addAttribute("allGenders", Gender.values());
-				model.addAttribute("allMaritalStates", MaritalState.values());
-				model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 				model.addAttribute("page", "patient/details");
 				bindExceptionErrors("form", bindingResult, ex);
 			}
 		} else {
 			model.addAttribute("form", form);
-			model.addAttribute("allGenders", Gender.values());
-			model.addAttribute("allMaritalStates", MaritalState.values());
-			model.addAttribute("allPeriodicityUnits", PeriodicityUnit.values() );
 			model.addAttribute("page", "patient/details");
 		}
 		return "index";

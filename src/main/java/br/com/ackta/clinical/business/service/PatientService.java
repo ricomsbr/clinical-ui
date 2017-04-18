@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ackta.clinical.SerializableResourceBundleMessageSource;
 import br.com.ackta.clinical.WebConfig;
+import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientCpfValidator;
+import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientMailValidator;
+import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientNameValidator;
 import br.com.ackta.clinical.business.service.validator.PatientValidator;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.FamilyMember;
@@ -26,6 +29,7 @@ import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.entity.Phone;
+import br.com.ackta.clinical.data.entity.Responsible;
 import br.com.ackta.clinical.data.repository.PatientRepository;
 import br.com.ackta.util.EnumUtil;
 import br.com.ackta.util.ReportUtil;
@@ -91,6 +95,9 @@ public class PatientService implements IPatientService {
 		ValidatorServiceBuilder
 			.build(patient, patient.getClass().getName())
 			.append(new PatientValidator(personalDataService))
+			.append(new NotDuplicatePatientNameValidator(patientRepository))
+			.append(new NotDuplicatePatientMailValidator(patientRepository))
+			.append(new NotDuplicatePatientCpfValidator(patientRepository))
 			.validate();
 		validateMedicalHistory(patient);
 	}
@@ -161,11 +168,17 @@ public class PatientService implements IPatientService {
 		map.put("height", medicalHistory.getHeight());
 		map.put("smoker", medicalHistory.getSmoker());
 		map.put("smokeFrequence", medicalHistory.getSmokeFrequence());
-		String smokePeriodicityUnit = EnumUtil.getKey(medicalHistory.getSmokePeriodicityUnit());
+		String smokePeriodicityUnit = "";
+		if (medicalHistory.getSmokePeriodicityUnit() != null) {
+			smokePeriodicityUnit = EnumUtil.getKey(medicalHistory.getSmokePeriodicityUnit());
+		}
 		map.put("smokePeriodicityUnit", messageSource.getMessage(smokePeriodicityUnit, null, smokePeriodicityUnit, locale));
 		map.put("drinker", medicalHistory.getDrinker());
 		map.put("drinkFrequence", medicalHistory.getDrinkFrequence());
-		String drinkPeriodicityUnit = EnumUtil.getKey(medicalHistory.getDrinkPeriodicityUnit());
+		String drinkPeriodicityUnit = "";
+		if (medicalHistory.getDrinkPeriodicityUnit() != null) {
+			drinkPeriodicityUnit = EnumUtil.getKey(medicalHistory.getDrinkPeriodicityUnit());
+		}
 		map.put("drinkPeriodicityUnit", messageSource.getMessage(drinkPeriodicityUnit, null, drinkPeriodicityUnit, locale));
 		map.put("allergic", medicalHistory.getAllergic());
 		map.put("allergies", medicalHistory.getAllergies());
@@ -175,7 +188,7 @@ public class PatientService implements IPatientService {
 		map.put("surgeries", medicalHistory.getSurgeries());
 		Collection<FamilyMember> familyMembers = medicalHistory.getFamilyMembers();
 		map.put("familyMembers", familyMembers);
-		Collection<PersonalData> responsibles = patient.getResponsibles();
+		Collection<Responsible> responsibles = patient.getResponsibles();
 		map.put("responsibles", responsibles);
 		map.put("observation", patient.getObservation());
 		Collection<Map<String, Object>> beanCollection = new ArrayList<>();

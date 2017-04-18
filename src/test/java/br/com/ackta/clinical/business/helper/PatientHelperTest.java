@@ -252,9 +252,9 @@ public class PatientHelperTest {
 
 		assertThat(patient.getResponsibles())
 			.extracting("name").containsOnly("responsibleName1", "responsibleName2");
-		List<Phone> phones = patient.getResponsibles()
+		List<String> phones = patient.getResponsibles()
 			.stream()
-			.flatMap(r -> r.getPhones().stream())
+			.map(r -> r.getPhoneNumber())
 			.collect(Collectors.toList());
 		assertThat(phones)
 			.extracting("number")

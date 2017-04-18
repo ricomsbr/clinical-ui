@@ -19,11 +19,15 @@ import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
-import br.com.ackta.clinical.data.entity.PersonalData;
-import br.com.ackta.clinical.data.entity.Phone;
+import br.com.ackta.clinical.data.entity.PeriodicityUnit;
 import br.com.ackta.clinical.data.entity.PhoneType;
+import br.com.ackta.clinical.data.entity.Responsible;
 
 public class Form {
+	private static final Gender[] ALL_GENDERS = Gender.values();
+	private static final MaritalState[] ALL_MARITAL_STATES = MaritalState.values(); 
+	private static final PeriodicityUnit[] ALL_PERIODICITY_UNITS = PeriodicityUnit.values();
+	
 	private Long id;
 	private String cpf;
 
@@ -60,7 +64,7 @@ public class Form {
 	private String responsibleName2;
 	private String responsiblePhone1;
 	private String responsiblePhone2;
-
+	
 	/**
 	 *
 	 */
@@ -88,22 +92,16 @@ public class Form {
 		medicalHistory = patient.getMedicalHistory();
 		this.setMedicalHistory(medicalHistory);
 
-		List<PersonalData> respList = patient.getResponsibles();
+		List<Responsible> respList = patient.getResponsibles();
 		if (respList.size() > 0) {
-			PersonalData resp1 = respList.get(0);
+			Responsible resp1 = respList.get(0);
 			this.responsibleName1 = resp1.getName();
-			SortedSet<Phone> phones1 = resp1.getPhones();
-			if (phones1.size() > 0) {
-				this.responsiblePhone1 = phones1.first().getNumber();
-			}
+			this.responsiblePhone1 = resp1.getPhoneNumber();
 		}
 		if (respList.size() > 1) {
-			PersonalData resp2 = respList.get(1);
+			Responsible resp2 = respList.get(1);
 			this.responsibleName2 = resp2.getName();
-			SortedSet<Phone> phones2 = resp2.getPhones();
-			if (phones2.size() > 0) {
-				this.responsiblePhone2 = phones2.first().getNumber();
-			}
+			this.responsiblePhone2 = resp2.getPhoneNumber();
 		}
 		this.isMember = isMember;
 		this.susCard = susCardNumber;
@@ -240,19 +238,19 @@ public class Form {
 	}
 
 	public void setCity(String city) {
-		this.city = city;
+		this.city = city.trim();
 	}
 
 	public void setComplement(String complement) {
-		this.complement = complement;
+		this.complement = complement.trim();
 	}
 
 	public void setCpf(String cpf) {
-		this.cpf = cpf;
+		this.cpf = cpf.trim();
 	}
 
 	public void setDistrict(String district) {
-		this.district = district;
+		this.district = district.trim();
 	}
 
 	public void setFatherHistory(FamilyMemberHistoryForm fatherHistory) {
@@ -267,7 +265,7 @@ public class Form {
 	}
 
 	public void setHomePhone(String homePhone) {
-		this.homePhone = homePhone;
+		this.homePhone = homePhone.trim();
 	}
 
 	/**
@@ -282,7 +280,7 @@ public class Form {
 	}
 
 	public void setMail(String mail) {
-		this.mail = mail;
+		this.mail = mail.trim();
 	}
 
 	public void setMaritalState(MaritalState maritalState) {
@@ -294,7 +292,7 @@ public class Form {
 	}
 
 	public void setMobilePhone(String mobilePhone) {
-		this.mobilePhone = mobilePhone;
+		this.mobilePhone = mobilePhone.trim();
 	}
 
 	public void setMotherHistory(FamilyMemberHistoryForm motherHistory) {
@@ -302,49 +300,72 @@ public class Form {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim();
 	}
 
 	public void setNumber(String number) {
-		this.number = number;
+		this.number = number.trim();
 	}
 
 	public void setObservation(String observation) {
-		this.observation = observation;
+		this.observation = observation.trim();
 	}
 
 	public void setProfession(String profession) {
-		this.profession = profession;
+		this.profession = profession.trim();
 	}
 
 	public void setPublicArea(String publicArea) {
-		this.publicArea = publicArea;
+		this.publicArea = publicArea.trim();
 	}
 
 	public void setResponsibleName1(String responsibleName1) {
-		this.responsibleName1 = responsibleName1;
+		this.responsibleName1 = responsibleName1.trim();
 	}
 
 	public void setResponsibleName2(String responsibleName2) {
-		this.responsibleName2 = responsibleName2;
+		this.responsibleName2 = responsibleName2.trim();
 	}
 	public void setResponsiblePhone1(String responsiblePhone1) {
-		this.responsiblePhone1 = responsiblePhone1;
+		this.responsiblePhone1 = responsiblePhone1.trim();
 	}
 
 	public void setResponsiblePhone2(String responsiblePhone2) {
-		this.responsiblePhone2 = responsiblePhone2;
+		this.responsiblePhone2 = responsiblePhone2.trim();
 	}
 
 	public void setRg(String rg) {
-		this.rg = rg;
+		this.rg = rg.trim();
 	}
 
 	public void setSusCard(String susCard) {
-		this.susCard = susCard;
+		this.susCard = susCard.trim();
 	}
 
 	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+		this.zipCode = zipCode.trim();
 	}
+
+	/**
+	 * @return the allGenders
+	 */
+	public static Gender[] getAllGenders() {
+		return ALL_GENDERS;
+	}
+
+	/**
+	 * @return the allMaritalStates
+	 */
+	public static MaritalState[] getAllMaritalStates() {
+		return ALL_MARITAL_STATES;
+	}
+
+	/**
+	 * @return the allPeriodicityUnit
+	 */
+	public static PeriodicityUnit[] getAllPeriodicityUnits() {
+		return ALL_PERIODICITY_UNITS;
+	}
+	
+	
 }

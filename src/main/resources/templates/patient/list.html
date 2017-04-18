@@ -8,7 +8,12 @@
 		<div id="panel-content">
 			<div class="row">
 				<div class="col-sm-2">
-					<form action="/" method="get">
+					<form data-th-action="@{/patients/}" method="get">
+						<input type="hidden" data-th-value="${searchName}" name="searchName"/>
+						<input type="hidden" data-th-value="${searchCpf}" name="searchCpf"/>
+						<input type="hidden" data-th-value="${searchRg}" name="searchRg"/>
+						<input type="hidden" data-th-value="${searchGender}" name="searchGender"/>
+						<input type="hidden" data-th-value="${searchBirthDate}" name="searchBirthDate"/>
 						<button type="submit" class="btn btn-default">Voltar</button>
 					</form>
 				</div>
@@ -40,7 +45,7 @@
 								<td></td>
 								<td></td>
 								<td>
-										<button type="button" class="btn btn-info" data-th-onclick="'onclickDetalhes(\'' + @{/patients/{id}(id = ${nf.id})} + '\')'">Detalhes</button>
+										<button type="button" class="btn btn-info" data-th-onclick="'onclickDetalhes(\'' + @{/patients/{id}(id = ${nf.id}, searchName = ${searchName}, searchCpf = ${searchCpf}, searchRg = ${searchRg}, searchGender = ${searchGender}, searchBirthDate = ${searchBirthDate})} + '\')'">Detalhes</button>
 								</td>
 							</tr>
 						</tbody>

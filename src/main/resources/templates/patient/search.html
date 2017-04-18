@@ -1,10 +1,11 @@
-<div id="searchNf"  data-th-object="${form}">
-	<form action="patients/search?sort=personalData.name" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="post">
+<div id="searchNf">
+	<form action="patients/search?sort=personalData.name" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="get">
 		<div class="row">
 			<div class="form-group col-sm-6">
 				<label class="control-label">CPF</label>
 				<input type="text" class="form-control" tabindex="1" 
-					data-th-field="*{{cpf}}"
+					data-th-name="searchCpf"
+					data-th-value="${searchCpf}"
 					placeholder="Digite o CPF do emitente da nota fiscal"  />
 				<div class="help-block">
 					<span id="message"></span>
@@ -13,7 +14,8 @@
 			<div class="form-group col-sm-6">
 				<label class="control-label">Nome do paciente</label>
 				<input type="text" class="form-control" tabindex="1" 
-					data-th-field="*{{name}}"
+					data-th-name="searchName"
+					data-th-value="${searchName}"
 					placeholder="Digite parte do nome do paciente" />
 				<div class="help-block">
 					<span id="message"></span>
@@ -23,21 +25,24 @@
 		<div class="row">
 			<div class="form-group col-sm-6">
 				<label class="control-label">Gênero</label>
-				<select class="form-control" data-th-field="*{{gender}}">
+				<select class="form-control" data-th-name="searchGender">
 					<option value="" ></option>
 					<option data-th-each="gender : ${allGenders}" 
           				data-th-value="${gender}" 
-          				data-th-text="${gender}"></option>
+          				data-th-selected="${#strings.equals(gender, searchGender)}"
+          				data-th-text="#{${gender}}"></option>
 					</option>
 				</select>
 				<div class="help-block">
 					<span id="message"></span>
 				</div>
 			</div>
+			
 			<div class="form-group col-sm-6">
 				<label class="control-label">RG</label>
 				<input type="text" class="form-control" tabindex="1" 
-					data-th-field="*{{rg}}"
+					data-th-name="searchRg"
+					data-th-value="${searchRg}"
 					placeholder="Digite o rg do paciente" />
 				<div class="help-block">
 					<span id="message"></span>
@@ -48,7 +53,8 @@
 			<div class="form-group col-sm-6">
 				<label class="control-label">Data de Nascimento</label>
 				<input type="date" class="form-control" tabindex="1" 
-					data-th-field="*{{birthDate}}"
+					data-th-name="searchBirthDate"
+					data-th-value="${searchBirthDate}"
 					placeholder="Digite a chave da nota fiscal"  />
 				<div class="help-block">
 					<span id="message"></span>

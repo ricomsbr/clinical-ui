@@ -21,6 +21,7 @@ $(document).ready(function(){
 
 });
 </script>
+
 <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
     <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>    
 </div>
@@ -46,7 +47,7 @@ $(document).ready(function(){
 		<label class="control-label">Gênero *</label>
 		<select class="form-control" data-th-field="*{{gender}}" id="gender" tabindex="1">
 			<option value="" ></option>
-			<option data-th-each="gender : ${allGenders}" 
+			<option data-th-each="gender : *{allGenders}" 
   				data-th-value="${gender}" 
   				data-th-text="#{${gender}}"></option>
 			</option>
@@ -159,7 +160,7 @@ $(document).ready(function(){
 		<label class="control-label">Estado Civil</label>
 		<select class="form-control" data-th-field="*{{maritalState}}" id="maritalState" tabindex="1">
 			<option value="" ></option>
-			<option data-th-each="maritalState : ${allMaritalStates}" 
+			<option data-th-each="maritalState : *{allMaritalStates}" 
   				data-th-value="${maritalState}" 
   				data-th-text="#{${maritalState}}"></option>
 			</option>
@@ -275,7 +276,7 @@ $(document).ready(function(){
 		<label class="control-label">Período</label>
 		<select class="form-control" data-th-field="*{{medicalHistory.smokePeriodicityUnit}}" id="smokePeriodicityUnit" tabindex="1">
 			<option value="" ></option>
-			<option data-th-each="smokePeriodicityUnit : ${allPeriodicityUnits}" 
+			<option data-th-each="smokePeriodicityUnit : *{allPeriodicityUnits}" 
   				data-th-value="${smokePeriodicityUnit}" 
   				data-th-text="#{${smokePeriodicityUnit}}"></option>
 			</option>
@@ -309,7 +310,7 @@ $(document).ready(function(){
 		<label class="control-label">Período</label>
 		<select class="form-control" data-th-field="*{{medicalHistory.drinkPeriodicityUnit}}" id="drinkPeriodicityUnit" tabindex="1">
 			<option value="" ></option>
-			<option data-th-each="drinkPeriodicityUnit : ${allPeriodicityUnits}" 
+			<option data-th-each="drinkPeriodicityUnit : *{allPeriodicityUnits}" 
   				data-th-value="${drinkPeriodicityUnit}" 
   				data-th-text="#{${drinkPeriodicityUnit}}"></option>
 			</option>

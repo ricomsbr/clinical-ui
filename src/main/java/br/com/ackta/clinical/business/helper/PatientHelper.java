@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.SortedSet;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,13 @@ import br.com.ackta.clinical.business.service.IConvenantMemberService;
 import br.com.ackta.clinical.business.service.IPatientService;
 import br.com.ackta.clinical.business.service.IPersonalDataService;
 import br.com.ackta.clinical.business.service.IPhoneService;
+import br.com.ackta.clinical.business.service.IResponsibleService;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Convenant;
 import br.com.ackta.clinical.data.entity.ConvenantMember;
 import br.com.ackta.clinical.data.entity.FamilyMember;
+import br.com.ackta.clinical.data.entity.Gender;
 import br.com.ackta.clinical.data.entity.IPatient;
 import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
@@ -35,6 +36,7 @@ import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
 import br.com.ackta.clinical.data.entity.Phone;
 import br.com.ackta.clinical.data.entity.PhoneType;
+import br.com.ackta.clinical.data.entity.Responsible;
 import br.com.ackta.clinical.presentation.Form;
 
 @Service
@@ -46,23 +48,20 @@ public class PatientHelper implements IPatientHelper {
 	private IAddressService addressService;
 	private IPhoneService phoneService;
 	private IPersonalDataService personalDataService;
+	private IResponsibleService responsibleService;
 
-	/**
-	 * @param service
-	 * @param addressService1
-	 * @param phoneService1
-	 * @param addressRepository1
-	 */
+
 	@Autowired
 	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1,
 			IAddressService addressService1, IPhoneService phoneService1,
-			IPersonalDataService personalDataService1) {
+			IPersonalDataService personalDataService1, IResponsibleService responsibleService1) {
 		super();
 		this.patientService = service;
 		this.convenantMemberService = convenantMemberService1;
 		this.addressService = addressService1;
 		this.phoneService = phoneService1;
 		this.personalDataService = personalDataService1;
+		this.responsibleService = responsibleService1;
 	}
 
 	private void addAddress(Form form, PersonalData data) {
@@ -78,31 +77,29 @@ public class PatientHelper implements IPatientHelper {
 		data.addPhone(phoneService.insert(mobile));
 	}
 
-	private List<PersonalData> addResponsibles(Form form) {
-		List<PersonalData> result = new ArrayList<>();
-		Optional<PersonalData> responsible1 = createResponsible(1, form, form.getResponsibleName1(), form.getResponsiblePhone1());
-		Optional<PersonalData> responsible2 = createResponsible(2, form, form.getResponsibleName2(), form.getResponsiblePhone2());
+	private List<Responsible> addResponsibles(Form form) {
+		List<Responsible> result = new ArrayList<>();
+		Optional<Responsible> responsible1 = createResponsible(form.getResponsibleName1(), form.getResponsiblePhone1());
+		Optional<Responsible> responsible2 = createResponsible(form.getResponsibleName2(), form.getResponsiblePhone2());
 		if (responsible1.isPresent()) {
-			PersonalData resp1 = responsible1.get();
+			Responsible resp1 = responsible1.get();
 			result.add(resp1);
 		}
 		if (responsible2.isPresent()) {
-			PersonalData resp2 = responsible2.get();
+			Responsible resp2 = responsible2.get();
 			result.add(resp2);
 		}
 		return result;
 	}
 
-	private Optional<PersonalData> createResponsible(int index, Form form, String respName, String respPhone) {
-		PersonalData result = null;
+	private Optional<Responsible> createResponsible(String respName, String respPhone) {
+		Responsible result = null;
 		if (!respName.isEmpty()) {
-			result = new PersonalData();
+			result = new Responsible();
 			result.setName(respName);
-			personalDataService.validateName(result);
-			result = personalDataService.save(result);
+//			result = responsibleService.save(result);
 			if (!respPhone.isEmpty()) {
-				Phone phone = new Phone(index, PhoneType.GENERAL, COUNTRY_CODE, respPhone, result);
-				result.addPhone(phoneService.insert(phone));
+				result.setPhoneNumber(respPhone);
 			}
 		}
 		return Optional.ofNullable(result);
@@ -175,11 +172,12 @@ public class PatientHelper implements IPatientHelper {
 	public IPatient insert(Form form) {
 		PersonalData data = new PersonalData();
 		BeanUtils.copyProperties(form, data);
-		List<PersonalData> responsibles = addResponsibles(form);
+		List<Responsible> responsibles = addResponsibles(form);
 		PersonalData personalData = personalDataService.validateAndSave(data);
 		addAddress(form, data);
 		addPhones(form, data);
 		Patient patient = new Patient(personalData, extractConvenantMembers(form), responsibles, form.getObservation());
+		responsibles.stream().forEach(r -> r.setPatient(patient));
 		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
 		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
 		patient.setMedicalHistory(medicalHistory);
@@ -188,18 +186,20 @@ public class PatientHelper implements IPatientHelper {
 	}
 
 	@Override
-	public Page<Patient> search(Form form, Pageable pageable) {
+	public Page<Patient> search(String name, String cpf, String rg, Gender gender, LocalDate birthDate, Pageable pageable) {
 		PersonalData data = new PersonalData();
-
-		String cpf = form.getCpf();
-		if(!cpf.isEmpty()) {
-			data.setCpf(cpf);
-		}
-		String name = form.getName();
-		if (!name.isEmpty()) {
+		if (name != null && !name.isEmpty()) {
 			data.setName(name);
 		}
-		LocalDate birthDate = form.getBirthDate();
+		if(cpf != null && !cpf.isEmpty()) {
+			data.setCpf(cpf);
+		}
+		if (rg != null && !rg.isEmpty()) {
+			data.setRg(rg);
+		}
+		if (gender != null) {
+			data.setGender(gender);
+		}
 		if (birthDate != null) {
 			data.setBirthDate(birthDate);
 		}
@@ -223,11 +223,14 @@ public class PatientHelper implements IPatientHelper {
 		updateAddress(form, data);
 		updatePhones(form, data);
 		patient.setConvenantMembers(extractConvenantMembers(form));
-		updateResponsibles(patient, form);
+		List<Responsible> responsibles = updateResponsibles(patient, form);
+		responsibles.stream().forEach(r -> r.setPatient(patient));
+		patient.setResponsibles(responsibles);
 		patient.setObservation(form.getObservation());
 		MedicalHistory medicalHistory = new MedicalHistory(form.getMedicalHistory());
 		medicalHistory.setFamilyMembers(extractFamilyMembers(form));
 		patient.setMedicalHistory(medicalHistory);
+		patientService.validate(patient);
 		Patient result = patientService.update(patient);
 		return result;
 	}
@@ -248,27 +251,31 @@ public class PatientHelper implements IPatientHelper {
 		});
 	}
 
-	private List<PersonalData> updateResponsibles(Patient patient, Form form) {
-		List<PersonalData> responsibles = patient.getResponsibles();
+	private List<Responsible> updateResponsibles(Patient patient, Form form) {
+		List<Responsible> responsibles = patient.getResponsibles();
+		Optional<Responsible> newResp1 = createResponsible(form.getResponsibleName1(), form.getResponsiblePhone1());
+		Optional<Responsible> newResp2 = createResponsible(form.getResponsibleName2(), form.getResponsiblePhone2());
 		if (responsibles.size() > 0) {
-			PersonalData resp1 = responsibles.get(0);
-			resp1.setName(form.getResponsibleName1());
-			SortedSet<Phone> phones = resp1.getPhones();
-			if (!phones.isEmpty()) {
-				phones.first().setNumber(form.getResponsiblePhone1());
+			Responsible resp1 = responsibles.get(0);
+			if  (newResp1.isPresent()) {
+				resp1.merge(newResp1.get());
+			} else {
+				resp1.setPatient(null);
+				responsibles.remove(resp1);
 			}
-			personalDataService.validateName(resp1);
-			personalDataService.save(resp1);
+		} else if (newResp1.isPresent()) {
+			responsibles.add(newResp1.get());
 		}
 		if (responsibles.size() > 1) {
-			PersonalData resp2 = responsibles.get(1);
-			resp2.setName(form.getResponsibleName2());
-			SortedSet<Phone> phones = resp2.getPhones();
-			if (!phones.isEmpty()) {
-				phones.first().setNumber(form.getResponsiblePhone2());
+			Responsible resp2 = responsibles.get(1);
+			if  (newResp2.isPresent()) {
+				resp2.merge(newResp2.get());
+			} else {
+				resp2.setPatient(null);
+				responsibles.remove(resp2);
 			}
-			personalDataService.validateName(resp2);
-			personalDataService.save(resp2);
+		} else if (newResp2.isPresent()) {
+			responsibles.add(newResp2.get());
 		}
 		return responsibles;
 	}

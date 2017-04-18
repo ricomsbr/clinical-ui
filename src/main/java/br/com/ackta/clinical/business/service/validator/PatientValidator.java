@@ -9,6 +9,7 @@ import org.springframework.validation.Validator;
 import br.com.ackta.clinical.business.service.IPersonalDataService;
 import br.com.ackta.clinical.data.entity.Patient;
 import br.com.ackta.clinical.data.entity.PersonalData;
+import br.com.ackta.clinical.data.entity.Responsible;
 
 public class PatientValidator implements Validator{
 
@@ -29,7 +30,7 @@ public class PatientValidator implements Validator{
 	@Override
 	public void validate(Object target, Errors errors) {
 		Patient patient = (Patient) target;
-		List<PersonalData> responsibles = patient.getResponsibles();
+		List<Responsible> responsibles = patient.getResponsibles();
 		
 		PersonalData personalData = patient.getPersonalData();
 		long age = personalDataService.calculateAge(personalData);

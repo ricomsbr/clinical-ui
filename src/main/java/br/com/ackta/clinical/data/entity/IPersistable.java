@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 public interface IPersistable extends Serializable {
 
-	final String[] unmergedProperties = { "id", "deleted", "version" };
+	static final String[] UNMERGED_PROPERTIES = { "id", "deleted", "version" };
 
 	Long getId();
 

@@ -14,10 +14,10 @@ public interface IPatient extends IPersistable {
 
 	PersonalData getPersonalData();
 
-	List<PersonalData> getResponsibles();
+	List<Responsible> getResponsibles();
 
 	public default IPatient merge(IPatient user) {
-		BeanUtils.copyProperties(user, this, unmergedProperties);
+		BeanUtils.copyProperties(user, this, UNMERGED_PROPERTIES);
 		return this;
 	}
 

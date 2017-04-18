@@ -30,7 +30,7 @@ public interface IPersonalData extends IPersistable {
 	String getRg();
 
 	public default IPersonalData merge(IPersonalData newData) {
-		BeanUtils.copyProperties(newData, this, unmergedProperties);
+		BeanUtils.copyProperties(newData, this, UNMERGED_PROPERTIES);
 		this.getAddresses().first().merge(newData.getAddresses().first());
 		return this;
 	}
