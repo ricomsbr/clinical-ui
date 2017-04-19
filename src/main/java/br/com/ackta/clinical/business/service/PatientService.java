@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +24,8 @@ import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientMailV
 import br.com.ackta.clinical.business.service.validator.NotDuplicatePatientNameValidator;
 import br.com.ackta.clinical.business.service.validator.PatientValidator;
 import br.com.ackta.clinical.data.entity.Address;
+import br.com.ackta.clinical.data.entity.Convenant;
+import br.com.ackta.clinical.data.entity.ConvenantMember;
 import br.com.ackta.clinical.data.entity.FamilyMember;
 import br.com.ackta.clinical.data.entity.IPersonalData;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
@@ -162,7 +165,18 @@ public class PatientService implements IPatientService {
 		map.put("maritalState", personalData.getMaritalState());
 		map.put("profession", personalData.getProfession());
 		map.put("rg", personalData.getRg());
-		map.put("convenantMembers", patient.getConvenantMembers());
+		List<ConvenantMember> convenantMembers = patient.getConvenantMembers();
+		Boolean isOwnMember = convenantMembers
+				.stream()
+				.anyMatch(c -> c.getConvenant().equals(Convenant.OWN));
+		map.put("isOwnMember", isOwnMember);
+		String susNumber = convenantMembers
+				.stream()
+				.filter(c -> c.getConvenant().equals(Convenant.SUS))
+				.map(c -> c.getCardNumber())
+				.findAny()
+				.orElse("");
+		map.put("susNumber", susNumber);
 		MedicalHistory medicalHistory = patient.getMedicalHistory();
 		map.put("weight", medicalHistory.getWeight());
 		map.put("height", medicalHistory.getHeight());

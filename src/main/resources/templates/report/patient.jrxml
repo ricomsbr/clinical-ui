@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-04-18T00:30:33 -->
+<!-- 2017-04-18T22:37:21 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="patient" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="ced95029-b569-4027-895c-af2843a4e088">
 	<property name="ireport.zoom" value="1.331000000000001"/>
 	<property name="ireport.x" value="0"/>
@@ -23,7 +23,6 @@
 	<field name="birthDate" class="java.util.Date"/>
 	<field name="gender" class="java.lang.String"/>
 	<field name="publicArea" class="java.lang.String"/>
-	<field name="convenantMembers" class="java.util.Collection"/>
 	<field name="city" class="java.lang.String"/>
 	<field name="complement" class="java.lang.String"/>
 	<field name="district" class="java.lang.String"/>
@@ -36,6 +35,8 @@
 	<field name="rg" class="java.lang.String"/>
 	<field name="cpf" class="java.lang.String"/>
 	<field name="childrenQty" class="java.lang.Integer"/>
+	<field name="isOwnMember" class="java.lang.Boolean"/>
+	<field name="susNumber" class="java.lang.String"/>
 	<group name="Group1">
 		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
 		<groupHeader>
@@ -299,22 +300,15 @@
 			</staticText>
 			<textField>
 				<reportElement x="100" y="200" width="100" height="20" uuid="e0d2a098-847d-49f7-8b77-0aced66e3ee4"/>
-				<textFieldExpression><![CDATA[IF(NOT( EQUALS($F{convenantMembers},null)) && NOT($F{convenantMembers}.isEmpty()),
-	NOT(EQUALS(((br.com.ackta.clinical.data.entity.ConvenantMember[])$F{convenantMembers}.toArray()), NULL)),
-	false
-)
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{isOwnMember}.booleanValue() == true,"Sim","Não")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="220" width="100" height="20" uuid="97cb7838-3f25-4301-bf5f-0e0ee9544275"/>
 				<text><![CDATA[Inscrição do SUS]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="220" width="100" height="20" uuid="cc4310ca-02b0-49f3-a39a-4f0fe8840a0e">
-					<printWhenExpression><![CDATA[$F{convenantMembers} != null && $F{convenantMembers}.size() > 1]]></printWhenExpression>
-				</reportElement>
-				<textFieldExpression><![CDATA[(((br.com.ackta.clinical.data.entity.ConvenantMember)$F{convenantMembers}.toArray()[1])
-    .getCardNumber())]]></textFieldExpression>
+				<reportElement x="100" y="220" width="100" height="20" uuid="cc4310ca-02b0-49f3-a39a-4f0fe8840a0e"/>
+				<textFieldExpression><![CDATA[$F{susNumber}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

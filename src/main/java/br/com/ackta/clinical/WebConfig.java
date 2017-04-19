@@ -33,39 +33,54 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Value("${clinical.report.patientReportLayout}")
 	private Resource patientReportLayout;
-	
+
 	@Value("${clinical.report.patientReportPath}")
 	private String patientReportPath;
-		    
+
+	/**
+	 * @return the patientReportLayout
+	 */
+	public Resource getPatientReportLayout() {
+		return patientReportLayout;
+	}
+
+//	public void destroyDbServer(Server dbServer) {
+//		dbServer.stop();
+//	}
+//
+//	@Bean(destroyMethod="destroyDbServer")
+//	@Order(Ordered.HIGHEST_PRECEDENCE)
+//	public Server getDbServer() {
+//		String args = "";
+//		Server dbServer;
+//		try {
+//			dbServer = Server.createTcpServer(args).start();
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
+//		return dbServer;
+//	}
+
+	/**
+	 * @return the patientReportPath
+	 */
+	public String getPatientReportPath() {
+		return patientReportPath;
+	}
+
+//	@Bean(initMethod="start", destroyMethod="stop" )
+//	@PostConstruct
+//	public Server h2WebServer() throws SQLException {
+//	   return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "8082");
+//	}
+
 	@Bean
 	public LocaleResolver localeResolver() {
 		final SessionLocaleResolver resolver = new SessionLocaleResolver();
 		resolver.setDefaultLocale(DEFAULT_LOCALE);
 		return resolver;
 	}
-	
-	@Bean 
-	@Autowired
-	public RestTemplate restTemplate(ObjectMapper objectMapper) {
-		final RestTemplate restTemplate = new RestTemplate();
-		final List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-	    final MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
-	    jsonMessageConverter.setObjectMapper(objectMapper);
-	    messageConverters.add(jsonMessageConverter);
-	    restTemplate.setMessageConverters(messageConverters);
-		return restTemplate;
-	}
-	
-	@Bean
-	public Module module() {
-		//Esses serializer não estão sendo usado no Thymeleaf, somente quando for usar o Angular
-		final SimpleModule module = new SimpleModule();
-        module.addSerializer(ChronoUnit.class, new ChronoUnitSerializer());
-        module.addSerializer(Gender.class, new GenderSerializer());
-        module.addDeserializer(Gender.class, new GenderDeserializer());
-		return module;
-	}
-	
+
 	@Bean
 	public SerializableResourceBundleMessageSource messageSource() {
 		final SerializableResourceBundleMessageSource serializableResourceBundleMessageSource = new SerializableResourceBundleMessageSource();
@@ -77,19 +92,25 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		return serializableResourceBundleMessageSource;
 	}
 
-	/**
-	 * @return the patientReportLayout
-	 */
-	public Resource getPatientReportLayout() {
-		return patientReportLayout;
+	@Bean
+	public Module module() {
+		//Esses serializer não estão sendo usado no Thymeleaf, somente quando for usar o Angular
+		final SimpleModule module = new SimpleModule();
+        module.addSerializer(ChronoUnit.class, new ChronoUnitSerializer());
+        module.addSerializer(Gender.class, new GenderSerializer());
+        module.addDeserializer(Gender.class, new GenderDeserializer());
+		return module;
 	}
 
-	/**
-	 * @return the patientReportPath
-	 */
-	public String getPatientReportPath() {
-		return patientReportPath;
+	@Bean
+	@Autowired
+	public RestTemplate restTemplate(ObjectMapper objectMapper) {
+		final RestTemplate restTemplate = new RestTemplate();
+		final List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+	    final MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
+	    jsonMessageConverter.setObjectMapper(objectMapper);
+	    messageConverters.add(jsonMessageConverter);
+	    restTemplate.setMessageConverters(messageConverters);
+		return restTemplate;
 	}
-	
-	
 }

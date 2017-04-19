@@ -19,4 +19,14 @@ public class ClinicalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ClinicalApplication.class, args);
 	}
+//
+//	private static Server startBdServer() {
+//		Server dbServer;
+//		try {
+//			dbServer = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort","8082").start();
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
+//		return dbServer;
+//	}
 }
