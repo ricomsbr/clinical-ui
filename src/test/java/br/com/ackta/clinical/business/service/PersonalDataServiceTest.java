@@ -39,22 +39,22 @@ public class PersonalDataServiceTest {
 			.isNotEmpty()
 			.flatExtracting("codes")
 			.containsOnly(
-				    "gender.is_null.br.com.ackta.clinical.data.entity.PersonalData.gender",
-				    "gender.is_null.gender",
-				    "gender.is_null.br.com.ackta.clinical.data.entity.Gender",
-				    "gender.is_null",
-				    "childrenQty.is_null.br.com.ackta.clinical.data.entity.PersonalData.childrenQty",
-				    "childrenQty.is_null.childrenQty",
-				    "childrenQty.is_null.java.lang.Integer",
-				    "childrenQty.is_null",
-				    "birthDate.not_before_now.br.com.ackta.clinical.data.entity.PersonalData.birthDate",
-				    "birthDate.not_before_now.birthDate",
-				    "birthDate.not_before_now.java.time.LocalDate",
-				    "birthDate.not_before_now",
-				    "name.is_empty.br.com.ackta.clinical.data.entity.PersonalData.name",
-				    "name.is_empty.name",
-				    "name.is_empty.java.lang.String",
-				    "name.is_empty");
+			  	"NotBlank.br.com.ackta.clinical.data.entity.PersonalData.name",
+			    "NotBlank.name",
+			    "NotBlank.java.lang.String",
+			    "NotBlank",
+			    "NotNull.br.com.ackta.clinical.data.entity.PersonalData.gender",
+			    "NotNull.gender",
+			    "NotNull.br.com.ackta.clinical.data.entity.Gender",
+			    "NotNull",
+			    "NotNull.br.com.ackta.clinical.data.entity.PersonalData.childrenQty",
+			    "NotNull.childrenQty",
+			    "NotNull.java.lang.Integer",
+			    "NotNull",
+			    "NotBeforeNow.br.com.ackta.clinical.data.entity.PersonalData.birthDate",
+			    "NotBeforeNow.birthDate",
+			    "NotBeforeNow.java.time.LocalDate",
+			    "NotBeforeNow");
 	}
 
 }

@@ -1,10 +1,14 @@
 package br.com.ackta.clinical;
 
+import java.sql.SQLException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.PostConstruct;
+
+import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +40,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Value("${clinical.report.patientReportPath}")
 	private String patientReportPath;
-
+	
+	@Autowired
+	private H2ServerConfig h2ServerConfig;
+	
+	@Bean(initMethod="start", destroyMethod="stop" )
+	@PostConstruct
+	public Server h2WebServer() throws SQLException {
+		Server result = null;
+		List<String> paramsList = h2ServerConfig.getParams();
+		if (paramsList != null) {
+			String[] params = new String[] {};
+			params = paramsList.toArray(params);
+			result = Server.createTcpServer(params);
+		}
+		return result;
+	}
+	
 	/**
 	 * @return the patientReportLayout
 	 */
@@ -44,35 +64,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		return patientReportLayout;
 	}
 
-//	public void destroyDbServer(Server dbServer) {
-//		dbServer.stop();
-//	}
-//
-//	@Bean(destroyMethod="destroyDbServer")
-//	@Order(Ordered.HIGHEST_PRECEDENCE)
-//	public Server getDbServer() {
-//		String args = "";
-//		Server dbServer;
-//		try {
-//			dbServer = Server.createTcpServer(args).start();
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
-//		return dbServer;
-//	}
-
 	/**
 	 * @return the patientReportPath
 	 */
 	public String getPatientReportPath() {
 		return patientReportPath;
 	}
-
-//	@Bean(initMethod="start", destroyMethod="stop" )
-//	@PostConstruct
-//	public Server h2WebServer() throws SQLException {
-//	   return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "8082");
-//	}
 
 	@Bean
 	public LocaleResolver localeResolver() {
@@ -93,11 +90,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public Module module() {
+	public Module module(SerializableResourceBundleMessageSource messageSource) {
 		//Esses serializer não estão sendo usado no Thymeleaf, somente quando for usar o Angular
 		final SimpleModule module = new SimpleModule();
-        module.addSerializer(ChronoUnit.class, new ChronoUnitSerializer());
-        module.addSerializer(Gender.class, new GenderSerializer());
+        module.addSerializer(ChronoUnit.class, new ChronoUnitSerializer(messageSource));
+        module.addSerializer(Gender.class, new GenderSerializer(messageSource));
         module.addDeserializer(Gender.class, new GenderDeserializer());
 		return module;
 	}

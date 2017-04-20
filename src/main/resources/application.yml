@@ -75,7 +75,7 @@ spring:
     generate-ddl: true
     hibernate.ddl-auto: update
   datasource:
-    url: jdbc:h2:tcp://localhost/~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
+    url: jdbc:h2:tcp://localhost:9092/~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
     username: rmendonca
     password: 
     driver-class-name: org.h2.Driver
@@ -83,6 +83,14 @@ spring:
       validation-query: select 1 
       max-active: 5
       min-idle: 1
+      
+ackta:
+  h2-config:
+    params:
+      - -tcp
+      - -tcpAllowOthers
+      - -tcpPort
+      - 9092
      
 ---
 

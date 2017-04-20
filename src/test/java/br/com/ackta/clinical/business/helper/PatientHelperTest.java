@@ -257,7 +257,6 @@ public class PatientHelperTest {
 			.map(r -> r.getPhoneNumber())
 			.collect(Collectors.toList());
 		assertThat(phones)
-			.extracting("number")
 			.containsOnly("(11) 92834-9873", "(11) 92834-9553");
 		assertThat(patient.getVersion()).isEqualTo(0);
 	}

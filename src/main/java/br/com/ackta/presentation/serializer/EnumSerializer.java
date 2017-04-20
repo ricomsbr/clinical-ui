@@ -2,8 +2,6 @@ package br.com.ackta.presentation.serializer;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -13,9 +11,16 @@ import br.com.ackta.clinical.SerializableResourceBundleMessageSource;
 
 public abstract class EnumSerializer<E extends Enum<E>> extends JsonSerializer<E> {
 
-	@Autowired
 	SerializableResourceBundleMessageSource messageSource;
 	
+	/**
+	 * @param messageSource
+	 */
+	public EnumSerializer(SerializableResourceBundleMessageSource messageSource) {
+		super();
+		this.messageSource = messageSource;
+	}
+
 	@Override
 	public void serialize(E value, JsonGenerator gen,
 			SerializerProvider serializers) throws IOException,

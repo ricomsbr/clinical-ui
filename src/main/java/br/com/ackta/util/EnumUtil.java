@@ -1,5 +1,9 @@
 package br.com.ackta.util;
 
+import java.util.Locale;
+
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+
 public class EnumUtil {
 
 	private static final String DOT = ".";
@@ -13,7 +17,11 @@ public class EnumUtil {
 	}
 
 	public static String getKeyPrefix(Enum<?> enum1) {
-		return enum1.getClass().getSimpleName().toLowerCase();
+		return enum1.getClass().getSimpleName();
 	}
 
+	public static String getMessage(Enum<?> enum1, ReloadableResourceBundleMessageSource messageSource, Locale locale) {
+		String key = getKey(enum1);
+		return messageSource.getMessage(key, null, key, locale);
+	}
 }

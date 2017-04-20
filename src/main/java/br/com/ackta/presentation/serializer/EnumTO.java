@@ -36,7 +36,11 @@ public class EnumTO<E extends Enum<E>> {
     	this.key = EnumUtil.getKey(enumVar);
         this.keyPrefix = EnumUtil.getKeyPrefix(enumVar);
         this.keySufix = EnumUtil.getKeySufix(enumVar);
-        this.message = messageSource.getMessage(key, null, key, LocaleContextHolder.getLocale());
+        if (messageSource != null) {
+        	this.message = messageSource.getMessage(key, null, key, LocaleContextHolder.getLocale());
+        } else {
+        	this.message = key;
+        }
     }
     
     @JsonGetter("enum")

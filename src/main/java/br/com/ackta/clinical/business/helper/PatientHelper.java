@@ -22,7 +22,6 @@ import br.com.ackta.clinical.business.service.IConvenantMemberService;
 import br.com.ackta.clinical.business.service.IPatientService;
 import br.com.ackta.clinical.business.service.IPersonalDataService;
 import br.com.ackta.clinical.business.service.IPhoneService;
-import br.com.ackta.clinical.business.service.IResponsibleService;
 import br.com.ackta.clinical.data.entity.Address;
 import br.com.ackta.clinical.data.entity.AddressType;
 import br.com.ackta.clinical.data.entity.Convenant;
@@ -48,20 +47,17 @@ public class PatientHelper implements IPatientHelper {
 	private IAddressService addressService;
 	private IPhoneService phoneService;
 	private IPersonalDataService personalDataService;
-	private IResponsibleService responsibleService;
-
 
 	@Autowired
 	public PatientHelper(IPatientService service, IConvenantMemberService convenantMemberService1,
 			IAddressService addressService1, IPhoneService phoneService1,
-			IPersonalDataService personalDataService1, IResponsibleService responsibleService1) {
+			IPersonalDataService personalDataService1) {
 		super();
 		this.patientService = service;
 		this.convenantMemberService = convenantMemberService1;
 		this.addressService = addressService1;
 		this.phoneService = phoneService1;
 		this.personalDataService = personalDataService1;
-		this.responsibleService = responsibleService1;
 	}
 
 	private void addAddress(Form form, PersonalData data) {

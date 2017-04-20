@@ -12,7 +12,7 @@ public abstract class EnumDeserializer<E extends Enum<E>> extends JsonDeserializ
     public E deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
         final EnumTO node = parser.readValueAs(EnumTO.class);
         String result = node.getName();
-        return null;
+        return null; //TODO faltar implementar esse método.
     }
     
 //	@Override

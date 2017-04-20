@@ -59,7 +59,7 @@ public class Patient implements IPatient {
 	        name="convenant_member",
 	        joinColumns=@JoinColumn(name="convenant_member_id")
 	  )
-	private List<ConvenantMember> convenantMembers;
+	private List<ConvenantMember> convenantMembers = new ArrayList<>();
 
 	public Patient() {
 		super();
