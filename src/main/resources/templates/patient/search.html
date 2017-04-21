@@ -1,5 +1,6 @@
 <div id="searchNf">
-	<form action="patients/search?sort=personalData.name" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="get">
+	<form action="patients/search" enctype="application/x-www-form-urlencoded" novalidate="novalidate" method="get">
+		<input type="hidden" data-th-name="sort" data-th-value="personalData.name"/>
 		<div class="row">
 			<div class="form-group col-sm-6">
 				<label class="control-label">CPF</label>

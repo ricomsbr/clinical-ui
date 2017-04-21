@@ -41,8 +41,9 @@
 				<button type="submit" class="btn btn-info" tabindex="1">Imprimir</button>
 			</div>
 		</form>
-		<form data-th-action="@{/patients/}" method="get">
+		<form data-th-action="@{/patients/search}" method="get">
 			<div>
+				<input type="hidden" data-th-name="sort" data-th-value="personalData.name"/>
 				<input type="hidden" data-th-value="${searchName}" name="searchName"/>
 				<input type="hidden" data-th-value="${searchCpf}" name="searchCpf"/>
 				<input type="hidden" data-th-value="${searchRg}" name="searchRg"/>

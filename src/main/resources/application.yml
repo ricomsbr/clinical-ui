@@ -56,7 +56,7 @@ spring:
     generate-ddl: true
     hibernate.ddl-auto: update
   datasource:
-    url: jdbc:h2:~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
+    url: jdbc:h2:~/clinical;mode=MySQL;LOCK_MODE=3;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
     username: rmendonca
     password: 
     driver-class-name: org.h2.Driver
@@ -75,7 +75,7 @@ spring:
     generate-ddl: true
     hibernate.ddl-auto: update
   datasource:
-    url: jdbc:h2:tcp://localhost:9092/~/clinical;mode=MySQL;LOCK_MODE=1;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
+    url: jdbc:h2:tcp://localhost:9092/~/clinical;mode=MySQL;LOCK_MODE=3;FILE_LOCK=SOCKET;AUTO_RECONNECT=TRUE
     username: rmendonca
     password: 
     driver-class-name: org.h2.Driver

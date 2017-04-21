@@ -1,12 +1,14 @@
 package br.com.ackta.clinical.business.service;
 
 import java.sql.Date;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,6 +30,7 @@ import br.com.ackta.clinical.data.entity.Convenant;
 import br.com.ackta.clinical.data.entity.ConvenantMember;
 import br.com.ackta.clinical.data.entity.FamilyMember;
 import br.com.ackta.clinical.data.entity.IPersonalData;
+import br.com.ackta.clinical.data.entity.Kinship;
 import br.com.ackta.clinical.data.entity.MaritalState;
 import br.com.ackta.clinical.data.entity.MedicalHistory;
 import br.com.ackta.clinical.data.entity.Patient;
@@ -173,18 +176,47 @@ public class PatientService implements IPatientService {
 			map.put("hasSurgeries", medicalHistory.getHasSurgeries());
 			map.put("surgeries", medicalHistory.getSurgeries());
 			Collection<FamilyMember> familyMembers = medicalHistory.getFamilyMembers();
-
-			map.put("familyMembers", familyMembers);
-//			allergic
+			Optional<FamilyMember> mother = familyMembers
+				.stream()
+				.filter(m -> m.getKinship().equals(Kinship.MOTHER))
+				.findAny();
+			map.put("motherIsAlive", mother.get().getAlive());
+			map.put("motherAge", calcAge(mother.get().getBirthYear()));
+			map.put("motherDiseases", mother.get().getDiseases());
+			map.put("motherMedicines", mother.get().getMedicines());
+			Optional<FamilyMember> father = familyMembers
+					.stream()
+					.filter(m -> m.getKinship().equals(Kinship.FATHER))
+					.findAny();
+			map.put("fatherIsAlive", mother.get().getAlive());
+			map.put("fatherAge", calcAge(father.get().getBirthYear()));
+			map.put("fatherDiseases", father.get().getDiseases());
+			map.put("fatherMedicines", father.get().getMedicines());
 		}
-		Collection<Responsible> responsibles = patient.getResponsibles();
-		map.put("responsibles", responsibles);
+		List<Responsible> responsibles = patient.getResponsibles();
+		if (responsibles.size() > 0 ) {
+			Responsible responsible = responsibles.get(0);
+			map.put("responsibleName1", responsible.getName());
+			map.put("responsiblePhone1", responsible.getPhoneNumber());
+		}
+		if (responsibles.size() > 1 ) {
+			Responsible responsible = responsibles.get(1);
+			map.put("responsibleName2", responsible.getName());
+			map.put("responsiblePhone2", responsible.getPhoneNumber());
+		}
 		map.put("observation", patient.getObservation());
 		Collection<Map<String, Object>> beanCollection = new ArrayList<>();
 		beanCollection.add(map);
 		return beanCollection;
 	}
 
+	private Integer calcAge(Year birthYear) { 
+		Integer age = null;
+		if (Objects.nonNull(birthYear)) {
+			age = Year.now().minusYears(birthYear.getValue()).getValue();
+		}
+		return age;
+	}
 	@Override
 	public Patient update(Patient patient) {
 		IPersonalData data = patient.getPersonalData();
