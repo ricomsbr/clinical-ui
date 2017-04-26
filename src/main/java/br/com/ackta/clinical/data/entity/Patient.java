@@ -52,7 +52,7 @@ public class Patient implements IPatient {
 	private MedicalHistory medicalHistory;
 
 	@OneToMany(cascade = {CascadeType.ALL}, targetEntity = Responsible.class, mappedBy = "patient", orphanRemoval=true)
-	public List<Responsible> responsibles;
+	public List<Responsible> responsibles = new ArrayList<>();
 
 	@ElementCollection(targetClass=ConvenantMember.class)
 	@CollectionTable(
