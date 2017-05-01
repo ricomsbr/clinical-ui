@@ -1,8 +1,3 @@
-/*
- * ControllerTest.java		14/12/2015
- * 
- * Copyright (C) 2015 FAPESP. All Rights Reserved.
- */
 package br.com.ackta.clinical;
 
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -21,22 +16,7 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-/**
- * 
- * 
- * @author	RMendonca
- * @version @version@
- * @since	@since@
- */
 public class ControllerTest {
-
-	private HttpMessageConverter<Object> mappingJackson2HttpMessageConverter;
-	protected MockMvc mockMvc;
-	
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	
-	
 
 	protected static String createString(int length) {
 		final StringBuffer sb = new StringBuffer(length);
@@ -45,31 +25,20 @@ public class ControllerTest {
 		}
 		return sb.toString();
 	}
+	private HttpMessageConverter<Object> mappingJackson2HttpMessageConverter;
+
+	protected MockMvc mockMvc;
+
+
 
 	@Autowired
-	void setConverters(HttpMessageConverter<Object>[] converters) {
-	
-		this.mappingJackson2HttpMessageConverter = Arrays
-				.asList(converters)
-				.stream()
-				.filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
-				.findAny().get();
-	
-		Assert.assertNotNull("the JSON message converter must not be null",
-				this.mappingJackson2HttpMessageConverter);
-	}
+	private WebApplicationContext webApplicationContext;
 
 	/**
-	 * 
+	 *
 	 */
 	public ControllerTest() {
 		super();
-	}
-
-	@Before
-	public void setup() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		this.mockMvc = webAppContextSetup(webApplicationContext).build();
 	}
 
 	protected String json(Object o) throws IOException {
@@ -77,6 +46,25 @@ public class ControllerTest {
 		this.mappingJackson2HttpMessageConverter.write(o,
 				MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 		return mockHttpOutputMessage.getBodyAsString();
+	}
+
+	@Autowired
+	void setConverters(HttpMessageConverter<Object>[] converters) {
+
+		this.mappingJackson2HttpMessageConverter = Arrays
+				.asList(converters)
+				.stream()
+				.filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
+				.findAny().get();
+
+		Assert.assertNotNull("the JSON message converter must not be null",
+				this.mappingJackson2HttpMessageConverter);
+	}
+
+	@Before
+	public void setup() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		this.mockMvc = webAppContextSetup(webApplicationContext).build();
 	}
 
 }

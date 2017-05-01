@@ -1,8 +1,3 @@
-/*
- * MonetaryAmountNode.java		27/10/2015
- * 
- * Copyright (C) 2015 FAPESP. All Rights Reserved.
- */
 package br.com.ackta.presentation.serializer;
 
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -14,13 +9,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import br.com.ackta.clinical.SerializableResourceBundleMessageSource;
 import br.com.ackta.util.EnumUtil;
 
-/**
- * 
- * 
- * @author	RMendonca
- * @version @version@
- * @since	@since@
- */
 public class EnumTO<E extends Enum<E>> {
 	@JsonIgnore
 	private E enumVar;
@@ -42,11 +30,11 @@ public class EnumTO<E extends Enum<E>> {
         	this.message = key;
         }
     }
-    
-    @JsonGetter("enum")
-	public String getName() {
-		return enumVar.name();
-	}
+
+    @JsonIgnore
+    public E getEnum() {
+    	return enumVar;
+    }
 
     @JsonGetter
     public String getKey() {
@@ -57,33 +45,28 @@ public class EnumTO<E extends Enum<E>> {
 	public String getKeyPrefix() {
 		return keyPrefix;
 	}
-	
+
 	@JsonGetter
 	public String getKeySufix() {
 		return keySufix;
 	}
 
-	@JsonIgnore
-    public E getEnum() {
-    	return enumVar;
-    }
-	
 	@JsonGetter
 	public String getMessage() {
 		return message;
 	}
-    
+
+	@JsonGetter("enum")
+	public String getName() {
+		return enumVar.name();
+	}
+
     @JsonSetter("enum")
 	public void setEnum(E enumVar) {
 		this.enumVar = enumVar;
 	}
-    
-    @JsonSetter
-	public void setMessage(String message) {
-		this.message = message;
-	}
 
-	@JsonSetter
+    @JsonSetter
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -97,5 +80,10 @@ public class EnumTO<E extends Enum<E>> {
 	public void setKeySufix(String keySufix) {
 		this.keySufix = keySufix;
 	}
-    
+
+	@JsonSetter
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 }
